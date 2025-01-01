@@ -1,14 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AppService } from '../../app.service';
-import { forkJoin } from 'rxjs';
+import { connect, forkJoin } from 'rxjs';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-analyze',
-  imports: [],
+  imports: [NgbTooltipModule],
   templateUrl: './analyze.component.html',
   styleUrl: './analyze.component.scss',
 })
-export class AnalyzeComponent implements OnInit {
+export class AnalyzeComponent implements OnInit, OnChanges {
   @Input({ required: true }) searchResult: any = [];
 
   public isLoading = false;
@@ -77,17 +78,25 @@ export class AnalyzeComponent implements OnInit {
 
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
+
   ngOnInit(): void {
     this.analyze();
   }
 
   analyze() {
+    console.log(this.searchResult);
     if (this.searchResult.searchTotal > 0) {
+      this.fetchResult.length = 0;
+      this.computed = new Map();
       // let vm = this;
       this.isLoading = true;
 
-      for (let i = 0; i < 20; i += 10) {
-        const fetchIDs = this.searchResult.fetchID.slice(this.fetchIndex, this.read);
+      for (let i = 0; i < this.searchResult.searchTotal && i < 20; i += 10) {
+        this.fetchIndex = i;
+        const fetchIDs = this.searchResult.fetchID.slice(i, i + 10);
 
         this.observ.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID));
       }
@@ -167,8 +176,8 @@ export class AnalyzeComponent implements OnInit {
   // }
 
   fetchResultPrice() {
-    forkJoin([this.observ[0], this.observ[1]]).subscribe((res: any) => {
-      this.fetchResult = this.fetchResult.concat(res[0].result).concat(res[1].result);
+    forkJoin([...this.observ]).subscribe((res: any) => {
+      this.fetchResult = [].concat(...res.map((e: any) => { return e.result }));
 
       this.itemImage = this.fetchResult[0].item.icon;
 
@@ -189,6 +198,8 @@ export class AnalyzeComponent implements OnInit {
       });
 
       console.log(this.computed);
+    }, (error: any) => {
+      console.error(error.error.message);
     })
     // this.fetchResult.forEach((item: any) => {
     //   if (item.listing.price) {

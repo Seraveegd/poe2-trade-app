@@ -25,7 +25,7 @@
                 @for (currencys of computed; track $index) {
                 @for (currency of currencys[1]; track $index;) {
                 <tr>
-                    <td>報價：{{ currency[0] }} x <img [src]="currencysList.get(currencys[0]).image"> / {{ currency[1] }}筆</td>
+                    <td>報價：{{ currency[0] }} x <img [src]="currencysList.get(currencys[0]).image" placement="top" [ngbTooltip]="currencysList.get(currencys[0]).text" style="cursor: pointer;"> / {{ currency[1] }}筆</td>
                 </tr>
                 }
                 }
@@ -42,16 +42,13 @@
                     </td>
                 </tr> -->
             </tbody>
-            <tfoot v-show="$store.state.POESESSID">
+            <!-- <tfoot v-show="$store.state.POESESSID">
                 <tr>
                     <th>
                         <button>重新整理</button>
-                        <!-- <b-icon-arrow-repeat @click="isCounting ? '' : $emit('refresh')"
-                            :style="[`cursor: ${isCounting ? `not-allowed` : `pointer`};`, 'margin-left: 3px;']"
-                            v-b-tooltip.hover.top.v-secondary :title="`重新整理`"></b-icon-arrow-repeat> -->
                     </th>
                 </tr>
-            </tfoot>
+            </tfoot> -->
         </table>
     </div>
 </div>

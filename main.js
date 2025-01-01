@@ -4,6 +4,8 @@ const path = require('path');
 const url = require('url');
 // const fs = require('fs');
 
+if (require('electron-squirrel-startup')) app.quit();
+
 let win = null;
 
 function createWindow() {
@@ -22,7 +24,7 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         },
-        fullscreen: true
+        // fullscreen: true
     });
 
     // child = new BrowserWindow({
@@ -55,16 +57,16 @@ function createWindow() {
     // }));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
-    setInterval(() => {
-        // console.log(window.localStorage.getItem('copyText'), JSON.stringify(clipboard.readText()));
-        // if (clipboard.readText().indexOf('稀有度: ') > -1 && localStorage.getItem('copyText') !== JSON.stringify(clipboard.readText())) {
-        win.webContents.executeJavaScript(`localStorage.setItem('copyText', '` + JSON.stringify(clipboard.readText()) + `')`);
-        // win.loadFile(`dist/electron-app/browser/home`);
-        // }
-        // console.log(clipboard.readText());
-    }, 500);
+    // setInterval(() => {
+    //     // console.log(window.localStorage.getItem('copyText'), JSON.stringify(clipboard.readText()));
+    //     // if (clipboard.readText().indexOf('稀有度: ') > -1 && localStorage.getItem('copyText') !== JSON.stringify(clipboard.readText())) {
+    //     win.webContents.executeJavaScript(`localStorage.setItem('copyText', '` + JSON.stringify(clipboard.readText()) + `')`);
+    //     // win.loadFile(`dist/electron-app/browser/home`);
+    //     // }
+    //     // console.log(clipboard.readText());
+    // }, 500);
 }
 
 // function scanCopy() {

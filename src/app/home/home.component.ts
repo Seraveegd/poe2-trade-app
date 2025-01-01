@@ -3,7 +3,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../app.service';
 // import { RouterLink, RouterOutlet } from '@angular/router';
-import { lastValueFrom } from 'rxjs';
+import { interval, lastValueFrom, map, Observable } from 'rxjs';
 import { AnalyzeComponent } from "./analyze/analyze.component";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
   private clipboard!: Clipboard;
   public isCollapsed: boolean = false;
 
-  public newLine = navigator.userAgent.indexOf('Mac OS X') > -1 ? `\n` : `\n`; // Mac 與 Windows 換行符號差異(\r\n之後修)
+  public newLine = navigator.userAgent.indexOf('Mac OS X') > -1 ? `\n` : `\r\n`; // Mac 與 Windows 換行符號差異(\r\n之後修)
 
   private weaponTypes: any = new Map([
     ['weapon.onemelee', '單手近戰武器'],
@@ -41,11 +41,13 @@ export class HomeComponent implements OnInit {
   public app: any = {
     baseUrl: 'https://pathofexile.tw',
     isTwServer: true,
+    onReady: false,
     isCounting: false,
     isApiError: false,
     apiErrorStr: '',
     issueText: '',
-    countTime: 0
+    countTime: 0,
+    preCopyText: ''
   };
 
   //介面開關
@@ -104,7 +106,7 @@ export class HomeComponent implements OnInit {
 
   //搜尋相關設定
   public searchOptions: any = {
-    isOnline: true,
+    // isOnline: true,
     isPriced: true,
     isPriceCollapse: true, // 透過帳號摺疊名單 (Collapse Listings by Account) 預設為 true
     serverOptions: ['台服'],
@@ -128,10 +130,7 @@ export class HomeComponent implements OnInit {
         label: "非傳奇",
         prop: 'nonunique'
       }],
-      chosenObj: {
-        label: "任何",
-        prop: ''
-      },
+      chosenObj: "nonunique",
       isSearch: false,
     },
     itemLevel: { // 搜尋設定->物品等級
@@ -169,11 +168,8 @@ export class HomeComponent implements OnInit {
         label: "任何",
         prop: 'any'
       }],
-      chosenObj: {
-        label: "任何",
-        prop: 'any'
-      },
-      isSearch: true,
+      chosenObj: "any",
+      // isSearch: true,
     },
     itemCategory: { // 物品分類
       option: [],
@@ -197,10 +193,7 @@ export class HomeComponent implements OnInit {
         label: "神聖石",
         prop: 'divine'
       }],
-      chosenObj: {
-        label: "Relative",
-        prop: ''
-      }
+      chosenObj: ''
     },
     leagues: { // 搜尋設定->搜尋聯盟
       options: [],
@@ -219,7 +212,23 @@ export class HomeComponent implements OnInit {
         "stats": [{
           "type": "and",
           "filters": []
-        }]
+        }],
+        "filters": {
+          "type_filters": {
+            "filters": {
+              "ilvl": {},
+              "rarity": {}
+            }
+          },
+          "trade_filters": {
+            "filters": {
+              "collapse": {
+                "option": "true"
+              },
+              "price": {}
+            }
+          }
+        }
       },
       "sort": {
         "price": "asc"
@@ -246,29 +255,6 @@ export class HomeComponent implements OnInit {
     gggGemBasic: [],
   };
 
-  testStr: string = `物品種類: 權杖
-稀有度: 稀有
-昏暗 巨錘
-雜響權杖
---------
-品質: +20% (augmented)
-精魂: 161 (augmented)
---------
-需求:
-等級: 78
-力量: 35 (augmented)
-智慧: 89 (augmented)
---------
-物品等級: 79
---------
-精魂增加 34%
-處於你存在範圍中的友方所造成的傷害增加 32%
-處於你存在範圍中的友方命中值 +189
-處於你存在範圍中的友方增加 20% 施放速度
-減少 35% 能力值需求
-全部召喚物技能寶石 +4 等級
-`;
-
   constructor(private poe_service: AppService) {
     if ((<any>window).require) {
       try {
@@ -291,7 +277,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(localStorage.getItem('copyText'));
+    // console.log(localStorage.getItem('copyText'));
     // this.analyze();
   }
 
@@ -304,25 +290,29 @@ export class HomeComponent implements OnInit {
     this.dealWithitemsData();
     this.dealWithstatsData();
 
-    this.analyze();
+    const getCopyText = interval(1000).pipe(map(() => this.clipboard.readText()));
+
+    getCopyText.subscribe((text: any) => {
+      if (this.app.preCopyText !== text) {
+        this.app.onReady = false;
+      }
+
+      if (text.indexOf('稀有度: ') > -1 && !this.app.isApiError && !this.app.onReady) { // POE 內的文字必定有稀有度
+        this.app.preCopyText = text;
+        this.app.onReady = true;
+        this.analyze(text);
+      }
+    })
   }
 
-  analyze() {
-    let item = this.testStr;
-    // if (['物品类别: ', '稀 有 度: ', 'Item Class: '].some(keyword => item.includes(keyword))) { // 繁體中文語系確認
-    //   this.$message({
-    //     duration: 2000,
-    //     type: 'warning',
-    //     message: `偵測到遊戲語言並非『繁體中文』，無法順利查價`
-    //   });
-    //   return
-    // }
-    if (item.indexOf('稀有度: ') === -1 || !this.testStr || this.app.isApiError) { // POE 內的文字必定有稀有度
-      return;
-    }
+  analyze(text: string) {
+    console.log(this.searchOptions);
+    let item = text;
+
     if (this.app.isCounting) {
       // this.cleanCopyText()
-      // this.cleanClipboard()
+      this.clipboard.writeText('');
+      return;
       // this.$message({
       //   duration: 2000,
       //   type: 'error',
@@ -330,13 +320,15 @@ export class HomeComponent implements OnInit {
       // });
       // return
     }
+
     this.resetSearchData();
 
     this.filters.searchJson = JSON.parse(JSON.stringify(this.filters.searchJson_Def)); // Deep Copy：用JSON.stringify把物件轉成字串 再用JSON.parse把字串轉成新的物件
 
     const NL = this.newLine;
     let itemArray = item.split(NL); // 以行數拆解複製物品文字
-    // itemArray.splice(0, 1); // 暫時移除 3.14 增加 物品種類 的資訊以符合原先邏輯
+
+    console.log(itemArray);
 
     itemArray = this.deleteUnUseString(itemArray);
 
@@ -344,15 +336,13 @@ export class HomeComponent implements OnInit {
     let posRarity = itemArray[1].indexOf(': ');
     let Rarity = itemArray[1].substring(posRarity + 2).trim();
 
-    // const regSetString = /\<(.+)\>/g // 全域搜尋 <<set:MS>><<set:M>><<set:S>> 字串並移除
-    // itemArray[1] = itemArray[1].replace(regSetString, '')
-    // itemArray[2] = itemArray[2].replace(regSetString, '')
+    console.log(Rarity);
 
-    //物品名稱
+    //物品名稱 - name
     let searchName = itemArray[2];
     this.item.name = itemArray[3] === "--------" ? `物品名稱 <br>『${itemArray[2]}』` : `物品名稱 <br>『${itemArray[2]} ${itemArray[3]}』`;
 
-    //物品基底
+    //物品基底 - type
     let itemBasic = itemArray[3];
     let itemNameString = itemArray[3] === "--------" ? itemArray[2] : `${itemArray[2]} ${itemArray[3]}`;
     let itemBasicCount = 0;
@@ -366,7 +356,7 @@ export class HomeComponent implements OnInit {
         itemBasicCount++;
         this.itemAnalysis(item, itemArray, element);
         this.item.category = 'item';
-        this.ui.collapse.item = true;
+        this.ui.collapse.item = false;
         // this.options.isItem = true;
         // this.options.isItemCollapse = true;
         return true;
@@ -377,22 +367,15 @@ export class HomeComponent implements OnInit {
 
     //詞綴分析
     if (Rarity === "傳奇") { // 傳奇道具
-      if (item.indexOf('傳奇 (貼模)') > -1) {
-        this.searchOptions.raritySet.chosenObj = {
-          label: "傳奇 (貼模)",
-          prop: 'uniquefoil'
-        }
-      } else {
-        this.searchOptions.raritySet.chosenObj = {
-          label: "傳奇",
-          prop: 'unique'
-        }
-      }
+      this.searchOptions.raritySet.chosenObj = item.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
+
+      console.log(this.filters.searchJson);
+
       if (item.indexOf('未鑑定') === -1) { // 已鑑定傳奇
-        // this.options.searchJson.query.name = this.replaceString(searchName);
-        // this.options.searchJson.query.type = this.replaceString(itemBasic);
         this.searchOptions.raritySet.isSearch = true;
-        this.isRaritySearch();
+        Object.assign(this.filters.searchJson.query, { name: searchName, type: itemBasic });
+        // this.isRaritySearch();
+
         if (this.item.category === 'item') {
           this.itemStatsAnalysis(itemArray, 1);
         }
@@ -400,14 +383,12 @@ export class HomeComponent implements OnInit {
         if (searchName.indexOf('精良的') > -1) { // 未鑑定的品質傳奇物品
           searchName = searchName.substring(4);
         }
-        this.searchOptions.raritySet.isSearch = true
-        this.isRaritySearch();
-        // this.options.searchJson.query.type = this.replaceString(searchName);
-        this.options.searchJson.query.type = searchName;
+        this.searchOptions.raritySet.isSearch = true;
+        Object.assign(this.filters.searchJson.query, { type: searchName });
+        // this.isRaritySearch();
       }
     } else if (Rarity === "寶石") {//之後檢視
       this.item.category = 'gem';
-      // this.options.isGem = true;
       this.basics.gem.chosenG = searchName;
 
       // const isTransfigured = this.transfiguredGems.find(gem => gem.text === searchName); // 比對是否為變異寶石
@@ -453,6 +434,7 @@ export class HomeComponent implements OnInit {
     }
     else if (this.item.category === 'item') {
       this.itemStatsAnalysis(itemArray, 0);
+      console.log(this.searchOptions);
       return;
     }
 
@@ -591,9 +573,6 @@ export class HomeComponent implements OnInit {
     this.searchResult.fetchID.length = 0;
 
     this.item.category = '';
-    // this.options.isMap = false;
-    // this.options.isItem = false;
-    // this.options.isGem = false;
 
     this.item.supported = true;
 
@@ -623,10 +602,7 @@ export class HomeComponent implements OnInit {
     this.searchOptions.gemQuality.min = '';
     this.searchOptions.gemQuality.max = '';
 
-    this.searchOptions.corruptedSet.chosenObj = {
-      label: "任何",
-      prop: 'any'
-    };
+    this.searchOptions.corruptedSet.chosenObj = 'any';
 
     this.searchResult.fetchQueryID = '';
     this.searchResult.status = '';
@@ -641,12 +617,9 @@ export class HomeComponent implements OnInit {
     //   label: "任何",
     //   prop: ''
     // };
-    this.searchOptions.raritySet.chosenObj = {
-      label: "非傳奇",
-      prop: 'nonunique'
-    };
+    this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
-    this.isRaritySearch();
+    // this.isRaritySearch();
     // 判斷物品基底
     this.searchOptions.itemBasic.text = matchItem.text || matchItem.type;
     // 判斷物品等級
@@ -685,10 +658,7 @@ export class HomeComponent implements OnInit {
       prop: matchItem.option,
     });
 
-    this.searchOptions.itemCategory.chosenObj = {
-      label: matchItem.name,
-      prop: matchItem.option,
-    };
+    this.searchOptions.itemCategory.chosenObj = matchItem.option;
 
     if (matchItem.weapon) {
       this.searchOptions.itemCategory.option.push({
@@ -697,7 +667,7 @@ export class HomeComponent implements OnInit {
       });
     }
     this.searchOptions.itemCategory.isSearch = true;
-    this.isItemCategorySearch();
+    // this.isItemCategorySearch();
 
     // // 判斷勢力基底
     // this.itemExBasic.isSearch = true
@@ -764,7 +734,7 @@ export class HomeComponent implements OnInit {
     // this.itemStatsAnalysis(itemArray, 1) 地圖先不加入詞綴判斷
     const NL = this.newLine;
     this.item.category = 'map';
-    this.ui.collapse.map = true;
+    this.ui.collapse.map = false;
     // this.options.isMap = true;
     // this.options.isMapCollapse = true;
     // this.options.mapCategory = {
@@ -773,12 +743,9 @@ export class HomeComponent implements OnInit {
     //   isCitadel: false,
     //   isBlighted: false
     // };
-    this.searchOptions.raritySet.chosenObj = {
-      label: "非傳奇",
-      prop: 'nonunique'
-    };
-    this.searchOptions.raritySet.isSearch = true
-    this.isRaritySearch();
+    this.searchOptions.raritySet.chosenObj = 'nonunique';
+    this.searchOptions.raritySet.isSearch = true;
+    // this.isRaritySearch();
     let mapPos = item.indexOf('換界石階級:') > -1 ? item.substring(item.indexOf('換界石階級:') + 5) : 0; // 地圖階級截斷字串
     // let areaPos = item.indexOf('地區等級:') > -1 ? item.substring(item.indexOf('地區等級:') + 5) : 0 // 地區等級截斷字串
     // if (!areaPos)
@@ -920,12 +887,6 @@ export class HomeComponent implements OnInit {
 
   //物品詞綴分析
   itemStatsAnalysis(itemArray: any, rarityFlag: any) {
-    // 已經轉移
-    // let priceText = itemArray[itemArray.length - 2];
-    // if (priceText.indexOf(': ~b/o') > -1 || priceText.indexOf(': ~price') > -1 || priceText.indexOf('Note:') > -1) {
-    //   // 處理在高倉標價後搜尋的物品陣列
-    //   itemArray.splice(itemArray.length - 3, 2);
-    // }
     // if (itemArray.indexOf('塑者之物') > -1) // 勢力判斷由 itemAnalysis function 處理
     //   itemArray.splice(itemArray.indexOf('塑者之物'), 1)
     // if (itemArray.indexOf('尊師之物') > -1)
@@ -959,7 +920,7 @@ export class HomeComponent implements OnInit {
 
     //尋找結束行
     itemArray.forEach((element: any, index: any) => {
-      let isEndPoint = index > 0 ? itemArray[index - 1].indexOf("(enchant)") > -1 || itemArray[index - 1].indexOf("(implicit)") > -1 || itemArray[index - 1].indexOf("(scourge)") > -1 : false;
+      let isEndPoint = index > 0 ? itemArray[index - 1].indexOf("(enchant)") > -1 || itemArray[index - 1].indexOf("(implicit)") > -1 || itemArray[index - 1].indexOf("(scourge)") > -1 || itemArray[index - 1].indexOf("(rune)") > -1 : false;
 
       if (element.indexOf('物品等級:') > -1) {
         itemStatStart = index + 2;
@@ -1029,51 +990,34 @@ export class HomeComponent implements OnInit {
       }
     });
 
+    console.log(itemStatStart, itemStatEnd)
+
     for (let index = itemStatStart; index < itemStatEnd; index++) {
       if (itemArray[index] !== "--------" && itemArray[index]) {
         let text = itemArray[index];
         itemDisplayStats.push(text);
-        // 固定屬性
-        if (itemArray[index].indexOf('(implicit)') > -1) {
+
+        if (itemArray[index].indexOf('(implicit)') > -1) { // 固定屬性
+          console.log("固定");
           text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
           tempStat.push({ text: this.getStat(text, 'implicit') });
           tempStat[tempStat.length - 1].type = "固定";
-        }
-
-        // else if (itemArray[index].indexOf('(fractured)') > -1) { // 破裂
-        //   text = text.substring(0, text.indexOf('(fractured)'))
-        //   tempStat.push(this.findBestStat(text, this.fracturedStats))
-        //   tempStat[tempStat.length - 1].type = "破裂"
-        // } else if (itemArray[index].indexOf('(scourge)') > -1) { // 災魘
-        //   text = text.substring(0, text.indexOf('(scourge)'))
-        //   tempStat.push(this.findBestStat(text, this.scourgeStats))
-        //   tempStat[tempStat.length - 1].type = "災魘"
-        // } else if (itemArray[index].indexOf('(crafted)') > -1) { // 已工藝屬性
-        //   text = text.substring(0, text.indexOf('(crafted)'))
-        //   tempStat.push(this.findBestStat(text, this.craftedStats))
-        //   tempStat[tempStat.length - 1].type = "工藝"
-        // } else if (itemArray[index].indexOf('(enchant)') > -1) {
-        //   text = text.substring(0, text.indexOf('(enchant)'))
-        //   if (text.indexOf('附加的小型天賦給予：') > -1) {
-        //     tempStat.push(this.findBestStat('附加的小型天賦給予：#', this.enchantStats))
-        //   } else {
-        //     tempStat.push(this.findBestStat(text, this.enchantStats))
-        //   }
-        //   tempStat[tempStat.length - 1].type = "附魔"
-        // }
-
-        // 附魔
-        if (itemArray[index].indexOf('(enchant)') > -1) {
+        } else if (itemArray[index].indexOf('(rune)') > -1) { //符文屬性
+          console.log("符文");
+          text = text.substring(0, text.indexOf('(rune)')).trim(); // 刪除(rune)字串
+          tempStat.push({ text: this.getStat(text, 'rune') });
+          tempStat[tempStat.length - 1].type = "符文";
+        } else if (itemArray[index].indexOf('(enchant)') > -1) { // 附魔
+          console.log("附魔");
           text = text.substring(0, text.indexOf('(enchant)')).trim(); // 刪除(enchant)字串
           tempStat.push({ text: this.getStat(text, 'enchant') });
-          tempStat[tempStat.length - 1].type = "附魔"
-        }
-
-        if (rarityFlag) { // 傳奇裝詞綴
-          // tempStat.push(this.findBestStat(text, this.options.explicitStats));
+          tempStat[tempStat.length - 1].type = "附魔";
+        } else if (rarityFlag) { //傳奇裝詞綴
+          console.log("傳奇");
           tempStat.push({ text: this.getStat(text, 'explicit') });
           tempStat[tempStat.length - 1].type = "傳奇";
         } else { // 隨機屬性
+          console.log("隨機");
           tempStat.push({ text: this.getStat(text, 'explicit') });
           tempStat[tempStat.length - 1].type = "隨機";
         }
@@ -1091,6 +1035,8 @@ export class HomeComponent implements OnInit {
         let statID = this.stats.explicit[posStat + 1]; // 詞綴ID
         let apiStatText = this.stats.explicit[posStat]; // API 抓回來的詞綴字串
         let itemStatText = itemDisplayStats[idx]; // 物品上的詞綴字串
+
+        console.log(element, statID, apiStatText, itemStatText);
 
         // switch (true) { // 部分(Local)屬性判斷處理：若物品為武器，攻擊屬性應為（部分）標籤
         //   case statID.indexOf('stat_960081730') > -1 || statID.indexOf('stat_1940865751') > -1: // 附加 # 至 # 物理傷害 (部分)
@@ -1502,9 +1448,12 @@ export class HomeComponent implements OnInit {
       })
     }
 
+    this.priceSetting();
     switch (this.item.category) {
       case 'item':
+        this.ui.collapse.stats = true;
         this.isRaritySearch();
+        this.isItemBasicSearch();
         this.isItemCategorySearch();
         this.isItemLevelSearch();
         break;
@@ -1520,6 +1469,7 @@ export class HomeComponent implements OnInit {
     }
 
     this.searchResult.fetchQueryID = '';
+    this.searchResult.searchTotal = 0;
     this.poe_service.get_trade(this.searchOptions.leagues.chosenL, this.filters.searchJson).subscribe((res: any) => {
       if (res && !res.error) {
         this.searchResult.resultLength = res.result.length;
@@ -1596,11 +1546,11 @@ export class HomeComponent implements OnInit {
   //取得詞綴
   getStat(stat: string, type: any): string {
     let mdStat = stat.replace(/\d+/g, "#").replace("+", "");
+    console.log(mdStat);
     //處理只有增加，字串有減少字樣
     if (mdStat.indexOf('能力值需求') > -1) {
       mdStat = mdStat.replace('減少', '增加');
     }
-    console.log(mdStat);
 
     let findStat = stat;
     let findResult = this.stats[type].some((e: any) => {
@@ -1611,6 +1561,8 @@ export class HomeComponent implements OnInit {
       return result;
     });
 
+    console.log(mdStat, findStat);
+
     if (!findResult) console.error("未找到詞綴：" + stat);
 
     return findResult ? findStat : findStat + "(未找到詞綴)";
@@ -1618,41 +1570,41 @@ export class HomeComponent implements OnInit {
 
   //是否針對物品等級搜尋
   isItemLevelSearch() {
-    if (!this.searchOptions.itemLevel.isSearch && this.options.isSearchJson) {
-      delete this.filters.searchJson.query.filters.misc_filters.filters.ilvl; // 刪除物品等級 filter
-    } else if (this.searchOptions.itemLevel.isSearch && this.options.isSearchJson) {
-      this.filters.searchJson.query.filters.misc_filters.filters.ilvl = { // 增加物品等級最小值 filter
-        "min": this.searchOptions.itemLevel.min ? this.searchOptions.itemLevel.min : null,
-        "max": this.searchOptions.itemLevel.max ? this.searchOptions.itemLevel.max : null
-      };
+    if (!this.searchOptions.itemLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("ilvl")) {
+      this.filters.searchJson.query.filters.type_filters.filters.ilvl = {}; // 刪除物品等級 filter
+    } else if (this.searchOptions.itemLevel.isSearch) {
+      Object.assign(this.filters.searchJson.query.filters.type_filters.filters.ilvl, { // 增加物品等級最小值 filter
+        min: this.searchOptions.itemLevel.min ? this.searchOptions.itemLevel.min : null,
+        max: this.searchOptions.itemLevel.max ? this.searchOptions.itemLevel.max : null
+      });
     }
   }
 
   //是否針對稀有度搜尋
   isRaritySearch() {
-    if (!this.searchOptions.raritySet.isSearch && this.options.isSearchJson) {
+    if (!this.searchOptions.raritySet.isSearch && Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("rarity")) {
       delete this.filters.searchJson.query.filters.type_filters.filters.rarity; // 刪除稀有度 filter
-    } else if (this.searchOptions.raritySet.isSearch && this.options.isSearchJson) {
-      this.filters.searchJson.query.filters.type_filters.filters.rarity = { // 增加稀有度 filter
-        "option": this.searchOptions.raritySet.chosenObj.prop
-      };
+    } else if (this.searchOptions.raritySet.isSearch) {
+      Object.assign(this.filters.searchJson.query.filters.type_filters.filters.rarity, { // 增加稀有度 filter
+        option: this.searchOptions.raritySet.chosenObj
+      });
     }
   }
 
   //是否針對寶石搜尋
   isGemBasicSearch() {
-    if (!this.basics.gem.isSearch && this.options.isSearchJson) {
+    if (!this.basics.gem.isSearch) {
       delete this.filters.searchJson.query.type; // 刪除技能基底 filter
-    } else if (this.basics.gem.isSearch && this.options.isSearchJson) {
+    } else if (this.basics.gem.isSearch) {
       this.filters.searchJson.query.type = this.basics.gem.chosenG; // 增加技能基底 filter
     }
   }
 
   //是否針對寶石品質搜尋
   isGemQualitySearch() {
-    if (!this.searchOptions.gemQuality.isSearch && this.options.isSearchJson) {
+    if (!this.searchOptions.gemQuality.isSearch) {
       delete this.filters.searchJson.query.filters.misc_filters.filters.quality; // 刪除技能品質 filter
-    } else if (this.searchOptions.gemQuality.isSearch && this.options.isSearchJson) {
+    } else if (this.searchOptions.gemQuality.isSearch) {
       this.filters.searchJson.query.filters.misc_filters.filters.quality = { // 指定技能品質最小 / 最大值 filter
         "min": this.searchOptions.gemQuality.min ? this.searchOptions.gemQuality.min : null,
         "max": this.searchOptions.gemQuality.max ? this.searchOptions.gemQuality.max : null
@@ -1662,47 +1614,37 @@ export class HomeComponent implements OnInit {
 
   //是否針對物品分類搜尋
   isItemCategorySearch() {
-    if (!this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj.prop && this.options.isSearchJson) {
+    if (!this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj) {
       delete this.filters.searchJson.query.filters.type_filters.filters.category; // 刪除物品種類 filter
-    } else if (this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj.prop && this.options.isSearchJson) {
+    } else if (this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj) {
       this.filters.searchJson.query.filters.type_filters.filters.category = { // 增加物品種類 filter
-        "option": this.searchOptions.itemCategory.chosenObj.prop
+        "option": this.searchOptions.itemCategory.chosenObj
       };
+    }
+  }
+
+  //是否針對物品基底搜尋
+  isItemBasicSearch() {
+    if (!this.searchOptions.itemBasic.isSearch && Object.keys(this.filters.searchJson.query).includes("type")) {
+      delete this.filters.searchJson.query.type // 刪除物品基底 filter
+    } else if (this.searchOptions.itemBasic.isSearch) {
+      Object.assign(this.filters.searchJson.query, { // 增加物品基底 filter
+        type: this.searchOptions.itemBasic.text
+      });
     }
   }
 
   //是否針對換界石階級搜尋
   isMapLevelSearch() {
-    if (!this.searchOptions.mapLevel.isSearch && this.options.isSearchJson) {
+    if (!this.searchOptions.mapLevel.isSearch) {
       delete this.filters.searchJson.query.filters.map_filters.filters.map_tier; // 刪除地圖階級 filter
-    } else if (this.searchOptions.mapLevel.isSearch && this.options.isSearchJson) {
+    } else if (this.searchOptions.mapLevel.isSearch) {
       this.filters.searchJson.query.filters.map_filters.filters.map_tier = { // 指定地圖階級最小 / 最大值 filter
         "min": this.searchOptions.mapLevel.min ? this.searchOptions.mapLevel.min : null,
         "max": this.searchOptions.mapLevel.max ? this.searchOptions.mapLevel.max : null
       };
     }
   }
-
-  // //替代字串
-  // replaceString(string: any): string {
-  //   // const regMatchBrackets = /\((.+?)\)/g // 取出括號內文字
-  //   // string = regMatchBrackets.test(string) ? string.match(regMatchBrackets)[0] : string
-  //   // const regEnglish = /[\u4e00-\u9fa5]+|\(|\)|．|：/g // 全域搜尋中文字、括號及特定符號，ready for replace
-  //   // if (string.indexOf('追憶之') > -1) { // 追憶物品只取 itemBasic Name
-  //   //   string = string.slice(4).trim()
-  //   // }
-  //   // 3.17 中文化更動，改為判斷 poedb 提供之物品翻譯表
-  //   if (!this.app.isTwServer) {
-  //     let baseTypeLang = this.options.poedbTWItems.find((data: any) => data.lang === string)?.us;
-  //     if (this.item.category === 'item' && this.searchOptions.raritySet.chosenObj.prop == 'unique') {
-  //       let uniqueLang = this.options.poedbTWItems.filter((data: any) => data.type == 'Unique').find((data: any) => data.lang === string)?.us;
-  //       string = uniqueLang ? uniqueLang : baseTypeLang;
-  //     } else {
-  //       string = baseTypeLang ? baseTypeLang : string;
-  //     }
-  //   }
-  //   return string;
-  // }
 
   //刪除不需要字串
   deleteUnUseString(itemArray: any) {
@@ -2057,8 +1999,8 @@ export class HomeComponent implements OnInit {
       this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
     } else if (this.item.category === 'map' && this.basics.map.isSearch) {
       this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;
-    } else if (this.item.category === 'gem' && this.basics.gem.isSearch) {
-      this.item.name = `物品名稱 <br>『${this.searchOptions.gemQualitySet.chosenObj.prop !== '0' && this.searchOptions.gemQualitySet.isSearch ? `${this.searchOptions.gemQualitySet.chosenObj.label} ` : ''}${this.basics.gem.chosenG}』`
+    } else if (this.item.category === 'gem' && this.basics.gem.isSearch) { //需要重看
+      this.item.name = `物品名稱 <br>『${this.searchOptions.gemQualitySet.chosenObj !== '0' && this.searchOptions.gemQualitySet.isSearch ? `${this.searchOptions.gemQualitySet.chosenObj.label} ` : ''}${this.basics.gem.chosenG}』`
     }
 
     this.searchTrade();
@@ -2087,5 +2029,24 @@ export class HomeComponent implements OnInit {
     }
 
     return text;
+  }
+
+  //更新價格
+  priceSetting() {
+    if (this.searchOptions.priceSetting.chosenObj !== '') {
+      if (!Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("price")) {
+        Object.assign(this.filters.searchJson.query.filters.type_filters.filters, { // 增加稀有度 filter
+          price: {
+            option: this.searchOptions.priceSetting.chosenObj
+          }
+        });
+      } else {
+        Object.assign(this.filters.searchJson.query.filters.type_filters.filters.price, { // 增加稀有度 filter
+          option: this.searchOptions.priceSetting.chosenObj
+        });
+      }
+    } else {
+      this.filters.searchJson.query.filters.type_filters.filters.price = {};
+    }
   }
 }

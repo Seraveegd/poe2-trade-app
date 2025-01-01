@@ -1,0 +1,65 @@
+// #home{
+//     background-color: #313131;
+//     color: white;
+
+//     .card{
+//         background-color: #313131 !important;
+//         color: white;
+//         border:lpx solid #aaaaaa;
+
+//         select{
+//             background-color: #313131;
+//             color: white;
+//         }
+
+//         input{
+//             background-color: #313131;
+//             color: white;
+//         }
+//     }
+// }
+
+.row {
+    padding: 4px;
+
+    &:first-child {
+        padding: 0 4px 4px 4px;
+    }
+
+    &:last-child {
+        padding: 4px 4px 0 4px
+    }
+
+    input[type="text"] {
+        font-size: 12px;
+    }
+}
+
+#search {
+    padding: 6px;
+}
+
+#stets {
+    user-select: none;
+
+    tr {
+        td {
+            position: relative;
+            vertical-align: middle;
+
+            &:first-child {
+                text-align: center;
+            }
+
+            input {
+                border: 1px solid #ccc;
+            }
+
+            .form-check {
+                position: absolute;
+                top: 12px;
+                left: 17px;
+            }
+        }
+    }
+}

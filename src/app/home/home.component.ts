@@ -135,31 +135,36 @@ export class HomeComponent implements OnInit {
         prop: 'nonunique'
       }],
       chosenObj: "",
-      isSearch: false,
+      isSearch: false
     },
     itemLevel: { // 搜尋設定->物品等級
       min: 0,
       max: '',
-      isSearch: false,
+      isSearch: false
     },
-    mapLevel: { // 搜尋設定->換界石階級
+    mapLevel: { // 搜尋設定->地圖階級
       min: 0,
       max: 0,
-      isSearch: false,
+      isSearch: false
+    },
+    mapAreaLevel: { // 搜尋設定->地圖區域等級
+      min: 0,
+      max: 0,
+      isSearch: false
     },
     itemBasic: { // 搜尋設定->物品基底
       text: '',
-      isSearch: false,
+      isSearch: false
     },
     gemLevel: { // 搜尋設定->技能寶石等級
       min: 0,
       max: '',
-      isSearch: false,
+      isSearch: false
     },
     gemQuality: { // 搜尋設定->技能寶石品質
       min: 0,
       max: '',
-      isSearch: false,
+      isSearch: false
     },
     corruptedSet: { // 搜尋設定->汙染設定
       options: [{
@@ -172,7 +177,7 @@ export class HomeComponent implements OnInit {
         label: "任何",
         prop: 'any'
       }],
-      chosenObj: "any",
+      chosenObj: "any"
       // isSearch: true,
     },
     itemCategory: { // 物品分類
@@ -181,7 +186,7 @@ export class HomeComponent implements OnInit {
         label: "任何",
         prop: ''
       },
-      isSearch: false,
+      isSearch: false
     },
     priceSetting: { // 搜尋設定->價格設定
       options: [{
@@ -236,6 +241,9 @@ export class HomeComponent implements OnInit {
             }
           },
           "misc_filters": {
+            "filters": {}
+          },
+          "map_filters": {
             "filters": {}
           }
         }
@@ -357,7 +365,9 @@ export class HomeComponent implements OnInit {
 
     //物品基底 - type
     let itemBasic = itemArray[start + 2] === "--------" ? itemArray[start + 1] : itemArray[start + 2];
-    itemBasic = this.checkBasicName(itemBasic, Rarity);
+    if (Rarity == '魔法' || Rarity == '普通') {
+      itemBasic = this.checkBasicName(itemBasic);
+    }
 
     console.log(itemBasic);
 
@@ -374,7 +384,9 @@ export class HomeComponent implements OnInit {
         itemBasicCount++;
         this.itemAnalysis(item, itemArray, element);
         this.item.category = 'item';
-        this.ui.collapse.item = false;
+        if (element.option.indexOf('map') === -1) {
+          this.ui.collapse.item = false;
+        }
         // this.options.isItem = true;
         // this.options.isItemCollapse = true;
         return true;
@@ -388,16 +400,12 @@ export class HomeComponent implements OnInit {
     if (Rarity === "傳奇") { // 傳奇道具
       this.searchOptions.raritySet.chosenObj = item.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
 
-      console.log(this.filters.searchJson);
-
       if (item.indexOf('未鑑定') === -1) { // 已鑑定傳奇
         this.searchOptions.raritySet.isSearch = true;
         Object.assign(this.filters.searchJson.query, { name: searchName, type: itemBasic });
         // this.isRaritySearch();
 
-        if (this.item.category === 'item') {
-          this.itemStatsAnalysis(itemArray, 1);
-        }
+        this.itemStatsAnalysis(itemArray, 1);
       } else { // 未鑑定傳奇(但會搜到相同基底)
         if (searchName.indexOf('精良的') > -1) { // 未鑑定的品質傳奇物品
           searchName = searchName.substring(4);
@@ -457,7 +465,7 @@ export class HomeComponent implements OnInit {
       if (searchName.indexOf('寶石') > -1) {
         let levelPos = item.substring(item.indexOf('等級: ') + 4);
         let levelPosEnd = levelPos.indexOf(NL);
-        let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10)
+        let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
         this.searchOptions.itemLevel.min = level;
         this.searchOptions.itemLevel.max = level;
         this.searchOptions.itemLevel.isSearch = true;
@@ -466,16 +474,54 @@ export class HomeComponent implements OnInit {
         this.item.name += ("<br>等級: " + level);
       }
 
+      if (searchName.indexOf("巨靈之幣") > -1 || searchName.indexOf('最後通牒雕刻') > -1) {
+        let levelPos = item.substring(item.indexOf('區域等級: ') + 6);
+        let levelPosEnd = levelPos.indexOf(NL);
+        let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
+        this.searchOptions.mapAreaLevel.min = level;
+
+        let maxLevel = 0;
+        switch (true) {
+          case level >= 75:
+            maxLevel = 82;
+            break;
+          case level >= 60 && level < 75:
+            maxLevel = 74;
+            break;
+          case level >= 45 && level < 60:
+            maxLevel = 59;
+            break;
+          case level < 45:
+            maxLevel = 44;
+            break;
+          default:
+            break;
+        }
+        this.searchOptions.mapAreaLevel.max = maxLevel;
+        this.searchOptions.mapAreaLevel.isSearch = true;
+        this.isMapAreaLevelSearch();
+
+        this.item.name += ("<br>區域等級: " + level);
+      }
+
       Object.assign(this.filters.searchJson.query, { type: searchName });
       this.searchOptions.raritySet.chosenObj = "";
       console.log(this.searchOptions);
       // return;
     } else if (this.item.category === 'item') {
-      if (Rarity !== '普通') {
+      if (Rarity !== '普通' || searchName.indexOf('碑牌') > -1) {
         this.itemStatsAnalysis(itemArray, 0);
       }
-      console.log(this.searchOptions);
-      return;
+      // console.log(this.searchOptions);
+      if (!this.ui.collapse.item) {
+        return;
+      }
+    }
+
+    //地圖
+    if (item.indexOf('物品種類: 換界石') > -1) {
+      this.item.category = 'map';
+      this.mapAnalysis(item, itemArray, Rarity);
     }
 
     // if (item.indexOf('物品種類: 異界地圖') > -1 || item.indexOf('釋界之邀：') > -1 || item.indexOf('物品種類: 契約書') > -1 || item.indexOf('物品種類: 藍圖') > -1 || item.indexOf('物品種類: 聖域研究') > -1) { // 類地圖搜尋
@@ -608,13 +654,15 @@ export class HomeComponent implements OnInit {
 
   //重置搜尋資料
   resetSearchData() {
+    this.ui.collapse.item = true;
+    this.ui.collapse.gem = true;
+    this.ui.collapse.map = true;
+
     this.item.name = '';
+    this.item.category = '';
+    this.item.supported = true;
 
     this.searchResult.fetchID.length = 0;
-
-    this.item.category = '';
-
-    this.item.supported = true;
 
     this.searchOptions.raritySet.isSearch = false;
 
@@ -632,6 +680,7 @@ export class HomeComponent implements OnInit {
     // this.options.itemLinked.isSearch = false
     // this.options.itemLinked.min = ''
     // this.options.itemLinked.max = ''
+    this.searchOptions.itemBasic.text = '';
     this.searchOptions.itemBasic.isSearch = false;
 
     this.searchOptions.gemLevel.isSearch = false;
@@ -707,6 +756,10 @@ export class HomeComponent implements OnInit {
         prop: matchItem.weapon,
       });
     }
+    //如果是地圖物品，以物品基底搜尋
+    if (matchItem.option.indexOf('map') > -1) {
+      this.searchOptions.itemBasic.isSearch = true;
+    }
 
     this.searchOptions.itemCategory.isSearch = true;
     // this.isItemCategorySearch();
@@ -775,53 +828,35 @@ export class HomeComponent implements OnInit {
   mapAnalysis(item: any, itemArray: any, Rarity: any) {
     // this.itemStatsAnalysis(itemArray, 1) 地圖先不加入詞綴判斷
     const NL = this.newLine;
-    this.item.category = 'map';
-    this.ui.collapse.map = false;
-    // this.options.isMap = true;
-    // this.options.isMapCollapse = true;
-    // this.options.mapCategory = {
-    //   isShaper: false,
-    //   isElder: false,
-    //   isCitadel: false,
-    //   isBlighted: false
-    // };
+
     this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
-    // this.isRaritySearch();
-    let mapPos = item.indexOf('換界石階級:') > -1 ? item.substring(item.indexOf('換界石階級:') + 5) : 0; // 地圖階級截斷字串
-    // let areaPos = item.indexOf('地區等級:') > -1 ? item.substring(item.indexOf('地區等級:') + 5) : 0 // 地區等級截斷字串
-    // if (!areaPos)
-    //   areaPos = item.indexOf('區域等級:') > -1 ? item.substring(item.indexOf('區域等級:') + 5) : 0 // 區域等級截斷字串
+
+    let mapPos = item.indexOf('換界石階級:') > -1 ? item.substring(item.indexOf('換界石階級:') + 6) : 0; // 地圖階級截斷字串
+
     if (mapPos) {
       let mapPosEnd = mapPos.indexOf(NL); // 地圖階級換行定位點
       let mapTier = parseInt(mapPos.substring(0, mapPosEnd).trim(), 10);
       this.searchOptions.mapLevel.min = mapTier;
       this.searchOptions.mapLevel.max = mapTier;
       this.searchOptions.mapLevel.isSearch = true;
-      this.isMapLevelSearch();
     }
-    // else if (areaPos) {
-    //   let areaPosEnd = areaPos.indexOf(NL) // 地區等級換行定位點
-    //   let areaTier = parseInt(areaPos.substring(0, areaPosEnd).trim(), 10)
-    //   this.areaLevel.min = areaTier
-    //   this.areaLevel.isSearch = true
-    //   this.isAreaLevelSearch()
-    // }
 
-    let itemNameString = itemArray[2] === "--------" ? itemArray[1] : `${itemArray[1]} ${itemArray[2]}`
-    let mapBasicCount = 0;
+    // let itemNameString = itemArray[3] === "--------" ? itemArray[2] : `${itemArray[2]} ${itemArray[3]}`
+    // let mapBasicCount = 0;
 
-    this.basics.map.option.some((element: any) => {
-      let itemNameStringIndex = itemNameString.indexOf(element.replace(/[^\u4e00-\u9fa5|．|：]/gi, "")) // 比對 mapBasic.option 時只比對中文字串
-      if (itemNameStringIndex > -1 && !mapBasicCount) {
-        mapBasicCount++
-        this.basics.map.chosenM = this.app.isTwServer ? element.replace(/[^\u4e00-\u9fa5|．|：]/gi, "") : itemNameString.slice(itemNameStringIndex)
-        return true
-      }
+    // this.basics.map.option.some((element: any) => {
+    //   let itemNameStringIndex = itemNameString.indexOf(element.type); // 比對 mapBasic.option 時只比對中文字串
 
-      return false;
-    });
-    this.basics.map.isSearch = true
+    //   if (itemNameStringIndex > -1 && !mapBasicCount) {
+    //     mapBasicCount++
+    //     this.basics.map.chosenM = element.type;
+    //     return true
+    //   }
+
+    //   return false;
+    // });
+    // this.basics.map.isSearch = true
     // this.isMapBasicSearch()
     // this.options.searchJson.query.filters.map_filters.filters.map_blighted = { // 過濾凋落圖
     //   "option": "false"
@@ -1346,10 +1381,13 @@ export class HomeComponent implements OnInit {
         //   }
         //   this.options.itemLevel.isSearch = true;
         //   this.isItemLevelSearch();
-        // } else if (randomMaxValue) { // 物品中包含 "# 至 #" 的詞綴，在官方市集搜尋中皆以相加除二作搜尋
-        //   randomMinValue = (randomMinValue + randomMaxValue) / 2;
-        //   randomMaxValue = 0;
         // }
+
+        // 物品中包含 "# 至 #" 的詞綴，在官方市集搜尋中皆以相加除二作搜尋
+        if (randomMaxValue) {
+          randomMinValue = (randomMinValue + randomMaxValue) / 2;
+          randomMaxValue = 0;
+        }
 
         // switch (true) { // 計算三元素抗性至偽屬性
         //   case statID.indexOf('stat_3372524247') > -1 || statID.indexOf('stat_1671376347') > -1 || statID.indexOf('stat_4220027924') > -1:
@@ -1501,13 +1539,17 @@ export class HomeComponent implements OnInit {
     switch (this.item.category) {
       case 'item':
         this.ui.collapse.stats = true;
+        this.ui.collapse.item = this.searchOptions.raritySet.chosenObj.indexOf('unique') > -1;
         this.isRaritySearch();
         this.isItemBasicSearch();
         this.isItemCategorySearch();
         this.isItemLevelSearch();
         break;
       case 'map':
+        this.ui.collapse.map = false;
+        this.isRaritySearch();
         this.isMapLevelSearch();
+        this.isMapAreaLevelSearch();
         break;
       case 'gem':
         this.isGemBasicSearch();
@@ -1607,7 +1649,7 @@ export class HomeComponent implements OnInit {
     let mdStat = stat.replace(/\d+/g, "#").replace("+", "").replace("#.#", "#");
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1) {
+    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1) {
       mdStat = mdStat.replace('減少', '增加');
     }
 
@@ -1702,14 +1744,30 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  //是否針對換界石階級搜尋
+  //是否針對地圖階級搜尋
   isMapLevelSearch() {
-    if (!this.searchOptions.mapLevel.isSearch) {
+    if (!this.searchOptions.mapLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.map_filters.filters).includes("map_tier")) {
       delete this.filters.searchJson.query.filters.map_filters.filters.map_tier; // 刪除地圖階級 filter
     } else if (this.searchOptions.mapLevel.isSearch) {
-      this.filters.searchJson.query.filters.map_filters.filters.map_tier = { // 指定地圖階級最小 / 最大值 filter
-        "min": this.searchOptions.mapLevel.min ? this.searchOptions.mapLevel.min : null,
-        "max": this.searchOptions.mapLevel.max ? this.searchOptions.mapLevel.max : null
+      this.filters.searchJson.query.filters.map_filters.filters = {// 指定地圖階級最小 / 最大值 filter
+        map_tier: {
+          min: this.searchOptions.mapLevel.min ? this.searchOptions.mapLevel.min : null,
+          max: this.searchOptions.mapLevel.max ? this.searchOptions.mapLevel.max : null
+        }
+      };
+    }
+  }
+
+  //是否針對地圖區域等級搜尋
+  isMapAreaLevelSearch() {
+    if (!this.searchOptions.mapAreaLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("area_level")) {
+      delete this.filters.searchJson.query.filters.misc_filters.filters.area_level; // 刪除地圖區域等級 filter
+    } else if (this.searchOptions.mapAreaLevel.isSearch) {
+      this.filters.searchJson.query.filters.misc_filters.filters = {// 指定地圖區域等級最小 / 最大值 filter
+        area_level: {
+          min: this.searchOptions.mapAreaLevel.min ? this.searchOptions.mapAreaLevel.min : null,
+          max: this.searchOptions.mapAreaLevel.max ? this.searchOptions.mapAreaLevel.max : null
+        }
       };
     }
   }
@@ -1743,6 +1801,7 @@ export class HomeComponent implements OnInit {
     let flasksIndex = 0; //藥水
     let jewelIndex = 0; //珠寶
     let weaponIndex = 0; //武器
+    let mapIndex = 0; //地圖
     let sanctumIndex = 0; //聖所
     this.basics.categorizedItems.length = 0;
     this.basics.map.option.length = 0;
@@ -1885,51 +1944,51 @@ export class HomeComponent implements OnInit {
           element.name = "權杖";
           element.option = "weapon.sceptre";
           element.weapon = "weapon.caster";
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 3: // 法杖起始點 { "type": "凋零法杖", "text": "凋零法杖" }
           element.name = "法杖";
           element.option = "weapon.wand";
           element.weapon = "weapon.caster";
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 4: // 弓起始點 { "type": "粗製弓", "text": "粗製弓" }
           element.name = "弓";
           element.option = "weapon.bow";
           element.weapon = "weapon.ranged";
           // element.weapon = "weapon.one"
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 5: // 十字弓起始點 { "type": "鏽劍", "text": "鏽劍" }
           element.name = "十字弓";
           element.option = "weapon.crossbow";
           element.weapon = "weapon.ranged";
           // element.weapon = "weapon.one"
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 6: // 細杖起始點 { "type": "纏繞細杖", "text": "纏繞細杖" }
           element.name = "細杖";
           element.option = "weapon.warstaff";
           element.weapon = "weapon.twomelee";
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 7: // 長杖起始點{ "type": "灰燼長杖", "text": "灰燼長杖" }
           element.name = "長杖";
           element.option = "weapon.staff";
           element.weapon = "weapon.caster";
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 8: // 雙手斧起始點 { "type": "分裂巨斧", "text": "分裂巨斧" }
           element.name = "雙手斧";
           element.option = "weapon.twoaxe";
           element.weapon = "weapon.twomelee";
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         case 9: // 雙手錘起始點 { "type": "墮落巨棍棒", "text": "墮落巨棍棒" }
           element.name = "雙手錘";
           element.option = "weapon.twomace";
           element.weapon = "weapon.twomelee";
-          this.basics.categorizedItems.push(element)
+          this.basics.categorizedItems.push(element);
           break;
         default:
           break;
@@ -1937,9 +1996,66 @@ export class HomeComponent implements OnInit {
     });
     //"id": "maps", "label": "地圖"
     result[result.findIndex((e: any) => e.id === "map")].entries.forEach((element: any) => {
-      const basetype = ["探險日誌"] // 地圖起始點 { "type": "探險日誌", "text": "探險日誌" }
+      const basetype = ["探險日誌", "幻像異界", "地圖鑰匙（階級 1）", "遠古危機碎片", "意志的測試代幣", "巨靈之幣", "裂痕碑牌", "最後通牒雕刻", "怯懦之運"] // 地圖起始點 { "type": "探險日誌", "text": "探險日誌" }
 
-      this.basics.map.option.push(element.type);
+      if (basetype.includes(element.type) && !('flags' in element)) {
+        mapIndex += 1;
+      }
+
+      switch (mapIndex) {
+        case 1: // 日誌起始點 { "type": "探險日誌", "text": "探險日誌" }
+          element.name = "日誌";
+          element.option = "map.logbook";
+          this.basics.categorizedItems.push(element);
+          break;
+        case 2: // 終局物品起始點 { "type": "幻像異界", "text": "幻像異界" }
+          element.name = "終局物品";
+          element.option = "map";
+          this.basics.categorizedItems.push(element);
+          break;
+        case 3: // 地圖起始點 { "type": "地圖鑰匙（階級 1）", "text": "地圖鑰匙（階級 1）" }
+          this.basics.map.option.push(element.type);
+          break;
+        case 4: // 地圖碎片起始點 { "type": "遠古危機碎片", "text": "遠古危機碎片" }
+          // element.name = "地圖碎片";
+          // element.option = "map.fragment";
+          // this.basics.categorizedItems.push(element);
+          this.basics.map.option.push(element.type);
+          break;
+        case 5: // 巔峰鑰匙起始點 { "type": "意志的測試代幣", "text": "意志的測試代幣" } //之後檢查
+          element.name = "巔峰鑰匙";
+          element.option = "map.bosskey";
+          this.basics.categorizedItems.push(element);
+          break;
+        case 6: // 巨靈之幣起始點 { "type": "巨靈之幣", "text": "巨靈之幣" }
+          // element.name = "巨靈之幣";
+          // element.option = "map.barya";
+          // this.basics.categorizedItems.push(element);
+          this.basics.map.option.push(element.type);
+          break;
+        case 7: // 碑牌日誌起始點 { "type": "裂痕碑牌", "text": "裂痕碑牌" }
+          element.name = "碑牌";
+          element.option = "map.tablet";
+          this.basics.categorizedItems.push(element);
+          break;
+        case 8: // 通牒鑰匙起始點 { "type": "最後通牒雕刻", "text": "最後通牒雕刻" }
+          // element.name = "通牒鑰匙";
+          // element.option = "map.ultimatum";
+          // this.basics.categorizedItems.push(element);
+          this.basics.map.option.push(element.type);
+          break;
+        case 9: // 地圖碎片起始點 { "type": "怯懦之運", "text": "怯懦之運" }
+          element.name = "地圖碎片";
+          element.option = "map.fragment";
+          this.basics.categorizedItems.push(element);
+          break;
+      }
+
+      // if (element.type.type.indexOf("探險日誌") > -1 || element.type.type.indexOf("地圖")) {
+      //   this.basics.map.option.push(element.type);
+      // } else {
+      //   this.basics.categorizedItems.push(element);
+      // }
     });
     //"id": "gems", "label": "技能寶石"
     result[result.findIndex((e: any) => e.id === "gem")].entries.forEach((element: any) => {
@@ -2129,25 +2245,27 @@ export class HomeComponent implements OnInit {
   }
 
   //檢查基底名稱
-  checkBasicName(itemBasic: string, Rarity: string): string {
-    if (Rarity == '魔法' || '普通') {
-      if (itemBasic.indexOf('精良的') > -1) {
-        itemBasic = itemBasic.substring(itemBasic.indexOf('精良的') + 4, itemBasic.length);
-      }
-      //的count
-      let count = (itemBasic.match(/\的/g) || []).length;
-      // console.log([...itemBasic.matchAll(/\的/g)]);
-      //的位置
-      let firstPos = itemBasic.indexOf("的");
-      //之位置
-      let SecondPos = count > 1 ? +[...itemBasic.matchAll(/\的/g)][1].index : itemBasic.indexOf("之");
-
-      if (SecondPos > firstPos && firstPos !== -1) {
-        itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);
-      } else if (firstPos > SecondPos) {
-        itemBasic = itemBasic.substring(firstPos + 1, itemBasic.length);
-      }
+  checkBasicName(itemBasic: string): string {
+    console.log("我進來了");
+    if (itemBasic.indexOf('精良的') > -1) {
+      itemBasic = itemBasic.substring(itemBasic.indexOf('精良的') + 4, itemBasic.length);
     }
+    //的count
+    let count = (itemBasic.match(/\的/g) || []).length;
+    // console.log([...itemBasic.matchAll(/\的/g)]);
+    //的位置
+    let firstPos = itemBasic.indexOf("的");
+    //之位置
+    let SecondPos = count > 1 ? +[...itemBasic.matchAll(/\的/g)][1].index : itemBasic.indexOf("之");
+
+    if (SecondPos > firstPos && firstPos !== -1) {
+      itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);
+    } else if (firstPos > SecondPos) {
+      itemBasic = itemBasic.substring(firstPos + 1, itemBasic.length);
+    } else if (firstPos === -1) {
+      itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);
+    }
+
     console.log(itemBasic);
 
     return itemBasic;

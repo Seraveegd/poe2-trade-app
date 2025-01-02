@@ -166,6 +166,11 @@ export class HomeComponent implements OnInit {
       max: '',
       isSearch: false
     },
+    gemSocket: { // 搜尋設定->技能寶石插槽
+      min: 0,
+      max: '',
+      isSearch: false
+    },
     corruptedSet: { // 搜尋設定->汙染設定
       options: [{
         label: "是",
@@ -395,7 +400,6 @@ export class HomeComponent implements OnInit {
       return false;
     });
 
-
     //詞綴分析
     if (Rarity === "傳奇") { // 傳奇道具
       this.ui.collapse.item = true;
@@ -418,47 +422,32 @@ export class HomeComponent implements OnInit {
     } else if (Rarity === "寶石") {//之後檢視
       this.item.category = 'gem';
       this.basics.gem.chosenG = searchName;
+      this.basics.gem.isSearch = true;
 
-      // const isTransfigured = this.transfiguredGems.find(gem => gem.text === searchName); // 比對是否為變異寶石
-      // if (isTransfigured) {
-      //   this.searchJson.query.type = {
-      //     "option": this.replaceString(isTransfigured.type),
-      //     "discriminator": isTransfigured.disc
-      //   }
-      //   if (item.indexOf('瓦爾．') > -1) { // 瓦爾 & 變異寶石
-      //     let vaalPos = item.substring(item.indexOf('瓦爾．'))
-      //     let vaalPosEnd = vaalPos.indexOf(NL)
-      //     let vaalGem = vaalPos.substring(0, vaalPosEnd)
-      //     this.searchName = `物品名稱『${vaalGem} (${searchName})』`
-      //     this.searchJson.query.type.option = this.replaceString(`瓦爾．${isTransfigured.type}`)
-      //   }
-      // } else {
-      //   if (item.indexOf('瓦爾．') > -1) { // 瓦爾技能
-      //     let vaalPos = item.substring(item.indexOf('瓦爾．'))
-      //     let vaalPosEnd = vaalPos.indexOf(NL)
-      //     let vaalGem = vaalPos.substring(0, vaalPosEnd)
-      //     this.searchName = `物品名稱『${vaalGem}』`
-      //     this.gemBasic.chosenG = vaalGem
-      //   }
-      //   this.gemBasic.isSearch = true
-      //   this.isGemBasicSearch()
-      // }
+      if (item.indexOf('輔助寶石') === -1) {
+        let levelPos = item.substring(item.indexOf('等級: ') + 4);
+        let levelPosEnd = levelPos.indexOf(NL);
+        this.searchOptions.gemLevel.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
+        this.searchOptions.gemLevel.isSearch = true;
 
-      let levelPos = item.substring(item.indexOf('等級: ') + 4);
-      let levelPosEnd = levelPos.indexOf(NL);
-      this.searchOptions.gemLevel.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
+        let minQuality = 0;
+        if (item.indexOf('品質: +') > -1) {
+          let quaPos = item.substring(item.indexOf('品質: +') + 5); // 品質截斷字串 (包含'品質: +'前的字串全截斷)
+          let quaPosEnd = quaPos.indexOf('% (augmented)'); // 品質定位點
+          minQuality = parseInt(quaPos.substring(0, quaPosEnd).trim(), 10);
 
-      let minQuality = 0;
-      if (item.indexOf('品質: +') > -1) {
-        let quaPos = item.substring(item.indexOf('品質: +') + 5); // 品質截斷字串 (包含'品質: +'前的字串全截斷)
-        let quaPosEnd = quaPos.indexOf('% (augmented)'); // 品質定位點
-        minQuality = parseInt(quaPos.substring(0, quaPosEnd).trim(), 10);
+          this.searchOptions.gemQuality.isSearch = true;
+          this.searchOptions.gemQuality.min = minQuality;
+        }
+
+        let minSocket = 0;
+        let socPos = item.substring(item.indexOf('插槽: ') + 4); // 品質截斷字串 (包含'品質: +'前的字串全截斷)
+        let socPosEnd = socPos.indexOf(NL);
+        minSocket = socPos.substring(0, socPosEnd).trim().split(" ").length;
+
+        this.searchOptions.gemSocket.isSearch = true;
+        this.searchOptions.gemSocket.min = minSocket;
       }
-      // if (!isTransfigured) { // 若不是變異寶石，則搜尋技能品質
-      this.searchOptions.gemQuality.isSearch = true;
-      // }
-      this.searchOptions.gemQuality.min = minQuality;
-      this.isGemQualitySearch();
     } else if (Rarity === "通貨" || Rarity === "通貨不足") {
       console.log(this.item.name);
       this.item.category = 'currency';
@@ -675,12 +664,10 @@ export class HomeComponent implements OnInit {
     this.searchOptions.mapLevel.min = '';
     this.searchOptions.mapLevel.max = '';
 
-    // this.options.areaLevel.isSearch = false
-    // this.options.areaLevel.min = ''
-    // this.options.areaLevel.max = ''
-    // this.options.itemLinked.isSearch = false
-    // this.options.itemLinked.min = ''
-    // this.options.itemLinked.max = ''
+    this.searchOptions.mapAreaLevel.isSearch = false;
+    this.searchOptions.mapAreaLevel.min = '';
+    this.searchOptions.mapAreaLevel.max = '';
+
     this.searchOptions.itemBasic.text = '';
     this.searchOptions.itemBasic.isSearch = false;
 
@@ -691,6 +678,10 @@ export class HomeComponent implements OnInit {
     this.searchOptions.gemQuality.isSearch = false;
     this.searchOptions.gemQuality.min = '';
     this.searchOptions.gemQuality.max = '';
+
+    this.searchOptions.gemSocket.isSearch = false;
+    this.searchOptions.gemSocket.min = '';
+    this.searchOptions.gemSocket.max = '';
 
     this.searchOptions.corruptedSet.chosenObj = 'any';
 
@@ -1552,8 +1543,12 @@ export class HomeComponent implements OnInit {
         this.isMapAreaLevelSearch();
         break;
       case 'gem':
+        this.ui.collapse.gem = !(this.searchOptions.gemLevel.min > 0);
+        this.isRaritySearch();
         this.isGemBasicSearch();
+        this.isGemLevelSearch();
         this.isGemQualitySearch();
+        this.isGemSocketSearch();
         break;
       default:
         this.isRaritySearch();
@@ -1689,7 +1684,7 @@ export class HomeComponent implements OnInit {
   //是否針對稀有度搜尋
   isRaritySearch() {
     if (!this.searchOptions.raritySet.isSearch) {
-      if (this.item.category !== 'currency') {
+      if (this.item.category !== 'currency' && this.item.category !== 'gem') {
         this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
       } else {
         delete this.filters.searchJson.query.filters.type_filters.filters.rarity;
@@ -1703,21 +1698,45 @@ export class HomeComponent implements OnInit {
 
   //是否針對寶石搜尋
   isGemBasicSearch() {
-    if (!this.basics.gem.isSearch) {
+    if (!this.basics.gem.isSearch && Object.keys(this.filters.searchJson.query).includes("type")) {
       delete this.filters.searchJson.query.type; // 刪除技能基底 filter
     } else if (this.basics.gem.isSearch) {
       this.filters.searchJson.query.type = this.basics.gem.chosenG; // 增加技能基底 filter
     }
   }
 
+  //是否針對寶石等級搜尋
+  isGemLevelSearch() {
+    if (!this.searchOptions.gemLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("gem_level")) {
+      delete this.filters.searchJson.query.filters.type_filters.filters.gem_level; // 刪除技能品質 filter
+    } else if (this.searchOptions.gemLevel.isSearch) {
+      this.filters.searchJson.query.filters.type_filters.filters.gem_level = {
+        min: this.searchOptions.gemLevel.min ? this.searchOptions.gemLevel.min : null,
+        max: this.searchOptions.gemLevel.max ? this.searchOptions.gemLevel.max : null
+      };
+    }
+  }
+
   //是否針對寶石品質搜尋
   isGemQualitySearch() {
-    if (!this.searchOptions.gemQuality.isSearch) {
-      delete this.filters.searchJson.query.filters.misc_filters.filters.quality; // 刪除技能品質 filter
+    if (!this.searchOptions.gemQuality.isSearch && Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("quality")) {
+      delete this.filters.searchJson.query.filters.type_filters.filters.quality; // 刪除技能品質 filter
     } else if (this.searchOptions.gemQuality.isSearch) {
-      this.filters.searchJson.query.filters.misc_filters.filters.quality = { // 指定技能品質最小 / 最大值 filter
-        "min": this.searchOptions.gemQuality.min ? this.searchOptions.gemQuality.min : null,
-        "max": this.searchOptions.gemQuality.max ? this.searchOptions.gemQuality.max : null
+      this.filters.searchJson.query.filters.type_filters.filters.quality = {
+        min: this.searchOptions.gemQuality.min ? this.searchOptions.gemQuality.min : null,
+        max: this.searchOptions.gemQuality.max ? this.searchOptions.gemQuality.max : null
+      };
+    }
+  }
+
+  //是否針對寶石插槽搜尋
+  isGemSocketSearch() {
+    if (!this.searchOptions.gemSocket.isSearch && Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("gem_sockets")) {
+      delete this.filters.searchJson.query.filters.misc_filters.filters.gem_sockets; // 刪除技能品質 filter
+    } else if (this.searchOptions.gemSocket.isSearch) {
+      this.filters.searchJson.query.filters.misc_filters.filters.gem_sockets = {
+        min: this.searchOptions.gemSocket.min ? this.searchOptions.gemSocket.min : null,
+        max: this.searchOptions.gemSocket.max ? this.searchOptions.gemSocket.max : null
       };
     }
   }
@@ -1749,11 +1768,9 @@ export class HomeComponent implements OnInit {
     if (!this.searchOptions.mapLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.map_filters.filters).includes("map_tier")) {
       delete this.filters.searchJson.query.filters.map_filters.filters.map_tier; // 刪除地圖階級 filter
     } else if (this.searchOptions.mapLevel.isSearch) {
-      this.filters.searchJson.query.filters.map_filters.filters = {// 指定地圖階級最小 / 最大值 filter
-        map_tier: {
-          min: this.searchOptions.mapLevel.min ? this.searchOptions.mapLevel.min : null,
-          max: this.searchOptions.mapLevel.max ? this.searchOptions.mapLevel.max : null
-        }
+      this.filters.searchJson.query.filters.map_filters.filters.map_tier = {// 指定地圖階級最小 / 最大值 filter
+        min: this.searchOptions.mapLevel.min ? this.searchOptions.mapLevel.min : null,
+        max: this.searchOptions.mapLevel.max ? this.searchOptions.mapLevel.max : null
       };
     }
   }
@@ -2184,7 +2201,7 @@ export class HomeComponent implements OnInit {
     } else if (this.item.category === 'map' && this.basics.map.isSearch) {
       this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;
     } else if (this.item.category === 'gem' && this.basics.gem.isSearch) { //需要重看
-      this.item.name = `物品名稱 <br>『${this.searchOptions.gemQualitySet.chosenObj !== '0' && this.searchOptions.gemQualitySet.isSearch ? `${this.searchOptions.gemQualitySet.chosenObj.label} ` : ''}${this.basics.gem.chosenG}』`
+      this.item.name = `物品名稱 <br>『${this.basics.gem.chosenG}』`
     }
 
     this.searchTrade();

@@ -308,7 +308,7 @@ export class HomeComponent implements OnInit {
         this.app.onReady = false;
       }
 
-      if (text.indexOf('稀有度: ') > -1 && !this.app.isApiError && !this.app.onReady) { // POE 內的文字必定有稀有度
+      if (text.indexOf('稀有度: ') > -1 && !this.app.onReady) { // POE 內的文字必定有稀有度
         this.app.preCopyText = text;
         this.app.onReady = true;
         this.analyze(text);
@@ -343,35 +343,34 @@ export class HomeComponent implements OnInit {
 
     itemArray = this.deleteUnUseString(itemArray);
 
+    let start = itemArray[0].indexOf("物品種類") === -1 ? 0 : 1;
+
     //物品稀有度
-    let posRarity = itemArray[1].indexOf(': ');
-    let Rarity = itemArray[1].substring(posRarity + 2).trim();
+    let posRarity = itemArray[start].indexOf(': ');
+    let Rarity = itemArray[start].substring(posRarity + 2).trim();
 
     console.log(Rarity);
 
     //物品名稱 - name
-    let searchName = itemArray[2];
-    this.item.name = itemArray[3] === "--------" ? `物品名稱 <br>『${itemArray[2]}』` : `物品名稱 <br>『${itemArray[2]} ${itemArray[3]}』`;
+    let searchName = itemArray[start + 1];
+    this.item.name = itemArray[start + 2] === "--------" ? `物品名稱 <br>『${itemArray[start + 1]}』` : `物品名稱 <br>『${itemArray[start + 1]} ${itemArray[start + 2]}』`;
 
     //物品基底 - type
-    let itemBasic = itemArray[3] === "--------" ? itemArray[2] : itemArray[3];
-
-    if(itemBasic.indexOf("藥劑") > -1){
-      itemBasic = itemBasic.substring(itemBasic.indexOf("之") + 1, itemBasic.length);
-    }
+    let itemBasic = itemArray[start + 2] === "--------" ? itemArray[start + 1] : itemArray[start + 2];
+    itemBasic = this.checkBasicName(itemBasic, Rarity);
 
     console.log(itemBasic);
 
-    let itemNameString = itemArray[3] === "--------" ? itemArray[2] : `${itemArray[2]} ${itemArray[3]}`;
+    let itemNameString = itemArray[start + 2] === "--------" ? itemArray[start + 1] : `${itemArray[start + 1]} ${itemArray[start + 2]}`;
     let itemBasicCount = 0;
 
     //物品檢查
-    this.basics.categorizedItems.some((element: any) => {   
-      console.log(element);   
+    this.basics.categorizedItems.some((element: any) => {
+      // console.log(element);
       let itemNameStringIndex = itemBasic === element.type;
-      // console.log(itemNameString, itemNameStringIndex);
+      console.log(itemNameString, itemNameStringIndex);
 
-      if (itemNameStringIndex && !itemBasicCount && (itemNameString.indexOf('碎片') === -1 || Rarity !== '傳奇')) {
+      if (itemNameStringIndex && !itemBasicCount && Rarity !== '傳奇') {
         itemBasicCount++;
         this.itemAnalysis(item, itemArray, element);
         this.item.category = 'item';
@@ -384,7 +383,6 @@ export class HomeComponent implements OnInit {
       return false;
     });
 
-    console.log(this.item);
 
     //詞綴分析
     if (Rarity === "傳奇") { // 傳奇道具
@@ -453,12 +451,29 @@ export class HomeComponent implements OnInit {
       this.searchOptions.gemQuality.min = minQuality;
       this.isGemQualitySearch();
     } else if (Rarity === "通貨" || Rarity === "通貨不足") {
+      console.log(this.item.name);
+      this.item.category = 'currency';
+
+      if (searchName.indexOf('寶石') > -1) {
+        let levelPos = item.substring(item.indexOf('等級: ') + 4);
+        let levelPosEnd = levelPos.indexOf(NL);
+        let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10)
+        this.searchOptions.itemLevel.min = level;
+        this.searchOptions.itemLevel.max = level;
+        this.searchOptions.itemLevel.isSearch = true;
+        this.isItemLevelSearch();
+
+        this.item.name += ("<br>等級: " + level);
+      }
+
       Object.assign(this.filters.searchJson.query, { type: searchName });
       this.searchOptions.raritySet.chosenObj = "";
       console.log(this.searchOptions);
       // return;
     } else if (this.item.category === 'item') {
-      this.itemStatsAnalysis(itemArray, 0);
+      if (Rarity !== '普通') {
+        this.itemStatsAnalysis(itemArray, 0);
+      }
       console.log(this.searchOptions);
       return;
     }
@@ -1515,13 +1530,19 @@ export class HomeComponent implements OnInit {
         this.searchResult.status = ` 共 ${this.searchResult.searchTotal} 筆符合 ${this.ui.collapse.price && this.searchResult.searchTotal !== this.searchResult.resultLength ? '- 報價已摺疊' : ''}`;
         this.searchResult.fetchQueryID = res.id;
         this.searchResult.fetchID = res.result;
+
+        this.app.isApiError = false;
       } else {
         this.searchResult.status = res.error.message;
         // this.startCountdown(60);
         this.app.isApiError = true;
         this.app.isCounting = false;
+
+        this.resetSearchData();
       }
     }, (error: any) => {
+      this.resetSearchData();
+      this.app.isApiError = true;
       this.app.isCounting = false;
       console.log(error);
     });
@@ -1615,6 +1636,7 @@ export class HomeComponent implements OnInit {
     if (!this.searchOptions.itemLevel.isSearch) {
       this.filters.searchJson.query.filters.type_filters.filters.ilvl = {}; // 刪除物品等級 filter
     } else if (this.searchOptions.itemLevel.isSearch) {
+      console.log(this.filters.searchJson);
       this.filters.searchJson.query.filters.type_filters.filters.ilvl = { // 增加物品等級最小值 filter
         min: this.searchOptions.itemLevel.min ? this.searchOptions.itemLevel.min : null,
         max: this.searchOptions.itemLevel.max ? this.searchOptions.itemLevel.max : null
@@ -1625,10 +1647,10 @@ export class HomeComponent implements OnInit {
   //是否針對稀有度搜尋
   isRaritySearch() {
     if (!this.searchOptions.raritySet.isSearch) {
-      if (this.item.name.indexOf("碎片") === -1 && this.item.name.indexOf("核心") === -1 && this.item.name.indexOf("催化劑") === -1 && this.item.name.indexOf("精煉") === -1 && this.item.name.indexOf("斷片") === -1) {
+      if (this.item.category !== 'currency') {
         this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
       } else {
-        this.filters.searchJson.query.filters.type_filters.filters = {};
+        delete this.filters.searchJson.query.filters.type_filters.filters.rarity;
       }
     } else if (this.searchOptions.raritySet.isSearch) {
       this.filters.searchJson.query.filters.type_filters.filters.rarity = { // 增加稀有度 filter
@@ -2104,5 +2126,30 @@ export class HomeComponent implements OnInit {
   //子元件回傳狀態
   countingStatus($e: any) {
     this.app.isCounting = $e;
+  }
+
+  //檢查基底名稱
+  checkBasicName(itemBasic: string, Rarity: string): string {
+    if (Rarity == '魔法' || '普通') {
+      if (itemBasic.indexOf('精良的') > -1) {
+        itemBasic = itemBasic.substring(itemBasic.indexOf('精良的') + 4, itemBasic.length);
+      }
+      //的count
+      let count = (itemBasic.match(/\的/g) || []).length;
+      // console.log([...itemBasic.matchAll(/\的/g)]);
+      //的位置
+      let firstPos = itemBasic.indexOf("的");
+      //之位置
+      let SecondPos = count > 1 ? +[...itemBasic.matchAll(/\的/g)][1].index : itemBasic.indexOf("之");
+
+      if (SecondPos > firstPos && firstPos !== -1) {
+        itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);
+      } else if (firstPos > SecondPos) {
+        itemBasic = itemBasic.substring(firstPos + 1, itemBasic.length);
+      }
+    }
+    console.log(itemBasic);
+
+    return itemBasic;
   }
 }

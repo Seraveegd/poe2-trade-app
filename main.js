@@ -24,7 +24,7 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         },
-        fullscreen: true
+        // fullscreen: true
     });
 
     // child = new BrowserWindow({
@@ -57,7 +57,7 @@ function createWindow() {
     // }));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     // setInterval(() => {
     //     // console.log(window.localStorage.getItem('copyText'), JSON.stringify(clipboard.readText()));

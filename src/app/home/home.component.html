@@ -281,6 +281,7 @@
                     style="text-align: center; cursor: pointer;padding-top: 6px;display: inline-block;"
                     (click)="ui.collapse.stats = !ui.collapse.stats"></h5>
             </div>
+            @if(this.item.searchStats.length > 0){
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats" style="margin-top:10px;">
                 <div class="card">
                     <div class="card-body">
@@ -348,6 +349,7 @@
                     </div>
                 </div>
             </div>
+            }
         </ng-container>
         <!--之後做-->
         @if (item.category) {

@@ -358,6 +358,9 @@
     </div>
 </div>
 <hr>
+@if (app.isApiError) {
+<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
+}
 @if (searchResult.searchTotal > 0) {
 <h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"

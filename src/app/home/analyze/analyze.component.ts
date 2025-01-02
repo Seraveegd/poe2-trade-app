@@ -94,7 +94,7 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       // let vm = this;
       this.isLoading = true;
 
-      for (let i = 0; i < this.searchResult.searchTotal && i < 20; i += 10) {
+      for (let i = 0; i < this.searchResult.fetchID.length && i < 20; i += 10) {
         this.fetchIndex = i;
         const fetchIDs = this.searchResult.fetchID.slice(i, i + 10);
 

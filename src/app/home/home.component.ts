@@ -113,6 +113,9 @@ export class HomeComponent implements OnInit {
     serverOptions: ['台服'],
     raritySet: { // 稀有度設定
       option: [{
+        label: "任何",
+        prop: ""
+      }, {
         label: "一般",
         prop: 'normal'
       }, {
@@ -131,7 +134,7 @@ export class HomeComponent implements OnInit {
         label: "非傳奇",
         prop: 'nonunique'
       }],
-      chosenObj: "nonunique",
+      chosenObj: "",
       isSearch: false,
     },
     itemLevel: { // 搜尋設定->物品等級
@@ -351,14 +354,22 @@ export class HomeComponent implements OnInit {
     this.item.name = itemArray[3] === "--------" ? `物品名稱 <br>『${itemArray[2]}』` : `物品名稱 <br>『${itemArray[2]} ${itemArray[3]}』`;
 
     //物品基底 - type
-    let itemBasic = itemArray[3];
+    let itemBasic = itemArray[3] === "--------" ? itemArray[2] : itemArray[3];
+
+    if(itemBasic.indexOf("藥劑") > -1){
+      itemBasic = itemBasic.substring(itemBasic.indexOf("之") + 1, itemBasic.length);
+    }
+
+    console.log(itemBasic);
+
     let itemNameString = itemArray[3] === "--------" ? itemArray[2] : `${itemArray[2]} ${itemArray[3]}`;
     let itemBasicCount = 0;
 
     //物品檢查
-    this.basics.categorizedItems.some((element: any) => {
+    this.basics.categorizedItems.some((element: any) => {   
+      console.log(element);   
       let itemNameStringIndex = itemBasic === element.type;
-      console.log(itemNameString, itemNameStringIndex);
+      // console.log(itemNameString, itemNameStringIndex);
 
       if (itemNameStringIndex && !itemBasicCount && (itemNameString.indexOf('碎片') === -1 || Rarity !== '傳奇')) {
         itemBasicCount++;
@@ -372,6 +383,8 @@ export class HomeComponent implements OnInit {
 
       return false;
     });
+
+    console.log(this.item);
 
     //詞綴分析
     if (Rarity === "傳奇") { // 傳奇道具
@@ -439,8 +452,12 @@ export class HomeComponent implements OnInit {
       // }
       this.searchOptions.gemQuality.min = minQuality;
       this.isGemQualitySearch();
-    }
-    else if (this.item.category === 'item') {
+    } else if (Rarity === "通貨" || Rarity === "通貨不足") {
+      Object.assign(this.filters.searchJson.query, { type: searchName });
+      this.searchOptions.raritySet.chosenObj = "";
+      console.log(this.searchOptions);
+      // return;
+    } else if (this.item.category === 'item') {
       this.itemStatsAnalysis(itemArray, 0);
       console.log(this.searchOptions);
       return;
@@ -1482,6 +1499,7 @@ export class HomeComponent implements OnInit {
         this.isGemQualitySearch();
         break;
       default:
+        this.isRaritySearch();
         break;
     }
 
@@ -1499,9 +1517,12 @@ export class HomeComponent implements OnInit {
         this.searchResult.fetchID = res.result;
       } else {
         this.searchResult.status = res.error.message;
-        this.startCountdown(60);
+        // this.startCountdown(60);
+        this.app.isApiError = true;
+        this.app.isCounting = false;
       }
     }, (error: any) => {
+      this.app.isCounting = false;
       console.log(error);
     });
 
@@ -1604,7 +1625,11 @@ export class HomeComponent implements OnInit {
   //是否針對稀有度搜尋
   isRaritySearch() {
     if (!this.searchOptions.raritySet.isSearch) {
-      this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
+      if (this.item.name.indexOf("碎片") === -1 && this.item.name.indexOf("核心") === -1 && this.item.name.indexOf("催化劑") === -1 && this.item.name.indexOf("精煉") === -1 && this.item.name.indexOf("斷片") === -1) {
+        this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
+      } else {
+        this.filters.searchJson.query.filters.type_filters.filters = {};
+      }
     } else if (this.searchOptions.raritySet.isSearch) {
       this.filters.searchJson.query.filters.type_filters.filters.rarity = { // 增加稀有度 filter
         option: this.searchOptions.raritySet.chosenObj
@@ -1792,7 +1817,7 @@ export class HomeComponent implements OnInit {
           element.option = "flask"; //之後檢查
           this.basics.categorizedItems.push(element);
           break;
-        case 1: // 藥劑起始點 { "type": "低階生命藥劑", "text": "低階生命藥劑" }
+        case 2: // 藥劑起始點 { "type": "低階生命藥劑", "text": "低階生命藥劑" }
           element.name = "藥劑";
           element.option = "flask";
           this.basics.categorizedItems.push(element);
@@ -2077,7 +2102,7 @@ export class HomeComponent implements OnInit {
   }
 
   //子元件回傳狀態
-  countingStatus($e: any){
+  countingStatus($e: any) {
     this.app.isCounting = $e;
   }
 }

@@ -398,6 +398,7 @@ export class HomeComponent implements OnInit {
 
     //詞綴分析
     if (Rarity === "傳奇") { // 傳奇道具
+      this.ui.collapse.item = true;
       this.searchOptions.raritySet.chosenObj = item.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
 
       if (item.indexOf('未鑑定') === -1) { // 已鑑定傳奇
@@ -1539,7 +1540,6 @@ export class HomeComponent implements OnInit {
     switch (this.item.category) {
       case 'item':
         this.ui.collapse.stats = true;
-        this.ui.collapse.item = this.searchOptions.raritySet.chosenObj.indexOf('unique') > -1;
         this.isRaritySearch();
         this.isItemBasicSearch();
         this.isItemCategorySearch();
@@ -2246,7 +2246,6 @@ export class HomeComponent implements OnInit {
 
   //檢查基底名稱
   checkBasicName(itemBasic: string): string {
-    console.log("我進來了");
     if (itemBasic.indexOf('精良的') > -1) {
       itemBasic = itemBasic.substring(itemBasic.indexOf('精良的') + 4, itemBasic.length);
     }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
+import { Shell } from 'electron';
 
 @Component({
   selector: 'app-about',
@@ -8,33 +9,21 @@ import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './about.component.scss'
 })
 export class AboutComponent {
-  public hotkeys: any = [{
-    "key": "F5",
-    "description": "程式顯示在最上層，並且透明化 (可漂浮在POE程式上)"
-  }, {
-    "key": "F6",
-    "description": "程式取消在最上層，並取消透明化"
-  }, {
-    "key": "PageUp",
-    "description": "透明化程度 +5%"
-  }, {
-    "key": "PageDown",
-    "description": "透明化程度 -5%"
-  },]
+  public shell!: Shell;
 
-  // BrowserWindow = require('electron');
+  constructor() {
+    if ((<any>window).require) {
+      try {
+        this.shell = (<any>window).require('electron').shell;
+      } catch (e) {
+        throw e;
+      }
+    } else {
+      console.warn('App not running inside Electron!');
+    }
+  }
 
-  // createWindow() {
-  //   const win = new this.BrowserWindow({
-  //     width: 400,
-  //     height: 400,
-  //     backgroundColor: '#ffffff',
-  //     icon: `dist/assets/logo.png`
-  //   });
-  //   win.loadFile(`dist/electron-app/browser/index.csr.html`);
-  // }
-
-  // ngOnInit() {
-  //   this.createWindow();
-  // }
+  openGithubRelease(){
+    this.shell.openExternal("https://github.com/Seraveegd/poe2-trade-app/releases");
+  }
 }

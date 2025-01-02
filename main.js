@@ -14,7 +14,7 @@ function createWindow() {
         height: 800,
         backgroundColor: '#ffffff',
         autoHideMenuBar: true,
-        icon: `dist/poe2-trade-app/browser/logo.png`,
+        icon: `dist/poe2-trade-app/browser/favicon.png`,
         webPreferences: {
             defaultFontFamily: {
                 standard: "Microsoft YaHei"

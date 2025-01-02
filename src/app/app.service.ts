@@ -17,7 +17,7 @@ export class AppService {
     let headers: HttpHeaders = new HttpHeaders();
     headers.set('Accept', '	application/json');
 
-    league = encodeURI('標準模式');
+    league = encodeURI(league);
 
     return this.http.post(`${this.config.api_base_url}/api/trade2/search/poe2/${league}`, query, { headers: headers });
   }

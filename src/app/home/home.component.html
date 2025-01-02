@@ -360,7 +360,7 @@
 <hr>
 @if (searchResult.searchTotal > 0) {
 <h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
-<div style="text-align: center;"><button (click)="popOfficialWebsite()" type="button"
+<div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>
-<app-analyze [searchResult]="searchResult"></app-analyze>
+<app-analyze [searchResult]="searchResult" (isCounting)="countingStatus($event)"></app-analyze>
 }

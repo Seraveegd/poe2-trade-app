@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AppService } from '../../app.service';
 import { connect, forkJoin } from 'rxjs';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './analyze.component.scss',
 })
 export class AnalyzeComponent implements OnInit, OnChanges {
+  @Output() isCounting = new EventEmitter<any>();
   @Input({ required: true }) searchResult: any = [];
 
   public isLoading = false;
@@ -74,8 +75,7 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lJZGVudGlmaWNhdGlvbiIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/884f7bc58b/CurrencyIdentification.png"
     }]]);
 
-  constructor(private poe_service: AppService) {
-
+  constructor(private poe_service: AppService) {    
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -235,6 +235,8 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     // }).filter(function (item: any, index: any, array: any) {
     //   return item; // 排除介面已選擇有標價但 API 還是回傳尚未標價的物品 （未標價 => null）
     // });
+
+    this.isCounting.emit(false);
   }
 
   // fetchResultLength() {

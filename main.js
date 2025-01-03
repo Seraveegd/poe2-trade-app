@@ -1,8 +1,6 @@
-const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron');
-const { clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
-// const fs = require('fs');
 
 if (require('electron-squirrel-startup')) app.quit();
 
@@ -23,62 +21,41 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: false
-        },
-        // fullscreen: true
+        }
     });
-
-    // child = new BrowserWindow({
-    //     parent: win,
-    //     width: 400,
-    //     height: 400,
-    //     backgroundColor: '#ffffff',
-    //     center: true,
-    //     resizable: false,
-    //     frame: false,
-    //     transparent: false
-    // });
-    // child.show();
-
-    // child.loadURL(`file://${__dirname}/dist/electron-app/browser/index.csr.html#/home`)
 
     win.once('ready-to-show', () => {
         win.show();
     });
 
-    // console.log(path.join(__dirname, `dist/electron-app/browser/index.csr.html#home`));
+    //查看事件blur
+    win.on('blur', (e) => {
+        console.log('blur');
+    });
+
+    //查看事件focus
+    win.on('focus', (e) => {
+        console.log('focus');
+    });
 
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
-    // console.log(path.join(__dirname, './dist/electron-app/browser/index.csr.html'));
-    // win.loadURL(url.format({
-    //     pathname: path.join(__dirname, 'dist/poe2-trade-app/browser/index.html'),
-    //     protocol: 'file:',
-    //     slashes: true,
-    //     hash: 'home'
-    // }));
 
     // Open the DevTools.
     // win.webContents.openDevTools();
 
-    // setInterval(() => {
-    //     // console.log(window.localStorage.getItem('copyText'), JSON.stringify(clipboard.readText()));
-    //     // if (clipboard.readText().indexOf('稀有度: ') > -1 && localStorage.getItem('copyText') !== JSON.stringify(clipboard.readText())) {
-    //     win.webContents.executeJavaScript(`localStorage.setItem('copyText', '` + JSON.stringify(clipboard.readText()) + `')`);
-    //     // win.loadFile(`dist/electron-app/browser/home`);
-    //     // }
-    //     // console.log(clipboard.readText());
-    // }, 500);
+    ipcMain.on('analyze-item', (msg) => {
+        if (win.isMinimized())
+            win.restore();
+
+        win.setAlwaysOnTop(true);
+        win.show();
+        win.setAlwaysOnTop(false);
+        app.focus();
+    })
 }
-
-// function scanCopy() {
-//     setInterval(() => {
-//         console.log(clipboard.readText());
-//     }, 500);
-// };
-
 
 app.whenReady().then(() => {
     createWindow();
-    // scanCopy();
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()

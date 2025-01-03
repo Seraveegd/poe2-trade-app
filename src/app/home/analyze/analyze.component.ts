@@ -13,13 +13,14 @@ export class AnalyzeComponent implements OnInit, OnChanges {
   @Output() isCounting = new EventEmitter<any>();
   @Input({ required: true }) searchResult: any = [];
 
-  public isLoading = false;
-  public fetchResult: any = [];
-  public computed: any = new Map();
-  public fetchIndex = 0;
-  public read = 10;
-  public itemImage = '';
-  public observ: any = [];
+  // public isLoading = false;
+  public fetchResult: any = []; //回傳結果
+  public computed: any = new Map(); //價格統計
+  // public fetchIndex = 0; 
+  public maxRead = 40; //每次讀取
+  public itemImage = ''; //物品圖示
+  public observ: any = []; //紀錄序列
+  public corruptedCount: number = 0;
 
   public currencysList: any = new Map([
     ["transmute", {
@@ -75,7 +76,7 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lJZGVudGlmaWNhdGlvbiIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/884f7bc58b/CurrencyIdentification.png"
     }]]);
 
-  constructor(private poe_service: AppService) {    
+  constructor(private poe_service: AppService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -92,10 +93,10 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       this.fetchResult.length = 0;
       this.computed = new Map();
       // let vm = this;
-      this.isLoading = true;
+      // this.isLoading = true;
 
-      for (let i = 0; i < this.searchResult.fetchID.length && i < 20; i += 10) {
-        this.fetchIndex = i;
+      for (let i = 0; i < this.searchResult.fetchID.length && i < this.maxRead; i += 10) {
+        // this.fetchIndex = i;
         const fetchIDs = this.searchResult.fetchID.slice(i, i + 10);
 
         this.observ.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID));
@@ -194,6 +195,10 @@ export class AnalyzeComponent implements OnInit, OnChanges {
               [item.listing.price.amount, 1]
             ]));
           }
+        }
+
+        if (item.item.corrupted) {
+          this.corruptedCount += 1;
         }
       });
 

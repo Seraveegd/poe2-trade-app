@@ -8,7 +8,13 @@
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">前 {{ fetchResult.length }} 筆價格分析
+                    <th scope="col">
+                        前 {{ fetchResult.length }} 筆價格分析
+                        @if (corruptedCount > 0) {
+                            <div>
+                                {{ corruptedCount }}筆已汙染
+                            </div>
+                        }
                         <!-- <span v-if="corruptedCount && corruptedCount === fetchResultPrice.length"
                             style="color: lightpink;">{{ corruptedCount }} 筆皆汙染</span> -->
                         <!-- <b-button v-else-if="corruptedCount" @click="$emit('exclude')" size="sm"

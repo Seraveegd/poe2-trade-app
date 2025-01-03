@@ -7,7 +7,7 @@ import { interval, lastValueFrom, map, Observable } from 'rxjs';
 import { AnalyzeComponent } from "./analyze/analyze.component";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Clipboard, Shell } from 'electron';
+import { Clipboard, Shell, IpcRenderer } from 'electron';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +27,7 @@ import { Clipboard, Shell } from 'electron';
 export class HomeComponent implements OnInit {
   private clipboard!: Clipboard;
   private shell!: Shell;
+  private ipc!: IpcRenderer;
   public isCollapsed: boolean = false;
 
   public newLine = navigator.userAgent.indexOf('Mac OS X') > -1 ? `\n` : `\r\n`; // Mac 與 Windows 換行符號差異(\r\n之後修)
@@ -324,6 +325,7 @@ export class HomeComponent implements OnInit {
       if (text.indexOf('稀有度: ') > -1 && !this.app.onReady) { // POE 內的文字必定有稀有度
         this.app.preCopyText = text;
         this.app.onReady = true;
+        (<any>window).ipcRenderer.send('analyze-item');
         this.analyze(text);
       }
     })
@@ -402,6 +404,7 @@ export class HomeComponent implements OnInit {
 
     //詞綴分析
     if (Rarity === "傳奇") { // 傳奇道具
+      this.item.category = 'unique';
       this.ui.collapse.item = true;
       this.searchOptions.raritySet.chosenObj = item.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
 
@@ -1308,72 +1311,11 @@ export class HomeComponent implements OnInit {
         }
         // }
 
-        // let isNegativeStat = false // API 詞綴只有"增加"，但物品可能有"減少"詞綴相關處理
-        // if (apiStatText.includes('增加') && itemStatText.includes('減少')) {
-        //   apiStatText = apiStatText.replace('增加', '減少');
-        //   isNegativeStat = true;
-        // }
-
-        // if (this.options.itemCategory.chosenObj.prop === 'logbook' && itemStatText.includes('區域含有') && (itemStatText.includes('梅德偉') || itemStatText.includes('沃拉娜') || itemStatText.includes('烏特雷') || itemStatText.includes('奧爾羅斯'))) { // 探險日誌探險頭目相關處理
-        //   isStatSearch = true
-        //   statID = "implicit.stat_3159649981"
-        //   apiStatText = itemStatText.replace('(implicit)', '')
-        //   if (itemStatText.indexOf("梅德偉") > -1) optionValue = 1
-        //   else if (itemStatText.indexOf("沃拉娜") > -1) optionValue = 2
-        //   else if (itemStatText.indexOf("烏特雷") > -1) optionValue = 3
-        //   else if (itemStatText.indexOf("奧爾羅斯") > -1) optionValue = 4
-        // }
-        // if (statID.includes("explicit.indexable_")) { // 贗品．龍牙翱翔、禁忌軍帽詞綴自動打勾
-        //   isStatSearch = true;
-        //   this.isStatsCollapse = true;
-        // }
-        // const grandSpectrumStats = ["stat_3163738488", "stat_2948375275", "stat_242161915", "stat_611279043", "stat_482240997", "stat_308799121", "stat_2276643899", "stat_596758264", "stat_332217711"]
-        // if (grandSpectrumStats.some(stat => statID.includes(stat))) { // 巨光譜詞綴自動打勾
-        //   isStatSearch = true;
-        //   this.options.isStatsCollapse = true;
-        // }
-        // if (statID === "enchant.stat_3086156145" || statID === "explicit.stat_1085446536") { // cluster jewel analysis
-        //   isStatSearch = true;
-        //   this.options.isStatsCollapse = true;
-        //   let tempValue = randomMinValue;
-        //   switch (randomMinValue) { // 附加天賦數判斷
-        //     case 4:
-        //       randomMaxValue = randomMinValue + 1;
-        //       break;
-        //     case 5:
-        //       randomMaxValue = tempValue;
-        //       randomMinValue = tempValue - 1;
-        //       break;
-        //     default:
-        //       randomMaxValue = tempValue;
-        //       break;
-        //   }
-        //   switch (true) { // 物品等級區分判斷
-        //     case this.options.itemLevel.min >= 84:
-        //       this.options.itemLevel.min = 84;
-        //       break;
-        //     case this.options.itemLevel.min >= 75:
-        //       this.options.itemLevel.min = 75;
-        //       this.options.itemLevel.max = 83;
-        //       break;
-        //     case this.options.itemLevel.min >= 68:
-        //       this.options.itemLevel.min = 68;
-        //       this.options.itemLevel.max = 74;
-        //       break;
-        //     case this.options.itemLevel.min >= 50:
-        //       this.options.itemLevel.min = 50;
-        //       this.options.itemLevel.max = 67;
-        //       break;
-        //     case this.options.itemLevel.min < 50:
-        //       this.options.itemLevel.min = '';
-        //       this.options.itemLevel.max = 49;
-        //       break;
-        //     default:
-        //       break;
-        //   }
-        //   this.options.itemLevel.isSearch = true;
-        //   this.isItemLevelSearch();
-        // }
+        // API 詞綴只有"增加"，但物品可能有"減少"詞綴相關處理
+        if (apiStatText.includes('增加') && itemStatText.includes('減少')) {
+          // apiStatText = apiStatText.replace('增加', '減少');
+          randomMinValue = -randomMinValue;
+        }
 
         // 物品中包含 "# 至 #" 的詞綴，在官方市集搜尋中皆以相加除二作搜尋
         if (randomMaxValue) {
@@ -1644,7 +1586,7 @@ export class HomeComponent implements OnInit {
     let mdStat = stat.replace(/\d+/g, "#").replace("+", "").replace("#.#", "#");
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1) {
+    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1) {
       mdStat = mdStat.replace('減少', '增加');
     }
 

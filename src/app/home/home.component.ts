@@ -34,7 +34,16 @@ export class HomeComponent implements OnInit {
     ['符文', '#85A1A5'],
     ['附魔', '#F8E169'],
     ['隨機', '#665DAE'],
-    ['汙染', '#C62A29']
+    ['汙染', '#C62A29'],
+    ['傳奇', '#AB4C11'],
+    ['防禦', '#E6CA81']
+  ]);
+
+  private defenceTypes: any = new Map([
+    ['能量護盾', 'es'],
+    ['護甲', 'ar'],
+    ['閃避值', 'ev'],
+    ['格擋機率', 'block']
   ]);
 
   public newLine = navigator.userAgent.indexOf('Mac OS X') > -1 ? `\n` : `\r\n`; // Mac 與 Windows 換行符號差異(\r\n之後修)
@@ -100,7 +109,8 @@ export class HomeComponent implements OnInit {
     type: '',
     supported: true,
     copyText: '',
-    searchStats: [] // 分析拆解後的物品詞綴陣列，提供使用者在界面勾選是否查詢及輸入數值
+    searchStats: [], // 分析拆解後的物品詞綴陣列，提供使用者在界面勾選是否查詢及輸入數值
+    searchDefences: []
   };
 
   //詞綴資料
@@ -116,9 +126,6 @@ export class HomeComponent implements OnInit {
 
   //搜尋相關設定
   public searchOptions: any = {
-    // isOnline: true,
-    isPriced: true,
-    isPriceCollapse: true, // 透過帳號摺疊名單 (Collapse Listings by Account) 預設為 true
     serverOptions: ['台服'],
     raritySet: { // 稀有度設定
       option: [{
@@ -151,7 +158,7 @@ export class HomeComponent implements OnInit {
       max: '',
       isSearch: false
     },
-    itemSocket: {
+    itemSocket: { // 搜尋設定->物品插槽
       min: 0,
       max: '',
       isSearch: false
@@ -284,16 +291,6 @@ export class HomeComponent implements OnInit {
     searchTotal: 0, //總共幾筆
     status: '', //狀態文字
   }
-
-  //暫時留著
-  public options: any = {
-    clickCount: 0,
-    // copyText: '',
-    searchedText: '',
-    testResponse: '',
-    gggMapBasic: [],
-    gggGemBasic: [],
-  };
 
   constructor(private poe_service: AppService) {
     if ((<any>window).require) {
@@ -520,9 +517,14 @@ export class HomeComponent implements OnInit {
     } else if (this.item.category === 'item') {
       this.searchOptions.itemSocket.min = this.getSocketNumber(item);
       this.searchOptions.itemSocket.max = this.getSocketNumber(item);
-
+      //分析詞綴
       if (Rarity !== '普通' || searchName.indexOf('碑牌') > -1) {
         this.itemStatsAnalysis(itemArray, 0);
+      }
+      //分析防禦
+      console.log(this.item.type);
+      if (this.item.type.indexOf('armour') > -1) {
+        this.itemDefencesAnalysis(itemArray);
       }
       // console.log(this.searchOptions);
       if (!this.ui.collapse.item) {
@@ -589,6 +591,7 @@ export class HomeComponent implements OnInit {
     this.searchResult.fetchQueryID = '';
     this.searchResult.status = '';
     this.item.searchStats = [];
+    this.item.searchDefences = [];
   }
 
   //物品分析
@@ -668,26 +671,7 @@ export class HomeComponent implements OnInit {
       if (element.indexOf('物品等級:') > -1) {
         itemStatStart = index + 2;
       }
-      // "--------" 字串前一筆資料若為固定詞或附魔詞或災魘詞，則不將此 index 視為詞綴結束點
-      // if (stringSimilarity.compareTwoStrings(element, '魔符階級:') > 0.7) {
-      //   itemStatStart = index + 2
-      // } else if (stringSimilarity.compareTwoStrings(element, '物品等級:') > 0.7) {
-      //   itemStatStart = index + 2
-      // }
-      // this.options.wrapStats.forEach((wrapStatsElement: any, wrapStatsIndex: any) => {
-      //   let firstWSE = wrapStatsElement.split("\n")[0]
-      //   let secondWSE = wrapStatsElement.split("\n")[1]
-      //   let newLineCount = wrapStatsElement.split("\n").length - 1
-      //   let tempStatArray = []
-      //   // 比對折行詞綴第一筆與第二筆，比對成功就將 itemArray 刪除指定筆數
-      //   if (element && stringSimilarity.compareTwoStrings(firstWSE, element) > 0.7 && stringSimilarity.compareTwoStrings(secondWSE, itemArray[index + 1]) > 0.7) {
-      //     for (let i = 0; i <= newLineCount; i++) {
-      //       tempStatArray.push(itemArray[index + i])
-      //     }
-      //     itemArray[index] = tempStatArray.join('\n')
-      //     spliceWrapStats(newLineCount, index)
-      //   }
-      // });
+
       if (element === "--------" && !isEndPoint && itemStatStart && index > itemStatStart && itemStatEnd == itemArray.length - 1) { // 判斷隨機詞綴結束點
         itemStatEnd = index;
       }
@@ -911,6 +895,33 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  //物品防禦分析
+  itemDefencesAnalysis(itemArray: any) {
+    let start = 0;
+    itemArray.forEach((item: any) => {
+      if (start == 1 && item.indexOf('品質') === -1 && item.indexOf('--------') === -1) {
+        let posS = item.indexOf(':');
+        let posE = item.indexOf("(");
+        let type = item.substring(0, posS);
+        let value = +item.substring(posS + 2, posE > -1 ? posE - 1 : item.length).replace('%', '');
+
+        this.item.searchDefences.push({
+          text: type,
+          type: '防禦',
+          min: value,
+          max: '',
+          isSearch: false
+        });
+      }
+
+      if (item.indexOf('--------') > -1) {
+        start += 1;
+      }
+
+      if (start > 1) return;
+    })
+  }
+
   //建立搜尋資料
   searchTrade() {
     this.app.isCounting = true;
@@ -978,6 +989,18 @@ export class HomeComponent implements OnInit {
           // }
         }
       })
+    }
+
+    if (this.filters.searchJson.query.filters.equipment_filters.filters) {
+      this.item.searchDefences.forEach((element: any) => {
+        let value = {};
+
+        if (element.isSearch) {
+          Object.assign(value, { min: element.min });
+          Object.assign(value, { max: element.max > element.min ? element.max : null });
+          Object.assign(this.filters.searchJson.query.filters.equipment_filters.filters, JSON.parse(`{ "${this.defenceTypes.get(element.text)}" : ${JSON.stringify(value)} }`));
+        }
+      });
     }
 
     this.priceSetting();
@@ -1689,6 +1712,7 @@ export class HomeComponent implements OnInit {
   clickToSearch() { // TODO: 重構物品/地圖交替搜尋時邏輯 stats: [{type: "and", filters: [], disabled: true(?)}]
     if (this.item.category === 'item' || this.item.category === 'unique') {
       this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
+      this.filters.searchJson.query.filters.equipment_filters = { filters: {} };
     } else if (this.item.category === 'map' && this.basics.map.isSearch) {
       this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;
     } else if (this.item.category === 'gem' && this.basics.gem.isSearch) { //需要重看

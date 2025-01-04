@@ -298,7 +298,7 @@
                     (click)="ui.collapse.stats = !ui.collapse.stats"></h5>
             </div>
             }
-            @if(this.item.searchStats.length > 0){
+            @if(item.searchStats.length > 0 || item.searchDefences.length){
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats">
                 <div class="card">
                     <div class="card-body">
@@ -315,6 +315,47 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- 防禦 -->
+                                        @for (defence of item.searchDefences; track $index) {
+                                        <tr>
+                                            <td
+                                                [ngStyle]="{'backgroundColor': defence.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="ststsChecked" type="checkbox"
+                                                        [(ngModel)]="defence.isSearch"
+                                                        [id]="'StstsflexCheckDefault_' + $index">
+                                                    <label class="form-check-label"
+                                                        [for]="'StstsflexCheckDefault_' + $index">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF', 'color': typeColors.get(defence.type), 'font-weight': 'bolder'}">
+                                                {{
+                                                defence.type }}
+                                            </td>
+                                            <td (click)="defence.isSearch = !defence.isSearch"
+                                                style="white-space:pre-wrap;cursor: pointer;"
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                {{
+                                                defence.text }}
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                <div>
+                                                    <input type="text" class="form-control" aria-label="min"
+                                                        [(ngModel)]="defence.min">
+                                                </div>
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                <div>
+                                                    <input type="text" class="form-control" aria-label="max"
+                                                        [(ngModel)]="defence.max">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        }
                                         <!-- 裝備插槽 -->
                                         @if( searchOptions.itemSocket.min > 0) {
                                         <tr>

@@ -1687,7 +1687,7 @@ export class HomeComponent implements OnInit {
 
   //點擊後搜尋
   clickToSearch() { // TODO: 重構物品/地圖交替搜尋時邏輯 stats: [{type: "and", filters: [], disabled: true(?)}]
-    if (this.item.category === 'item') {
+    if (this.item.category === 'item' || this.item.category === 'unique') {
       this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
     } else if (this.item.category === 'map' && this.basics.map.isSearch) {
       this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;

@@ -403,12 +403,14 @@ export class HomeComponent implements OnInit {
       let itemNameStringIndex = itemBasic === element.type;
       console.log(itemNameString, itemNameStringIndex);
 
-      if (itemNameStringIndex && !itemBasicCount && Rarity !== '傳奇') {
+      if (itemNameStringIndex && !itemBasicCount) {
         itemBasicCount++;
         this.itemAnalysis(item, itemArray, element);
-        this.item.category = 'item';
-        if (element.option.indexOf('map') === -1) {
-          this.ui.collapse.item = false;
+        if (Rarity !== '傳奇') {
+          this.item.category = 'item';
+          if (element.option.indexOf('map') === -1) {
+            this.ui.collapse.item = false;
+          }
         }
         // this.options.isItem = true;
         // this.options.isItemCollapse = true;

@@ -1014,11 +1014,13 @@ export class HomeComponent implements OnInit {
         this.searchResult.resultLength = res.result.length;
         this.searchResult.searchTotal = res.total; // 總共搜到幾項物品
 
-        this.item.copyText = '';
-
         this.searchResult.status = ` 共 ${this.searchResult.searchTotal} 筆符合 ${this.ui.collapse.price && this.searchResult.searchTotal !== this.searchResult.resultLength ? '- 報價已摺疊' : ''}`;
         this.searchResult.fetchQueryID = res.id;
         this.searchResult.fetchID = res.result;
+
+        if (res.total === 0) {
+          this.app.isCounting = false;
+        }
 
         this.app.isApiError = false;
       } else {
@@ -1094,7 +1096,7 @@ export class HomeComponent implements OnInit {
 
   //取得詞綴
   getStat(stat: string, type: any): string {
-    let mdStat = stat.replace(/\d+/g, "#").replace("+", "").replace("#.#", "#");
+    let mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
     if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1) {

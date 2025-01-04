@@ -12,7 +12,7 @@ function createWindow() {
         height: 800,
         backgroundColor: '#ffffff',
         autoHideMenuBar: true,
-        icon: `dist/poe2-trade-app/browser/favicon.png`,
+        icon: `dist/poe2-trade-app/browser/favicon.ico`,
         webPreferences: {
             defaultFontFamily: {
                 standard: "Microsoft YaHei"
@@ -41,16 +41,18 @@ function createWindow() {
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
     // Open the DevTools.
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
 
     ipcMain.on('analyze-item', (msg) => {
         if (win.isMinimized())
             win.restore();
 
-        win.setAlwaysOnTop(true);
+        win.setVisibleOnAllWorkspaces(true);
+        win.setAlwaysOnTop(true, "normal", 1);
         win.show();
         win.setAlwaysOnTop(false);
         app.focus();
+        win.moveTop();
     })
 }
 

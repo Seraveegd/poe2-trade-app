@@ -3,21 +3,21 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../app.service';
 // import { RouterLink, RouterOutlet } from '@angular/router';
-import { interval, lastValueFrom, map, Observable } from 'rxjs';
+import { interval, lastValueFrom, map } from 'rxjs';
 import { AnalyzeComponent } from "./analyze/analyze.component";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Clipboard, Shell, IpcRenderer } from 'electron';
+import { Clipboard, Shell } from 'electron';
+import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-home',
   imports: [
     NgbCollapseModule,
     NgbTooltipModule,
+    NgbAlertModule,
     FormsModule,
     CommonModule,
-    // RouterLink,
-    // RouterOutlet,
     AnalyzeComponent
   ],
   providers: [AppService],
@@ -27,8 +27,15 @@ import { Clipboard, Shell, IpcRenderer } from 'electron';
 export class HomeComponent implements OnInit {
   private clipboard!: Clipboard;
   private shell!: Shell;
-  private ipc!: IpcRenderer;
+  // private ipc!: IpcRenderer;
   public isCollapsed: boolean = false;
+  public typeColors: any = new Map([
+    ['固定', '#000000'],
+    ['符文', '#85A1A5'],
+    ['附魔', '#F8E169'],
+    ['隨機', '#665DAE'],
+    ['汙染', '#C62A29']
+  ]);
 
   public newLine = navigator.userAgent.indexOf('Mac OS X') > -1 ? `\n` : `\r\n`; // Mac 與 Windows 換行符號差異(\r\n之後修)
 
@@ -47,7 +54,7 @@ export class HomeComponent implements OnInit {
     isCounting: false,
     isApiError: false,
     apiErrorStr: '',
-    issueText: '',
+    // issueText: '',
     countTime: 0,
     preCopyText: ''
   };
@@ -139,6 +146,11 @@ export class HomeComponent implements OnInit {
       isSearch: false
     },
     itemLevel: { // 搜尋設定->物品等級
+      min: 0,
+      max: '',
+      isSearch: false
+    },
+    itemSocket: {
       min: 0,
       max: '',
       isSearch: false
@@ -250,6 +262,9 @@ export class HomeComponent implements OnInit {
             "filters": {}
           },
           "map_filters": {
+            "filters": {}
+          },
+          "equipment_filters": {
             "filters": {}
           }
         }
@@ -408,6 +423,9 @@ export class HomeComponent implements OnInit {
       this.ui.collapse.item = true;
       this.searchOptions.raritySet.chosenObj = item.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
 
+      this.searchOptions.itemSocket.min = this.getSocketNumber(item);
+      this.searchOptions.itemSocket.max = this.getSocketNumber(item);
+
       if (item.indexOf('未鑑定') === -1) { // 已鑑定傳奇
         this.searchOptions.raritySet.isSearch = true;
         Object.assign(this.filters.searchJson.query, { name: searchName, type: itemBasic });
@@ -443,13 +461,8 @@ export class HomeComponent implements OnInit {
           this.searchOptions.gemQuality.min = minQuality;
         }
 
-        let minSocket = 0;
-        let socPos = item.substring(item.indexOf('插槽: ') + 4); // 品質截斷字串 (包含'品質: +'前的字串全截斷)
-        let socPosEnd = socPos.indexOf(NL);
-        minSocket = socPos.substring(0, socPosEnd).trim().split(" ").length;
-
         this.searchOptions.gemSocket.isSearch = true;
-        this.searchOptions.gemSocket.min = minSocket;
+        this.searchOptions.gemSocket.min = this.getSocketNumber(item);
       }
     } else if (Rarity === "通貨" || Rarity === "通貨不足") {
       console.log(this.item.name);
@@ -502,6 +515,9 @@ export class HomeComponent implements OnInit {
       console.log(this.searchOptions);
       // return;
     } else if (this.item.category === 'item') {
+      this.searchOptions.itemSocket.min = this.getSocketNumber(item);
+      this.searchOptions.itemSocket.max = this.getSocketNumber(item);
+
       if (Rarity !== '普通' || searchName.indexOf('碑牌') > -1) {
         this.itemStatsAnalysis(itemArray, 0);
       }
@@ -516,131 +532,6 @@ export class HomeComponent implements OnInit {
       this.item.category = 'map';
       this.mapAnalysis(item, itemArray, Rarity);
     }
-
-    // if (item.indexOf('物品種類: 異界地圖') > -1 || item.indexOf('釋界之邀：') > -1 || item.indexOf('物品種類: 契約書') > -1 || item.indexOf('物品種類: 藍圖') > -1 || item.indexOf('物品種類: 聖域研究') > -1) { // 類地圖搜尋
-    //   this.mapAnalysis(item, itemArray, Rarity)
-    // } else if ((Rarity === "稀有" || Rarity === "傳奇") && item.indexOf('點擊右鍵將此加入你的獸獵寓言。') > -1) { // 獸獵（物品化怪物）
-    //   let monstersCount = 0
-    //   this.monstersItems.some(element => {
-    //     if (itemNameString.indexOf(element.text) > -1 && !monstersCount) {
-    //       this.searchJson.query.type = element.type
-    //       return true
-    //     }
-    //   });
-    // } else if (Rarity === "傳奇" && item.indexOf('在塔恩的鍊金室') === -1) { // 傳奇道具
-    //   if (item.indexOf('古典傳奇') > -1) {
-    //     this.raritySet.chosenObj = {
-    //       label: "古典傳奇",
-    //       prop: 'uniquefoil'
-    //     }
-    //   } else {
-    //     this.raritySet.chosenObj = {
-    //       label: "傳奇",
-    //       prop: 'unique'
-    //     }
-    //   }
-    //   if (item.indexOf('未鑑定') === -1) { // 已鑑定傳奇
-    //     this.searchJson.query.name = this.replaceString(searchName)
-    //     this.searchJson.query.type = this.replaceString(itemBasic)
-    //     this.raritySet.isSearch = true
-    //     this.isRaritySearch()
-    //     if (this.isItem) {
-    //       this.itemStatsAnalysis(itemArray, 1)
-    //     }
-    //   } else { // 未鑑定傳奇(但會搜到相同基底)
-    //     if (searchName.indexOf('精良的') > -1) { // 未鑑定的品質傳奇物品
-    //       searchName = searchName.substring(4)
-    //     }
-    //     this.raritySet.isSearch = true
-    //     this.isRaritySearch()
-    //     this.searchJson.query.type = this.replaceString(searchName)
-    //     this.$message({
-    //       duration: 2000,
-    //       type: 'warning',
-    //       message: `未鑑定傳奇物品會搜到相同基底的其他傳奇裝`
-    //     });
-    //   }
-    // } else if (Rarity === "命運卡" || Rarity === "通貨" || Rarity === "通貨不足") {
-    //   this.searchJson.query.type = this.replaceString(searchName)
-    //   if (item.indexOf('可以使用於個人地圖裝置以開啟前往現今阿茲瓦特神殿的傳送門。') > -1) { // 史記房間判斷
-    //     this.templeStatsAnalysis(itemArray)
-    //     this.isStatsCollapse = true
-    //     return
-    //   } else if (item.indexOf('在你的地圖裝置使用此物品來開啟前往卡蘭德迷湖的傳送門。') > -1) { // 鏡像碑牌判斷
-    //     this.mirroredStatsAnalysis(itemArray)
-    //     this.isStatsCollapse = true
-    //     return
-    //   }
-    // } else if (Rarity === "寶石") {
-    //   this.isGem = true
-    //   this.gemBasic.chosenG = searchName
-
-    //   const isTransfigured = this.transfiguredGems.find(gem => gem.text === searchName); // 比對是否為變異寶石
-    //   if (isTransfigured) {
-    //     this.searchJson.query.type = {
-    //       "option": this.replaceString(isTransfigured.type),
-    //       "discriminator": isTransfigured.disc
-    //     }
-    //     if (item.indexOf('瓦爾．') > -1) { // 瓦爾 & 變異寶石
-    //       let vaalPos = item.substring(item.indexOf('瓦爾．'))
-    //       let vaalPosEnd = vaalPos.indexOf(NL)
-    //       let vaalGem = vaalPos.substring(0, vaalPosEnd)
-    //       this.searchName = `物品名稱『${vaalGem} (${searchName})』`
-    //       this.searchJson.query.type.option = this.replaceString(`瓦爾．${isTransfigured.type}`)
-    //     }
-    //   } else {
-    //     if (item.indexOf('瓦爾．') > -1) { // 瓦爾技能
-    //       let vaalPos = item.substring(item.indexOf('瓦爾．'))
-    //       let vaalPosEnd = vaalPos.indexOf(NL)
-    //       let vaalGem = vaalPos.substring(0, vaalPosEnd)
-    //       this.searchName = `物品名稱『${vaalGem}』`
-    //       this.gemBasic.chosenG = vaalGem
-    //     }
-    //     this.gemBasic.isSearch = true
-    //     this.isGemBasicSearch()
-    //   }
-
-    //   let levelPos = item.substring(item.indexOf('等級: ') + 4)
-    //   let levelPosEnd = levelPos.indexOf(NL)
-    //   this.gemLevel.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10)
-
-    //   let minQuality = 0
-    //   if (item.indexOf('品質: +') > -1) {
-    //     let quaPos = item.substring(item.indexOf('品質: +') + 5) // 品質截斷字串 (包含'品質: +'前的字串全截斷)
-    //     let quaPosEnd = quaPos.indexOf('% (augmented)') // 品質定位點
-    //     minQuality = parseInt(quaPos.substring(0, quaPosEnd).trim(), 10)
-    //   }
-    //   if (!isTransfigured) { // 若不是變異寶石，則搜尋技能品質
-    //     this.gemQuality.isSearch = true
-    //   }
-    //   this.gemQuality.min = minQuality
-    //   this.isGemQualitySearch()
-    // } else if (Rarity === "普通" && !this.isItem) {
-    //   // } else if (Rarity === "普通" && (item.indexOf('透過聖殿實驗室或個人') > -1 || item.indexOf('可以使用於個人的地圖裝置來增加地圖的詞綴') > -1 || item.indexOf('放置兩個以上不同的徽印在地圖裝置中') > -1 || item.indexOf('你必須完成異界地圖中出現的全部六種試煉才能進入此區域') > -1 || item.indexOf('擊殺指定數量的怪物後會掉落培育之物') > -1 || item.indexOf('將你之前祭祀神壇保存的怪物加入至該地圖的祭祀神壇中') > -1 || item.indexOf('使用此物品開啟前往無悲憫與同情之地的時空之門') > -1 || item.indexOf('在個人地圖裝置使用此物品開啟譫妄異域時空之門') > -1 || item.indexOf('地圖裝置來使用此物品以前往進入瓦爾寶庫') > -1)) {
-    //   // 地圖碎片、裂痕石、徽印、聖甲蟲、眾神聖器、女神祭品、培育器、浸血碑器、釋界之令、幻像異界、瓦爾遺鑰
-    //   this.searchJson.query.type = this.replaceString(searchName)
-    //   if (item.indexOf('右鍵點擊此物品再左鍵點擊虛空石，來套用物品化的六分儀詞綴至虛空石上。') > -1) { // 充能的羅盤
-    //     this.compassStatsAnalysis(itemArray)
-    //     this.isStatsCollapse = true
-    //     return
-    //   }
-    // } else if (Rarity === "任務" && !this.isItem) {
-    //   this.searchName = `物品名稱 <br>『充能的羅盤』`
-    //   if (item.indexOf('放置於此以提升你輿圖全部地圖的階級。') > -1) { // 任務虛空石
-    //     this.compassStatsAnalysis(itemArray)
-    //     this.isStatsCollapse = true
-    //     return
-    //   }
-    // } else if (this.isItem) {
-    //   this.itemStatsAnalysis(itemArray, 0)
-    //   return
-    // } else {
-    //   this.itemsAPI()
-    //   this.issueText = `Version: v1.325.0\n尚未支援搜尋該道具\n\`\`\`\n${this.copyText.replace('稀有度: ', 'Rarity: ')}\`\`\``
-    //   this.isSupported = false
-    //   this.isStatsCollapse = false
-    //   return
-    // }
 
     this.searchTrade();
   }
@@ -667,12 +558,16 @@ export class HomeComponent implements OnInit {
     this.searchOptions.mapLevel.min = '';
     this.searchOptions.mapLevel.max = '';
 
+    this.searchOptions.itemBasic.text = '';
+    this.searchOptions.itemBasic.isSearch = false;
+
+    this.searchOptions.itemSocket.isSearch = false;
+    this.searchOptions.itemSocket.min = 0;
+    this.searchOptions.itemSocket.max = '';
+
     this.searchOptions.mapAreaLevel.isSearch = false;
     this.searchOptions.mapAreaLevel.min = '';
     this.searchOptions.mapAreaLevel.max = '';
-
-    this.searchOptions.itemBasic.text = '';
-    this.searchOptions.itemBasic.isSearch = false;
 
     this.searchOptions.gemLevel.isSearch = false;
     this.searchOptions.gemLevel.min = '';
@@ -697,13 +592,8 @@ export class HomeComponent implements OnInit {
   itemAnalysis(item: any, itemArray: any, matchItem: any) {
     const NL = this.newLine;
     this.searchOptions.itemCategory.option.length = 0;
-    // this.options.itemExBasic.chosenObj = {
-    //   label: "任何",
-    //   prop: ''
-    // };
     this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
-    // this.isRaritySearch();
     // 判斷物品基底
     console.log(matchItem);
     this.searchOptions.itemBasic.text = matchItem.text || matchItem.type;
@@ -714,29 +604,6 @@ export class HomeComponent implements OnInit {
       let levelValue = parseInt(levelPos.substring(0, levelPosEnd).trim(), 10);
       this.searchOptions.itemLevel.min = levelValue >= 86 ? 86 : levelValue; // 物等超過86 只留86
     }
-    // 判斷插槽連線
-    // if (item.indexOf('插槽: ') > -1) {
-    //   const regLinkStr = /[A-Z]/g // 全域搜尋大寫英文字母
-    //   const regLink6 = /(-){5}/g // 六連
-    //   const regLink5 = /(-){4}/g // 五連
-    //   const regLink4 = /(-){3}/g // 四連
-    //   let linkedPos = item.substring(item.indexOf('插槽: ') + 3)
-    //   let linkedPosEnd = linkedPos.indexOf(NL)
-    //   let linkedString = linkedPos.substring(0, linkedPosEnd).trim().replace(regLinkStr, '')
-    //   switch (true) {
-    //     case regLink6.test(linkedString) == true:
-    //       this.itemLinked.min = 6
-    //       break;
-    //     case regLink5.test(linkedString) == true:
-    //       this.itemLinked.min = 5
-    //       break;
-    //     case regLink4.test(linkedString) == true:
-    //       this.itemLinked.min = 4
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // }
     // 判斷物品分類
     this.searchOptions.itemCategory.option.push({
       label: matchItem.name,
@@ -757,66 +624,6 @@ export class HomeComponent implements OnInit {
     }
 
     this.searchOptions.itemCategory.isSearch = true;
-    // this.isItemCategorySearch();
-
-    // // 判斷勢力基底
-    // this.itemExBasic.isSearch = true
-    // switch (true) {
-    //   case itemArray.indexOf('塑者之物') > -1:
-    //     this.itemExBasic.chosenObj = {
-    //       label: "塑者之物",
-    //       prop: "shaper_item"
-    //     }
-    //     break;
-    //   case itemArray.indexOf('尊師之物') > -1:
-    //     this.itemExBasic.chosenObj = {
-    //       label: "尊師之物",
-    //       prop: "elder_item"
-    //     }
-    //     break;
-    //   case itemArray.indexOf('聖戰軍王物品') > -1:
-    //     this.itemExBasic.chosenObj = {
-    //       label: "聖戰君王物品",
-    //       prop: "crusader_item"
-    //     }
-    //     break;
-    //   case itemArray.indexOf('救贖者物品') > -1:
-    //     this.itemExBasic.chosenObj = {
-    //       label: "救贖者物品",
-    //       prop: "redeemer_item"
-    //     }
-    //     break;
-    //   case itemArray.indexOf('總督軍物品') > -1:
-    //     this.itemExBasic.chosenObj = {
-    //       label: "總督軍物品",
-    //       prop: "warlord_item"
-    //     }
-    //     break;
-    //   case itemArray.indexOf('狩獵者物品') > -1:
-    //     this.itemExBasic.chosenObj = {
-    //       label: "狩獵者物品",
-    //       prop: "hunter_item"
-    //     }
-    //     break;
-    //   default:
-    //     this.itemExBasic.isSearch = false
-    //     break;
-    // }
-    // this.isExBasicSearch()
-
-    // switch (matchItem.option) { // 藥劑、劫盜裝備、守望會自動搜尋該基底
-    //   case 'flask':
-    //   case 'heistequipment':
-    //     this.itemLevel.isSearch = true // 藥劑及劫盜裝備增加物等篩選
-    //     this.isItemLevelSearch()
-    //   case 'sentinel':
-    //     this.itemBasic.isSearch = true
-    //     this.isItemBasicSearch()
-    //     this.searchTrade(this.searchJson)
-    //     break;
-    //   default:
-    //     break;
-    // }
   }
 
   //換界石分析
@@ -837,158 +644,17 @@ export class HomeComponent implements OnInit {
       this.searchOptions.mapLevel.isSearch = true;
     }
 
-    // let itemNameString = itemArray[3] === "--------" ? itemArray[2] : `${itemArray[2]} ${itemArray[3]}`
-    // let mapBasicCount = 0;
-
-    // this.basics.map.option.some((element: any) => {
-    //   let itemNameStringIndex = itemNameString.indexOf(element.type); // 比對 mapBasic.option 時只比對中文字串
-
-    //   if (itemNameStringIndex > -1 && !mapBasicCount) {
-    //     mapBasicCount++
-    //     this.basics.map.chosenM = element.type;
-    //     return true
-    //   }
-
-    //   return false;
-    // });
-    // this.basics.map.isSearch = true
-    // this.isMapBasicSearch()
-    // this.options.searchJson.query.filters.map_filters.filters.map_blighted = { // 過濾凋落圖
-    //   "option": "false"
-    // }
-
-    // if (Rarity === "傳奇") { //傳奇地圖
-    //   this.options.raritySet.chosenObj = {
-    //     label: "傳奇",
-    //     prop: 'unique'
-    //   }
-    //   if (item.indexOf('未鑑定') === -1) { // 已鑑定地圖
-    //     this.options.searchJson.query.name = this.replaceString(itemArray[1])
-    //   }
-    //   this.options.raritySet.isSearch = true
-    //   this.isRaritySearch()
-    // } else if (item.indexOf('區域被塑界者控制 (implicit)') > -1) { // 塑界者地圖
-    //   this.mapCategory.isShaper = true
-    //   this.searchJson.query.stats[0].filters[0] = {
-    //     "id": "implicit.stat_1792283443",
-    //     "value": {
-    //       "option": "1"
-    //     }
-    //   }
-    // } else if (item.indexOf('區域被異界尊師控制 (implicit)') > -1) { // 尊師地圖
-    //   this.mapCategory.isElder = true
-    //   this.searchJson.query.stats[0].filters[0] = {
-    //     "id": "implicit.stat_1792283443",
-    //     "value": {
-    //       "option": "2"
-    //     }
-    //   }
-    //   if (item.indexOf('地圖被異界．奴役佔據 (implicit)') > -1) { // 尊師守衛地圖
-    //     this.mapElderGuard.chosenObj = {
-    //       label: "異界．奴役",
-    //       prop: "1"
-    //     }
-    //     this.mapElderGuard.isSearch = true
-    //     this.isMapElderGuardSearch()
-    //   } else if (item.indexOf('地圖被異界．根除佔據 (implicit)') > -1) {
-    //     this.mapElderGuard.chosenObj = {
-    //       label: "異界．根除",
-    //       prop: "2"
-    //     }
-    //     this.mapElderGuard.isSearch = true
-    //     this.isMapElderGuardSearch()
-    //   } else if (item.indexOf('地圖被異界．干擾佔據 (implicit)') > -1) {
-    //     this.mapElderGuard.chosenObj = {
-    //       label: "異界．干擾",
-    //       prop: "3"
-    //     }
-    //     this.mapElderGuard.isSearch = true
-    //     this.isMapElderGuardSearch()
-    //   } else if (item.indexOf('地圖被異界．淨化佔據 (implicit)') > -1) {
-    //     this.mapElderGuard.chosenObj = {
-    //       label: "異界．淨化",
-    //       prop: "4"
-    //     }
-    //     this.mapElderGuard.isSearch = true
-    //     this.isMapElderGuardSearch()
-    //   }
-    // } else if (item.indexOf('地圖含有巴倫的壁壘 (implicit)') > -1) { // 壁壘守衛地圖
-    //   this.mapCategory.isCitadel = true
-    //   this.mapCitadelGuard.chosenObj = {
-    //     label: "聖戰軍王．巴倫",
-    //     prop: "1"
-    //   }
-    //   this.mapCitadelGuard.isSearch = true
-    //   this.isMapCitadelGuardSearch()
-    // } else if (item.indexOf('地圖含有維羅提尼亞的壁壘 (implicit)') > -1) {
-    //   this.mapCategory.isCitadel = true
-    //   this.mapCitadelGuard.chosenObj = {
-    //     label: "救贖者．維羅提尼亞",
-    //     prop: "2"
-    //   }
-    //   this.mapCitadelGuard.isSearch = true
-    //   this.isMapCitadelGuardSearch()
-    // } else if (item.indexOf('地圖含有奧赫茲明的壁壘 (implicit)') > -1) {
-    //   this.mapCategory.isCitadel = true
-    //   this.mapCitadelGuard.chosenObj = {
-    //     label: "狩獵者．奧赫茲明",
-    //     prop: "3"
-    //   }
-    //   this.mapCitadelGuard.isSearch = true
-    //   this.isMapCitadelGuardSearch()
-    // } else if (item.indexOf('地圖含有圖拉克斯的壁壘 (implicit)') > -1) {
-    //   this.mapCategory.isCitadel = true
-    //   this.mapCitadelGuard.chosenObj = {
-    //     label: "總督軍．圖拉克斯",
-    //     prop: "4"
-    //   }
-    //   this.mapCitadelGuard.isSearch = true
-    //   this.isMapCitadelGuardSearch()
-    // } else if (item.indexOf('凋落的') > -1 || item.indexOf('Blighted') > -1) {
-    //   this.mapCategory.isBlighted = true
-    //   this.searchJson.query.filters.map_filters.filters.map_blighted = {
-    //     "option": "true"
-    //   }
-    // }
-    // else { // error handle
-    //   this.status = `Oops! 尚未支援搜尋此種地圖`
-    //   return
-    // }
     this.searchTrade();
   }
 
   //物品詞綴分析
   itemStatsAnalysis(itemArray: any, rarityFlag: any) {
-    // if (itemArray.indexOf('塑者之物') > -1) // 勢力判斷由 itemAnalysis function 處理
-    //   itemArray.splice(itemArray.indexOf('塑者之物'), 1)
-    // if (itemArray.indexOf('尊師之物') > -1)
-    //   itemArray.splice(itemArray.indexOf('尊師之物'), 1)
-    // if (itemArray.indexOf('聖戰軍王物品') > -1)
-    //   itemArray.splice(itemArray.indexOf('聖戰軍王物品'), 1)
-    // if (itemArray.indexOf('救贖者物品') > -1)
-    //   itemArray.splice(itemArray.indexOf('救贖者物品'), 1)
-    // if (itemArray.indexOf('狩獵者物品') > -1)
-    //   itemArray.splice(itemArray.indexOf('狩獵者物品'), 1)
-    // if (itemArray.indexOf('總督軍物品') > -1)
-    //   itemArray.splice(itemArray.indexOf('總督軍物品'), 1)
-
-    // let clusterA = itemArray.findIndex((e: any) => e.indexOf('個附加的天賦為珠寶插槽') > -1) // 星團珠寶贅詞
-    // let clusterB = itemArray.findIndex((e: any) => e.indexOf('附加的天賦點不與珠寶範圍互動。點擊右鍵從插槽中移除。') > -1)
-    // if (clusterB > -1)
-    //   itemArray.splice(clusterB, 1)
-    // if (clusterA > -1)
-    //   itemArray.splice(clusterA, 1)
-
     this.ui.collapse.stats = rarityFlag ? true : false;
+
     let tempStat: any = [];
     let itemDisplayStats: any = []; // 該物品顯示的詞綴陣列
     let itemStatStart = 0;// 物品隨機詞綴初始位置
     let itemStatEnd = itemArray.length - 1; // 物品隨機詞綴結束位置 //之後可能需要修改
-
-    // function spliceWrapStats(spliceNumber: any, index: any) { //配合 splice function 與 \n 數量調整詞綴結束位置
-    //   itemArray.splice(index + 1, spliceNumber)
-    //   itemStatEnd = itemArray.length - spliceNumber
-    // }
 
     //尋找結束行
     itemArray.forEach((element: any, index: any) => {
@@ -1017,41 +683,6 @@ export class HomeComponent implements OnInit {
       //     spliceWrapStats(newLineCount, index)
       //   }
       // });
-      // if (element.indexOf("附加的小型天賦給予：") > -1 && element.indexOf("(enchant)") > -1) { // 有折行的星團珠寶附魔詞綴
-      //   switch (true) {
-      //     case element.indexOf("斧攻擊增加 12% 擊中和異常狀態傷害") > -1:
-      //       itemArray[index] = `${itemArray[index]}\n劍攻擊增加 12% 擊中和異常狀態傷害 (enchant)`
-      //       spliceWrapStats(1, index)
-      //       break;
-      //     case element.indexOf("長杖攻擊增加 12% 擊中和異常狀態傷害") > -1:
-      //       itemArray[index] = `${itemArray[index]}\n錘或權杖攻擊增加 12% 擊中和異常狀態傷害 (enchant)`
-      //       spliceWrapStats(1, index)
-      //       break;
-      //     case element.indexOf("爪攻擊增加 12% 擊中和異常狀態傷害") > -1:
-      //       itemArray[index] = `${itemArray[index]}\n匕首攻擊增加 12% 擊中和異常狀態傷害 (enchant)`
-      //       spliceWrapStats(1, index)
-      //       break;
-      //     case element.indexOf("持弓類武器時增加 12% 傷害") > -1:
-      //       itemArray[index] = `${itemArray[index]}\n增加 12% 弓技能持續傷害 (enchant)`
-      //       spliceWrapStats(1, index)
-      //       break;
-      //     case element.indexOf("增加 12% 陷阱傷害") > -1:
-      //       itemArray[index] = `${itemArray[index]}\n增加 12% 地雷傷害 (enchant)`
-      //       spliceWrapStats(1, index)
-      //       break;
-      //     case element.indexOf("增加 10% 來自藥劑的生命回復") > -1:
-      //       itemArray[index] = `${itemArray[index]}\n增加 10% 來自藥劑的魔力回復`
-      //       spliceWrapStats(1, index)
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      // } else if (element.indexOf("只會影響") > -1 && element.indexOf("範圍內的天賦") > -1) { // 希望之絃 Thread of Hope 特殊判斷
-      //   let areaStat = itemArray[index].substr(4, 1)
-      //   itemArray[index] = `只能影響 # Ring 上的天賦,${areaStat}`
-      // } else if (element.indexOf("卓烙總督物品") > -1 || element.indexOf("吞噬天地物品") > -1 || element.indexOf("Searing Exarch Item") > -1 || element.indexOf("Eater of Worlds Item") > -1) {
-      //   spliceWrapStats(2, index + 1) // 忽略 3.17 新勢力詞綴
-      // }
       if (element === "--------" && !isEndPoint && itemStatStart && index > itemStatStart && itemStatEnd == itemArray.length - 1) { // 判斷隨機詞綴結束點
         itemStatEnd = index;
       }
@@ -1115,121 +746,6 @@ export class HomeComponent implements OnInit {
 
         console.log(element, statID, apiStatText, itemStatText);
 
-        // switch (true) { // 部分(Local)屬性判斷處理：若物品為武器，攻擊屬性應為（部分）標籤
-        //   case statID.indexOf('stat_960081730') > -1 || statID.indexOf('stat_1940865751') > -1: // 附加 # 至 # 物理傷害 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) { // 武器類別
-        //       statID = `${statID.split('.')[0]}.stat_1940865751`
-        //     } else { // 非武器
-        //       statID = `${statID.split('.')[0]}.stat_960081730`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_321077055') > -1 || statID.indexOf('stat_709508406') > -1: // 附加 # 至 # 火焰傷害 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_709508406`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_321077055`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_3531280422') > -1 || statID.indexOf('stat_2223678961') > -1: // 附加 # 至 # 混沌傷害 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_2223678961`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_3531280422`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_1334060246') > -1 || statID.indexOf('stat_3336890334') > -1: // 附加 # 至 # 閃電傷害 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_3336890334`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_1334060246`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_2387423236') > -1 || statID.indexOf('stat_1037193709') > -1: // 附加 # 至 # 冰冷傷害 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_1037193709`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_2387423236`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_681332047') > -1 || statID.indexOf('stat_210067635') > -1: // 攻擊速度 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_210067635`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_681332047`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_681332047') > -1 || statID.indexOf('stat_210067635') > -1: // 攻擊速度 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_210067635`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_681332047`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_3593843976') > -1 || statID.indexOf('stat_55876295') > -1: // #% 的物理攻擊傷害偷取生命 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_55876295`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_3593843976`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_3237948413') > -1 || statID.indexOf('stat_669069897') > -1: // #% 所造成的物理攻擊傷害偷取魔力 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('weapon') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_669069897`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_3237948413`
-        //     }
-        //     break;
-        //   // 若物品為護甲，防禦屬性應為（部分）標籤
-        //   case statID.indexOf('stat_2144192055') > -1 || statID.indexOf('stat_53045048') > -1: // # 點閃避值 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('armour') > -1) { // 護甲類別
-        //       statID = `${statID.split('.')[0]}.stat_53045048`
-        //     } else { // 非護甲
-        //       statID = `${statID.split('.')[0]}.stat_2144192055`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_2106365538') > -1 || statID.indexOf('stat_124859000') > -1: // 增加 #% 閃避值 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('armour') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_124859000`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_2106365538`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_809229260') > -1 || statID.indexOf('stat_3484657501') > -1: // # 點護甲 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('armour') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_3484657501`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_809229260`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_2866361420') > -1 || statID.indexOf('stat_1062208444') > -1: // 增加 #% 護甲 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('armour') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_1062208444`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_2866361420`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_3489782002') > -1 || statID.indexOf('stat_4052037485') > -1: // # 最大能量護盾 (部分)
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('armour') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_4052037485`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_3489782002`
-        //     }
-        //     break;
-        //   case statID.indexOf('stat_3240073117') > -1 || statID.indexOf('stat_44972811') > -1: // # 處理台服兩詞綴相同翻譯 "增加 #% 生命回復率"
-        //     // stat_3240073117 Recovery rate: 腰帶、護甲
-        //     // stat_44972811 Regeneration rate: 項鍊、頭手鞋
-        //     if (this.options.itemCategory.chosenObj.prop.indexOf('belt') > -1 || this.options.itemCategory.chosenObj.prop.indexOf('chest') > -1) {
-        //       statID = `${statID.split('.')[0]}.stat_3240073117`
-        //     } else {
-        //       statID = `${statID.split('.')[0]}.stat_44972811`
-        //     }
-        //     break;
-        //   case statID.indexOf('pseudo.pseudo_logbook') > -1: // 探險日誌詞綴為偽屬性
-        //     element.type = '偽屬性'
-        //     break;
-        //   default:
-        //     break;
-        // }
         let itemStatArray = itemStatText.split(' ') // 將物品上的詞綴拆解
         let matchStatArray = apiStatText.split(' ') // 將詞綴資料庫上的詞綴拆解
         // console.log(itemStatText)
@@ -1237,12 +753,6 @@ export class HomeComponent implements OnInit {
         let randomMinValue = 0; // 預設詞綴隨機數值最小值為空值(之後修)
         let randomMaxValue = 0; // 預設詞綴隨機數值最大值為空值(之後修)
         let optionValue = 0; // 星團珠寶附魔 / 項鍊塗油配置 / 禁忌烈焰.血肉配置 的 ID
-
-        // if (statID === "enchant.stat_3948993189") {
-        //   isStatSearch = true
-        //   let obj = stringSimilarity.findBestMatch(itemStatText, this.clusterJewelStats)
-        //   optionValue = parseInt(obj.ratings[obj.bestMatchIndex + 1].target, 10)
-        //   apiStatText = `附加的小型天賦給予：\n${obj.ratings[obj.bestMatchIndex].target}`
 
         // //塗油~之後修
         // if (statID === "enchant.stat_2954116742") {
@@ -1379,7 +889,6 @@ export class HomeComponent implements OnInit {
           "min": randomMinValue,
           "max": randomMaxValue === 0 ? '' : randomMaxValue,
           "isValue": randomMinValue ? true : false,
-          // "isNegative": isNegativeStat,
           "isSearch": isStatSearch,
           "type": element.type
         })
@@ -1392,7 +901,6 @@ export class HomeComponent implements OnInit {
           "min": '',
           "max": '',
           "isValue": false,
-          // "isNegative": false,
           "isSearch": false,
           "type": element.type
         })
@@ -1403,6 +911,7 @@ export class HomeComponent implements OnInit {
   //建立搜尋資料
   searchTrade() {
     this.app.isCounting = true;
+    this.app.apiErrorStr = '';
     this.item.supported = true;
 
     if (this.filters.searchJson.query.stats[0].filters.length === 0) {
@@ -1477,6 +986,7 @@ export class HomeComponent implements OnInit {
         this.isItemBasicSearch();
         this.isItemCategorySearch();
         this.isItemLevelSearch();
+        this.isItemSocketSearch();
         break;
       case 'map':
         this.ui.collapse.map = false;
@@ -1523,6 +1033,7 @@ export class HomeComponent implements OnInit {
       this.resetSearchData();
       this.app.isApiError = true;
       this.app.isCounting = false;
+      this.app.apiErrorStr = error;
       console.log(error);
     });
 
@@ -1586,7 +1097,7 @@ export class HomeComponent implements OnInit {
     let mdStat = stat.replace(/\d+/g, "#").replace("+", "").replace("#.#", "#");
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1) {
+    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1) {
       mdStat = mdStat.replace('減少', '增加');
     }
 
@@ -1679,6 +1190,18 @@ export class HomeComponent implements OnInit {
       this.filters.searchJson.query.filters.misc_filters.filters.gem_sockets = {
         min: this.searchOptions.gemSocket.min ? this.searchOptions.gemSocket.min : null,
         max: this.searchOptions.gemSocket.max ? this.searchOptions.gemSocket.max : null
+      };
+    }
+  }
+
+  //是否針對物品插槽搜尋
+  isItemSocketSearch() {
+    if (!this.searchOptions.itemSocket.isSearch && Object.keys(this.filters.searchJson.query.filters.equipment_filters.filters).includes("rune_sockets")) {
+      delete this.filters.searchJson.query.filters.equipment_filters.filters.rune_sockets; // 刪除技能品質 filter
+    } else if (this.searchOptions.itemSocket.isSearch) {
+      this.filters.searchJson.query.filters.equipment_filters.filters.rune_sockets = {
+        min: this.searchOptions.itemSocket.min ? this.searchOptions.itemSocket.min : null,
+        max: this.searchOptions.itemSocket.max ? this.searchOptions.itemSocket.max : null
       };
     }
   }
@@ -2043,6 +1566,9 @@ export class HomeComponent implements OnInit {
           break;
       }
     });
+
+    //清除資料
+    this.datas.items = [];
   }
 
   //詞綴格式化
@@ -2134,6 +1660,9 @@ export class HomeComponent implements OnInit {
 
       this.stats.skill.push(text, element.id);
     })
+
+    //清除資料
+    this.datas.stats = [];
   }
 
   //點擊後搜尋
@@ -2227,5 +1756,19 @@ export class HomeComponent implements OnInit {
     console.log(itemBasic);
 
     return itemBasic;
+  }
+
+  //取得插槽數量
+  getSocketNumber(text: string): number {
+    let start = text.indexOf('插槽: ');
+
+    if (start > -1) {
+      let socPos = text.substring(text.indexOf('插槽: ') + 4); // 插槽截斷字串 (包含'插槽: +'前的字串全截斷)
+      let socPosEnd = socPos.indexOf(this.newLine);
+
+      return socPos.substring(0, socPosEnd).trim().split(" ").length;
+    } else {
+      return 0;
+    }
   }
 }

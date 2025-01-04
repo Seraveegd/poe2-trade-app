@@ -1,24 +1,3 @@
-// #home{
-//     background-color: #313131;
-//     color: white;
-
-//     .card{
-//         background-color: #313131 !important;
-//         color: white;
-//         border:lpx solid #aaaaaa;
-
-//         select{
-//             background-color: #313131;
-//             color: white;
-//         }
-
-//         input{
-//             background-color: #313131;
-//             color: white;
-//         }
-//     }
-// }
-
 .row {
     padding: 4px;
 
@@ -32,6 +11,10 @@
 
     input[type="text"] {
         font-size: 12px;
+    }
+
+    div {
+        align-content: center;
     }
 }
 

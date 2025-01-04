@@ -1,12 +1,7 @@
 <div id="home">
-    <div style="padding:5px 30px;">
+    <div style="padding:5px 10px;">
         <ng-container>
-            <!-- <div>
-                <button type="button" class="btn btn-outline-primary ms-2"
-                    (click)="isCollapsed = !isCollapsed">搜尋設定</button>
-            </div> -->
-            <!--搜尋設定-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" style="margin-top:10px;">
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -127,7 +122,7 @@
                                     [(ngModel)]="searchOptions.itemLevel.max"
                                     [disabled]="!searchOptions.itemLevel.isSearch">
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="RaritySetflexSwitchCheckChecked"
                                         [(ngModel)]="searchOptions.raritySet.isSearch"
@@ -135,7 +130,7 @@
                                     <label class="form-check-label" for="RaritySetflexSwitchCheckChecked">稀有度</label>
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <select class="form-select" aria-label="稀有度"
                                     [disabled]="!searchOptions.raritySet.isSearch"
                                     [(ngModel)]="searchOptions.raritySet.chosenObj">
@@ -206,7 +201,7 @@
                                     [(ngModel)]="searchOptions.mapLevel.max"
                                     [disabled]="!searchOptions.mapLevel.isSearch">
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox"
                                         id="_RaritySetflexSwitchCheckChecked"
@@ -215,7 +210,7 @@
                                     <label class="form-check-label" for="_RaritySetflexSwitchCheckChecked">稀有度</label>
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <select class="form-select" aria-label="稀有度"
                                     [(ngModel)]="searchOptions.raritySet.chosenObj"
                                     [disabled]="!searchOptions.raritySet.isSearch">
@@ -290,19 +285,21 @@
                                 <input type="text" aria-label="max" class="form-control"
                                     [(ngModel)]="searchOptions.gemSocket.max"
                                     [disabled]="!searchOptions.gemSocket.isSearch">
-                            </div>                        
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!--詞綴搜尋-->
+            @if(item.name !== ''){
             <div style="text-align: center;">
                 <h5 [innerHTML]="item.name"
                     style="text-align: center; cursor: pointer;padding-top: 6px;display: inline-block;"
                     (click)="ui.collapse.stats = !ui.collapse.stats"></h5>
             </div>
+            }
             @if(this.item.searchStats.length > 0){
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats" style="margin-top:10px;">
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -318,6 +315,43 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- 裝備插槽 -->
+                                        @if( searchOptions.itemSocket.min > 0) {
+                                        <tr>
+                                            <td
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="socketChecked" type="checkbox"
+                                                        [(ngModel)]="searchOptions.itemSocket.isSearch"
+                                                        id="socketflexCheckDefault">
+                                                    <label class="form-check-label" for="socketflexCheckDefault">
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF', 'font-weight': 'bolder'}">
+                                                插槽</td>
+                                            <td (click)="searchOptions.itemSocket.isSearch = !searchOptions.itemSocket.isSearch"
+                                                style="white-space:pre-wrap;cursor: pointer;"
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                空符文插槽數量</td>
+                                            <td
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                <div>
+                                                    <input type="text" class="form-control" aria-label="max"
+                                                        [(ngModel)]="searchOptions.itemSocket.min" disabled="true">
+                                                </div>
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                <div>
+                                                    <input type="text" class="form-control" aria-label="max"
+                                                        [(ngModel)]="searchOptions.itemSocket.max" disabled="true">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        }
+                                        <!--詞綴-->
                                         @for (stat of item.searchStats; track $index) {
                                         <tr>
                                             <td
@@ -337,7 +371,7 @@
                                                 }
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': stat.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF', 'color': typeColors.get(stat.type), 'font-weight': 'bolder'}">
                                                 {{
                                                 stat.type }}
                                             </td>
@@ -351,14 +385,14 @@
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="min"
-                                                        [(ngModel)]="stat.min" value="{{ stat.min }}">
+                                                        [(ngModel)]="stat.min">
                                                 </div>
                                             </td>
                                             <td
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgba(254, 224, 85, 0.5)' : '#FFFFFF'}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
-                                                        [(ngModel)]="stat.max" value="{{ stat.max }}">
+                                                        [(ngModel)]="stat.max">
                                                 </div>
                                             </td>
                                         </tr>
@@ -377,15 +411,24 @@
             <button (click)="clickToSearch()" class="btn btn-primary">搜尋</button>
         </div>
         }
+
     </div>
 </div>
-<hr>
-@if (app.isApiError) {
-<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
+<hr style="margin:3px 0;">
+<!-- API發送錯誤 -->
+@if (app.apiErrorStr !== '' && app.isApiError){
+<ngb-alert [dismissible]="false">
+    {{ app.apiErrorStr }}
+</ngb-alert>
 }
-@if (searchResult.searchTotal > 0) {
+<!-- @if (app.isApiError) {
+<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
+} -->
+@if (searchResult.status !== '') {
 <h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>
+@if (searchResult.searchTotal > 0){
 <app-analyze [searchResult]="searchResult" (isCounting)="countingStatus($event)"></app-analyze>
+}
 }

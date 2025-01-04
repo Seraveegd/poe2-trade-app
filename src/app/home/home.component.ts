@@ -97,6 +97,7 @@ export class HomeComponent implements OnInit {
   public item: any = {
     name: '',
     category: '',
+    type: '',
     supported: true,
     copyText: '',
     searchStats: [] // 分析拆解後的物品詞綴陣列，提供使用者在界面勾選是否查詢及輸入數值
@@ -594,6 +595,8 @@ export class HomeComponent implements OnInit {
     this.searchOptions.itemCategory.option.length = 0;
     this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
+
+    this.item.type = matchItem.option;
     // 判斷物品基底
     console.log(matchItem);
     this.searchOptions.itemBasic.text = matchItem.text || matchItem.type;
@@ -736,12 +739,10 @@ export class HomeComponent implements OnInit {
     // let spellDamageTotal = 0;
     //比對詞綴，抓出隨機數值與詞綴搜尋 ID
     tempStat.forEach((element: any, idx: any, array: any) => {
-      if (element.text.indexOf('未找到詞綴') === -1) {
+      if (element.text.stat.indexOf('未找到詞綴') === -1) {
         let isStatSearch = false;
-        // let bestIndex = (element.bestMatchIndex % 2 === 0) ? element.bestMatchIndex + 1 : element.bestMatchIndex; // 處理判斷到英文詞綴的例外狀況，通常是季初有新詞綴尚未翻譯時才發生
-        let posStat = this.stats[element.category].indexOf(element.text);
-        let statID = this.stats[element.category][posStat + 1]; // 詞綴ID
-        let apiStatText = this.stats[element.category][posStat]; // API 抓回來的詞綴字串
+        let statID = element.text.id; // 詞綴ID
+        let apiStatText = element.text.stat; // API 抓回來的詞綴字串
         let itemStatText = itemDisplayStats[idx]; // 物品上的詞綴字串
 
         console.log(element, statID, apiStatText, itemStatText);
@@ -1095,7 +1096,7 @@ export class HomeComponent implements OnInit {
   }
 
   //取得詞綴
-  getStat(stat: string, type: any): string {
+  getStat(stat: string, type: any): any {
     let mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
@@ -1104,11 +1105,20 @@ export class HomeComponent implements OnInit {
     }
 
     let findStat = stat;
+    let findIdx = 0;
     let findResult = this.stats[type].some((e: any, idx: any, arr: any) => {
       if (idx % 2 === 0) {
         const result = e === mdStat;
 
-        if (result) findStat = e;
+        if (result) {
+          //修正重複攻擊速度詞綴(隨機與傳奇)
+          if (this.stats[type][idx + 1] == 'explicit.stat_210067635' && this.item.type.indexOf('weapon') === -1) {
+            return false;
+          }
+
+          findStat = e;
+          findIdx = idx;
+        }
 
         return result;
       } else {
@@ -1120,7 +1130,13 @@ export class HomeComponent implements OnInit {
 
     if (!findResult) console.error("未找到詞綴：" + stat);
 
-    return findResult ? findStat : findStat + "(未找到詞綴)";
+    return findResult ? {
+      id: this.stats[type][findIdx + 1],
+      stat: this.stats[type][findIdx]
+    } : {
+      id: '',
+      stat: findStat + "(未找到詞綴)"
+    };
   }
 
   //是否針對物品等級搜尋

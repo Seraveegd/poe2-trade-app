@@ -14,3 +14,16 @@
 .card-header{
     text-align: center;
 }
+
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: rgb(27 27 27 / 30%);
+        color: #e5e4e4;
+        border-color: #747474;
+
+        .card-header{
+            background-color: rgb(26 24 24 / 50%);
+            border-color: #747474;
+        }
+    }
+}

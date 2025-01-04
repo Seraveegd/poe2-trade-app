@@ -1,8 +1,10 @@
 <div id="app">
   <div id="nav" style="display: flex; justify-content: center; clear: both;">
     <div style="flex: 1; text-align: center;">
-      <a routerLink="/home">首頁</a>
-      <a routerLink="/about">關於我</a>
+      <a routerLink="/home"><button type="button" class="btn btn-link">首頁</button></a>
+      <a routerLink="/about"><button type="button" class="btn btn-link">關於我</button></a>
+      <button type="button" class="btn btn-outline-success" (click)="changeTheme()"
+        style="float: right;margin-right:3px;">變更顏色</button>
     </div>
   </div>
 </div>

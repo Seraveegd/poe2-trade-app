@@ -1,7 +1,33 @@
-#fetchResult{
-    tbody{
-        img{
+#fetchResult {
+    tbody {
+        img {
             max-width: 36px;
+        }
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    table {
+        th {
+            background-color: #333333;
+            color: #e5e4e4;
+            border-color: #6d6d6d;
+        }
+
+        tr:nth-child(even) {
+            td {
+                background: rgb(38 37 36 / 30%);
+                color: #e5e4e4;
+                border-color: #6d6d6d;
+            }
+        }
+
+        tr:nth-child(odd) {
+            td {
+                background-color: rgb(38 38 37 / 70%) !important;
+                color: #e5e4e4;
+                border-color: #6d6d6d;
+            }
         }
     }
 }

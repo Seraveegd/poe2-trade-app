@@ -30,13 +30,14 @@ export class HomeComponent implements OnInit {
   // private ipc!: IpcRenderer;
   public isCollapsed: boolean = false;
   public typeColors: any = new Map([
-    ['固定', '#000000'],
+    ['固定', '#BD5A5A'],
     ['符文', '#85A1A5'],
     ['附魔', '#F8E169'],
     ['隨機', '#665DAE'],
     ['汙染', '#C62A29'],
     ['傳奇', '#AB4C11'],
-    ['防禦', '#E6CA81']
+    ['防禦', '#E6CA81'],
+    ['插槽', '#8A8A8A']
   ]);
 
   private defenceTypes: any = new Map([

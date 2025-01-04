@@ -46,3 +46,52 @@
         }
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: rgb(27 27 27 / 30%);
+
+        .form-floating {
+            label {
+                color: #e5e4e4;
+            }
+
+            label::after {
+                background: none;
+            }
+        }
+
+        select,
+        input.form-control {
+            background: #292828;
+            color: #e5e4e4;
+            border: 1px solid #626262 !important;
+
+            &:disabled{
+                background-color: #5b5b5b;
+            }
+        }
+
+        label {
+            color: #e5e4e4;
+        }
+
+        table {
+            tr {
+                th {
+                    background-color: #1b1a1b;
+                    color: #d0cdcd;
+                    border-color: #6d6d6d;
+                }
+
+                td {
+                    background-color: #29292a;
+                    color: #b6b6b6;
+                    font-weight: bold;
+                    text-shadow: 1px 1px 2px #211d1d;
+                    border-color: #6d6d6d;
+                }
+            }
+        }
+    }
+}

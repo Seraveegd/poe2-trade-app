@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -41,7 +41,7 @@ function createWindow() {
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     ipcMain.on('analyze-item', (msg) => {
         if (win.isMinimized())
@@ -53,7 +53,17 @@ function createWindow() {
         win.setAlwaysOnTop(false);
         app.focus();
         win.moveTop();
-    })
+    });
+
+    ipcMain.on('toggle-theme', (msg) => {
+        if (nativeTheme.shouldUseDarkColors) {
+            nativeTheme.themeSource = 'light';
+        } else {
+            nativeTheme.themeSource = 'dark';
+        }
+    });
+
+    nativeTheme.themeSource = 'dark';
 }
 
 app.whenReady().then(() => {
@@ -62,4 +72,10 @@ app.whenReady().then(() => {
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+})
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 })

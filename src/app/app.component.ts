@@ -14,11 +14,26 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 
 export class AppComponent implements OnInit {
 
+  private colorScheme = 'dark';
+
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    const localStorageColorScheme = localStorage.getItem('prefers-color');
+    // Check if any prefers-color-scheme is stored in localStorage
+    if (localStorageColorScheme) {
+      // Save prefers-color-scheme from localStorage
+      (<any>window).ipcRenderer.send('toggle-theme', localStorageColorScheme);
+    }
+  }
 
   changeTheme() {
+    if (this.colorScheme === 'dark') {
+      localStorage.setItem('prefers-color', 'light');
+    } else {
+      localStorage.setItem('prefers-color', 'dark');
+    }
+
     (<any>window).ipcRenderer.send('toggle-theme');
   }
 }

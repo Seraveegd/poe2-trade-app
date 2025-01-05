@@ -12,10 +12,14 @@
     }
 
     a {
-        margin: 4px;
+        padding: 4px;
         text-decoration: none;
         flex: auto;
         text-align: center;
+
+        &:hover {
+            background-color: rgb(34 32 32 / 50%);
+        }
     }
 
     button {
@@ -26,5 +30,23 @@
 @media (prefers-color-scheme: dark) {
     a {
         color: white;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    #app {
+        box-shadow: 1px 1px 5px #b1b1b1;
+
+        a {
+            color: #0067ff;
+
+            &:hover {
+                background: rgb(190 186 186 / 50%);
+            }
+
+            &:first-child {
+                border-right: 1px solid #c0c0c0 !important;
+            }
+        }
     }
 }

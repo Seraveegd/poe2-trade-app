@@ -319,7 +319,7 @@
                                         @for (defence of item.searchDefences; track $index) {
                                         <tr>
                                             <td
-                                                [ngStyle]="{'backgroundColor': defence.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'backgroundColor': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" name="ststsChecked" type="checkbox"
                                                         [(ngModel)]="defence.isSearch"
@@ -330,25 +330,25 @@
                                                 </div>
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(48 69 39 / 39%)' : null, 'color': typeColors.get(defence.type), 'font-weight': 'bolder'}">
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': typeColors.get(defence.type), 'font-weight': 'bolder'}">
                                                 {{
                                                 defence.type }}
                                             </td>
                                             <td (click)="defence.isSearch = !defence.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
-                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 {{
                                                 defence.text }}
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="min"
                                                         [(ngModel)]="defence.min">
                                                 </div>
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
                                                         [(ngModel)]="defence.max">
@@ -360,7 +360,7 @@
                                         @if( searchOptions.itemSocket.min > 0) {
                                         <tr>
                                             <td
-                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" name="socketChecked" type="checkbox"
                                                         [(ngModel)]="searchOptions.itemSocket.isSearch"
@@ -370,21 +370,21 @@
                                                 </div>
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(48 69 39 / 39%)' : null, 'font-weight': 'bolder', 'color': typeColors.get('插槽')}">
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'font-weight': 'bolder', 'color': typeColors.get('插槽')}">
                                                 插槽</td>
                                             <td (click)="searchOptions.itemSocket.isSearch = !searchOptions.itemSocket.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
-                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 空符文插槽數量</td>
                                             <td
-                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
                                                         [(ngModel)]="searchOptions.itemSocket.min" disabled="true">
                                                 </div>
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
                                                         [(ngModel)]="searchOptions.itemSocket.max" disabled="true">
@@ -396,7 +396,7 @@
                                         @for (stat of item.searchStats; track $index) {
                                         <tr>
                                             <td
-                                                [ngStyle]="{'backgroundColor': stat.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'backgroundColor': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 @if (stat.id !== '') {
                                                 <div class="form-check">
                                                     <input class="form-check-input" name="ststsChecked" type="checkbox"
@@ -412,25 +412,25 @@
                                                 }
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(48 69 39 / 39%)' : null, 'color': typeColors.get(stat.type), 'font-weight': 'bolder'}">
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': typeColors.get(stat.type), 'font-weight': 'bolder'}">
                                                 {{
                                                 stat.type }}
                                             </td>
                                             <td (click)="stat.isSearch = !stat.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
-                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(48 69 39 / 39%)' : null, 'color': (stat.id=='') ? 'red' : null}">
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': (stat.id=='') ? 'red' : null}">
                                                 {{
                                                 stat.text }}
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="min"
                                                         [(ngModel)]="stat.min">
                                                 </div>
                                             </td>
                                             <td
-                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(48 69 39 / 39%)' : null}">
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
                                                         [(ngModel)]="stat.max">

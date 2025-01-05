@@ -56,7 +56,7 @@ function createWindow() {
     });
 
     ipcMain.on('toggle-theme', (msg) => {
-        if (nativeTheme.shouldUseDarkColors) {
+        if (nativeTheme.shouldUseDarkColors || msg === 'dark') {
             nativeTheme.themeSource = 'light';
         } else {
             nativeTheme.themeSource = 'dark';

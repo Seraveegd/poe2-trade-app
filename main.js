@@ -41,7 +41,7 @@ function createWindow() {
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
     // Open the DevTools.
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
 
     ipcMain.on('analyze-item', (msg) => {
         if (win.isMinimized())

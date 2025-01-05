@@ -2,12 +2,29 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 5px;
+    border-bottom: 1px solid rgb(75 75 75 / 50%);
+    padding: 3px;
+    box-shadow: 1px 1px 5px #1c1e1d;
+    margin-bottom: 4px;
+
+    #nav {
+        display: flex;
+    }
 
     a {
         margin: 4px;
         text-decoration: none;
+        flex: auto;
+        text-align: center;
+    }
+
+    button {
+        margin-left: auto;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    a {
+        color: white;
     }
 }

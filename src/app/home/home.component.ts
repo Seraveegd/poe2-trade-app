@@ -37,7 +37,8 @@ export class HomeComponent implements OnInit {
     ['汙染', '#C62A29'],
     ['傳奇', '#AB4C11'],
     ['防禦', '#E6CA81'],
-    ['插槽', '#8A8A8A']
+    ['插槽', '#8A8A8A'],
+    ['聖所', '#A1422E']
   ]);
 
   private defenceTypes: any = new Map([
@@ -123,6 +124,7 @@ export class HomeComponent implements OnInit {
     rune: [], // 符文詞綴
     skill: [], //技能詞綴
     allocates: [], // 項鍊塗油配置附魔詞綴
+    sanctum: [] //聖所詞綴
   }
 
   //搜尋相關設定
@@ -593,6 +595,8 @@ export class HomeComponent implements OnInit {
     this.searchResult.status = '';
     this.item.searchStats = [];
     this.item.searchDefences = [];
+
+    this.app.apiErrorStr = '';
   }
 
   //物品分析
@@ -683,7 +687,8 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    console.log(itemStatStart, itemStatEnd)
+    console.log(itemStatStart, itemStatEnd);
+    console.log(this.item.type);
 
     for (let index = itemStatStart; index < itemStatEnd; index++) {
       if (itemArray[index] !== "--------" && itemArray[index]) {
@@ -708,6 +713,11 @@ export class HomeComponent implements OnInit {
           tempStat.push({ text: this.getStat(text, 'enchant') });
           tempStat[tempStat.length - 1].type = "附魔";
           tempStat[tempStat.length - 1].category = "enchant";
+        } else if (this.item.type.indexOf('sanctum') > -1) { //聖所詞綴
+          console.log("聖所");
+          tempStat.push({ text: this.getStat(text, 'sanctum') });
+          tempStat[tempStat.length - 1].type = "聖所";
+          tempStat[tempStat.length - 1].category = "sanctum";
         } else if (rarityFlag) { //傳奇裝詞綴
           console.log("傳奇");
           tempStat.push({ text: this.getStat(text, 'explicit') });
@@ -788,21 +798,32 @@ export class HomeComponent implements OnInit {
         //   }
         //   apiStatText = `只會影響『${areaStat}』範圍內的天賦`
         // } else {
-        for (let index = 0; index < itemStatArray.length; index++) { // 比較由空格拆掉後的詞綴陣列元素
-          if (randomMinValue && itemStatArray[index] !== matchStatArray[index]) { // 物品詞綴最大值
-            randomMaxValue = parseFloat(itemStatArray[index].replace(/[+-]^\D+/g, ''));
-            randomMaxValue = isNaN(randomMaxValue) ? 0 : randomMaxValue;
+
+        if (itemStatText.indexOf("試煉地圖") > -1) {
+          for (let index = 0; index < itemStatArray.length; index++) {
+            if (!isNaN(itemStatArray[index])) { // 物品詞綴最小值
+              console.log(itemStatArray[index]);
+              randomMinValue = parseFloat(itemStatArray[index].replace(/[+-]^\D+/g, ''));
+              randomMinValue = isNaN(randomMinValue) ? 0 : randomMinValue;
+            }
           }
-          if (!randomMinValue && itemStatArray[index] !== matchStatArray[index]) { // 物品詞綴最小值
-            randomMinValue = parseFloat(itemStatArray[index].replace(/[+-]^\D+/g, ''));
-            randomMinValue = isNaN(randomMinValue) ? 0 : randomMinValue;
-            if (matchStatArray[index]) {
-              if (matchStatArray[index].indexOf('，#') > -1) { // 處理隨機數值在'，'後的詞綴(無法用空格符號 split)
-                let tempStat = itemStatArray[index].substring(itemStatArray[index].indexOf('，') + 1);
-                randomMinValue = parseFloat(tempStat.replace(/[+-]^\D+/g, ''));
-              } else if (matchStatArray[index].indexOf('：#') > -1) { // 處理隨機數值在'：'後的詞綴(無法用空格符號 split)
-                let tempStat = itemStatArray[index].substring(itemStatArray[index].indexOf('：') + 1);
-                randomMinValue = parseFloat(tempStat.replace(/[+-]^\D+/g, ''));
+        } else {
+          for (let index = 0; index < itemStatArray.length; index++) { // 比較由空格拆掉後的詞綴陣列元素
+            if (randomMinValue && itemStatArray[index] !== matchStatArray[index]) { // 物品詞綴最大值
+              randomMaxValue = parseFloat(itemStatArray[index].replace(/[+-]^\D+/g, ''));
+              randomMaxValue = isNaN(randomMaxValue) ? 0 : randomMaxValue;
+            }
+            if (!randomMinValue && itemStatArray[index] !== matchStatArray[index]) { // 物品詞綴最小值
+              randomMinValue = parseFloat(itemStatArray[index].replace(/[+-]^\D+/g, ''));
+              randomMinValue = isNaN(randomMinValue) ? 0 : randomMinValue;
+              if (matchStatArray[index]) {
+                if (matchStatArray[index].indexOf('，#') > -1) { // 處理隨機數值在'，'後的詞綴(無法用空格符號 split)
+                  let tempStat = itemStatArray[index].substring(itemStatArray[index].indexOf('，') + 1);
+                  randomMinValue = parseFloat(tempStat.replace(/[+-]^\D+/g, ''));
+                } else if (matchStatArray[index].indexOf('：#') > -1) { // 處理隨機數值在'：'後的詞綴(無法用空格符號 split)
+                  let tempStat = itemStatArray[index].substring(itemStatArray[index].indexOf('：') + 1);
+                  randomMinValue = parseFloat(tempStat.replace(/[+-]^\D+/g, ''));
+                }
               }
             }
           }
@@ -1062,7 +1083,7 @@ export class HomeComponent implements OnInit {
       this.resetSearchData();
       this.app.isApiError = true;
       this.app.isCounting = false;
-      this.app.apiErrorStr = error;
+      this.app.apiErrorStr = error.error.error.message;
       console.log(error);
     });
 
@@ -1123,10 +1144,15 @@ export class HomeComponent implements OnInit {
 
   //取得詞綴
   getStat(stat: string, type: any): any {
-    let mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
+    let mdStat = '';
+    if (stat.indexOf('試煉地圖') === -1) {  //原型顯示1，但會有更多
+      mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
+    } else {
+      mdStat = stat.replace(/\d+/g, "1");
+    }
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1) {
+    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1 || mdStat.indexOf('陷阱造成') > -1 || mdStat.indexOf('怪物造成的') > -1 || mdStat.indexOf('頭目') > -1 || mdStat.indexOf('販售') > -1 || mdStat.indexOf('稀有怪物') > -1 || mdStat.indexOf('怪物減少') > -1) {
       mdStat = mdStat.replace('減少', '增加');
     }
 
@@ -1692,7 +1718,7 @@ export class HomeComponent implements OnInit {
         text = this.replaceIllustrate(text, count);
       }
 
-      this.stats.explicit.push(text, element.id);
+      this.stats.sanctum.push(text, element.id);
     })
     //技能詞綴
     result[result.findIndex((e: any) => e.id === "skill")].entries.forEach((element: any, index: any) => {
@@ -1783,12 +1809,13 @@ export class HomeComponent implements OnInit {
       itemBasic = itemBasic.substring(itemBasic.indexOf('精良的') + 4, itemBasic.length);
     }
     //的count
-    let count = (itemBasic.match(/\的/g) || []).length;
+    let countFirst = (itemBasic.match(/\的/g) || []).length;
+    let countSecond = (itemBasic.match(/\之/g) || []).length;
     // console.log([...itemBasic.matchAll(/\的/g)]);
     //的位置
     let firstPos = itemBasic.indexOf("的");
     //之位置
-    let SecondPos = count > 1 ? +[...itemBasic.matchAll(/\的/g)][1].index : itemBasic.indexOf("之");
+    let SecondPos = countFirst > 1 ? +[...itemBasic.matchAll(/\的/g)][1].index : countSecond > 1 ? +[...itemBasic.matchAll(/\之/g)][1].index : itemBasic.indexOf("之");
 
     if (SecondPos > firstPos && firstPos !== -1) {
       itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);

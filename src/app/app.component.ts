@@ -14,7 +14,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 
 export class AppComponent implements OnInit {
 
-  private colorScheme = 'dark';
+  public colorScheme = 'dark';
 
   constructor() { }
 
@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     const localStorageColorScheme = localStorage.getItem('prefers-color');
     // Check if any prefers-color-scheme is stored in localStorage
     if (localStorageColorScheme) {
+      this.colorScheme = localStorageColorScheme;
       // Save prefers-color-scheme from localStorage
       (<any>window).ipcRenderer.send('toggle-theme', localStorageColorScheme);
     }
@@ -29,11 +30,13 @@ export class AppComponent implements OnInit {
 
   changeTheme() {
     if (this.colorScheme === 'dark') {
-      localStorage.setItem('prefers-color', 'light');
+      this.colorScheme = 'light';
     } else {
-      localStorage.setItem('prefers-color', 'dark');
+      this.colorScheme = 'dark';
     }
 
-    (<any>window).ipcRenderer.send('toggle-theme');
+    localStorage.setItem('prefers-color', this.colorScheme);
+
+    (<any>window).ipcRenderer.send('toggle-theme', this.colorScheme);
   }
 }

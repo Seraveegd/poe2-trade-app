@@ -1,9 +1,16 @@
 <div id="app">
-  <div id="nav" style="display: flex; justify-content: center; clear: both;">
+  <div id="nav" style="display: flex; justify-content: center; clear: both; position: relative;">
     <a routerLink="/home" style="border-right: 1px solid #6b6262">首頁</a>
     <a routerLink="/about">關於我</a>
-    <button type="button" class="btn btn-outline-success" (click)="changeTheme()"
-      style="float: right;margin-right:3px;">變更顏色</button>
+    <!-- <div class="form-check form-switch"> -->
+    <input type="checkbox" (click)="changeTheme()" id="toggle_checkbox" [checked]="colorScheme === 'light'">
+    <label for="toggle_checkbox">
+      <div id="star">
+        <div class="star" id="star-1">★</div>
+        <div class="star" id="star-2">★</div>
+      </div>
+      <div id="moon"></div>
+    </label>
   </div>
 </div>
 <!-- <hr style="margin:3px 0;"> -->

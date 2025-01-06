@@ -41,7 +41,7 @@ function createWindow() {
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     ipcMain.on('analyze-item', (msg) => {
         if (win.isMinimized())
@@ -55,8 +55,8 @@ function createWindow() {
         win.moveTop();
     });
 
-    ipcMain.on('toggle-theme', (msg) => {
-        if (nativeTheme.shouldUseDarkColors || msg === 'dark') {
+    ipcMain.on('toggle-theme', (event, msg) => {
+        if (msg === 'dark') {
             nativeTheme.themeSource = 'light';
         } else {
             nativeTheme.themeSource = 'dark';

@@ -459,7 +459,7 @@
 <!-- API發送錯誤 -->
 @if (app.apiErrorStr !== '' && app.isApiError){
 <ngb-alert [dismissible]="false">
-    {{ app.apiErrorStr }}
+    API 錯誤：{{ app.apiErrorStr }}
 </ngb-alert>
 }
 <!-- @if (app.isApiError) {

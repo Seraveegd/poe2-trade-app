@@ -695,37 +695,39 @@ export class HomeComponent implements OnInit {
         let text = itemArray[index];
         itemDisplayStats.push(text);
 
+        let count = (itemArray[index].match(/\|/g) || []).length;
+
         if (itemArray[index].indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
           text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
-          tempStat.push({ text: this.getStat(text, 'implicit') });
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });
           tempStat[tempStat.length - 1].type = "固定";
           tempStat[tempStat.length - 1].category = "implicit";
         } else if (itemArray[index].indexOf('(rune)') > -1) { //符文屬性
           console.log("符文");
           text = text.substring(0, text.indexOf('(rune)')).trim(); // 刪除(rune)字串
-          tempStat.push({ text: this.getStat(text, 'rune') });
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'rune') });
           tempStat[tempStat.length - 1].type = "符文";
           tempStat[tempStat.length - 1].category = "rune";
         } else if (itemArray[index].indexOf('(enchant)') > -1) { // 附魔
           console.log("附魔");
           text = text.substring(0, text.indexOf('(enchant)')).trim(); // 刪除(enchant)字串
-          tempStat.push({ text: this.getStat(text, 'enchant') });
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'enchant') });
           tempStat[tempStat.length - 1].type = "附魔";
           tempStat[tempStat.length - 1].category = "enchant";
         } else if (this.item.type.indexOf('sanctum') > -1) { //聖所詞綴
           console.log("聖所");
-          tempStat.push({ text: this.getStat(text, 'sanctum') });
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'sanctum') });
           tempStat[tempStat.length - 1].type = "聖所";
           tempStat[tempStat.length - 1].category = "sanctum";
         } else if (rarityFlag) { //傳奇裝詞綴
           console.log("傳奇");
-          tempStat.push({ text: this.getStat(text, 'explicit') });
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
           tempStat[tempStat.length - 1].type = "傳奇";
           tempStat[tempStat.length - 1].category = "explicit";
         } else { // 隨機屬性
           console.log("隨機");
-          tempStat.push({ text: this.getStat(text, 'explicit') });
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
           tempStat[tempStat.length - 1].type = "隨機";
           tempStat[tempStat.length - 1].category = "explicit";
         }
@@ -1050,6 +1052,10 @@ export class HomeComponent implements OnInit {
         this.isGemQualitySearch();
         this.isGemSocketSearch();
         break;
+      case 'unique':
+        this.isItemSocketSearch();
+        this.isRaritySearch();
+        break;
       default:
         this.isRaritySearch();
         break;
@@ -1145,14 +1151,24 @@ export class HomeComponent implements OnInit {
   //取得詞綴
   getStat(stat: string, type: any): any {
     let mdStat = '';
-    if (stat.indexOf('試煉地圖') === -1) {  //原型顯示1，但會有更多
-      mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
-    } else {
+    //計算有幾位數字
+    let count = (stat.match(/\d+/g) || []).length;
+    let countI = [...stat.matchAll(/\d+/g)];
+    let perPos = stat.indexOf('%');
+    let periodPos = stat.indexOf('.');
+
+    if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
+      mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
+    } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
+    } else if (count > 1 && perPos > -1 && periodPos === -1) { //解決雙數字有%
+      mdStat = stat.replace(stat.substring((perPos - countI[0].index) > (perPos - countI[1].index) ? countI[1].index : countI[0].index, perPos), '#');
+    } else {
+      mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
     }
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1 || mdStat.indexOf('陷阱造成') > -1 || mdStat.indexOf('怪物造成的') > -1 || mdStat.indexOf('頭目') > -1 || mdStat.indexOf('販售') > -1 || mdStat.indexOf('稀有怪物') > -1 || mdStat.indexOf('怪物減少') > -1) {
+    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1 || mdStat.indexOf('陷阱造成') > -1 || mdStat.indexOf('怪物造成的') > -1 || mdStat.indexOf('頭目') > -1 || mdStat.indexOf('販售') > -1 || mdStat.indexOf('稀有怪物') > -1 || mdStat.indexOf('怪物減少') > -1 || mdStat.indexOf('藥劑魔力') > -1 || mdStat.indexOf('攻擊與') > -1) {
       mdStat = mdStat.replace('減少', '增加');
     }
 
@@ -1647,7 +1663,7 @@ export class HomeComponent implements OnInit {
     //隨機屬性
     result[result.findIndex((e: any) => e.id === "explicit")].entries.forEach((element: any, index: any) => {
       let text = element.text;
-      let count = (text.match(/\[/g) || []).length;
+      let count = (text.match(/\|/g) || []).length;
       //處理說明字串
       if (count > 0) {
         text = this.replaceIllustrate(text, count);
@@ -1662,7 +1678,7 @@ export class HomeComponent implements OnInit {
     //固定屬性
     result[result.findIndex((e: any) => e.id === "implicit")].entries.forEach((element: any, index: any) => {
       let text = element.text;
-      let count = (text.match(/\[/g) || []).length;
+      let count = (text.match(/\|/g) || []).length;
       //處理說明字串
       if (count > 0) {
         text = this.replaceIllustrate(text, count);
@@ -1682,7 +1698,7 @@ export class HomeComponent implements OnInit {
       //     this.allocatesStats.push(element.text, (element.id).toString())
       //   })
       // }
-      let count = (text.match(/\[/g) || []).length;
+      let count = (text.match(/\|/g) || []).length;
       //處理說明字串
       if (count > 0) {
         text = this.replaceIllustrate(text, count);
@@ -1697,7 +1713,7 @@ export class HomeComponent implements OnInit {
     //符文詞綴
     result[result.findIndex((e: any) => e.id === "rune")].entries.forEach((element: any, index: any) => {
       let text = element.text;
-      let count = (text.match(/\[/g) || []).length;
+      let count = (text.match(/\|/g) || []).length;
       //處理說明字串
       if (count > 0) {
         text = this.replaceIllustrate(text, count);
@@ -1712,7 +1728,7 @@ export class HomeComponent implements OnInit {
     //聖域
     result[result.findIndex((e: any) => e.id === "sanctum")].entries.forEach((element: any, index: any) => {
       let text = element.text;
-      let count = (text.match(/\[/g) || []).length;
+      let count = (text.match(/\|/g) || []).length;
       //處理說明字串
       if (count > 0) {
         text = this.replaceIllustrate(text, count);

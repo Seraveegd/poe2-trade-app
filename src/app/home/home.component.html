@@ -458,7 +458,7 @@
 <hr style="margin:3px 0;">
 <!-- API發送錯誤 -->
 @if (app.apiErrorStr !== '' && app.isApiError){
-<ngb-alert [dismissible]="false">
+<ngb-alert [dismissible]="false" style="margin: 3px;">
     API 錯誤：{{ app.apiErrorStr }}
 </ngb-alert>
 }

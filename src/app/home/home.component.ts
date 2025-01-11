@@ -833,7 +833,7 @@ export class HomeComponent implements OnInit {
         // }
 
         // API 詞綴只有"增加"，但物品可能有"減少"詞綴相關處理
-        if (apiStatText.includes('增加') && itemStatText.includes('減少')) {
+        if ((apiStatText.includes('增加') && itemStatText.includes('減少')) || (apiStatText.includes('減少') && itemStatText.includes('增加'))) {
           // apiStatText = apiStatText.replace('增加', '減少');
           randomMinValue = -randomMinValue;
         }
@@ -959,29 +959,13 @@ export class HomeComponent implements OnInit {
           let min = element.min;
           let max = element.max;
 
-          if (min >= 0) {
+          if (!isNaN(min) && min != '') {
             Object.assign(value, { min: min });
           }
 
-          if (max != 0 && (max > min)) {
+          if (!isNaN(max) && max != '') {
             Object.assign(value, { max: max });
           }
-
-          // if (element.isNegative && !isNaN(min)) {
-          //   Object.assign(value, { max: -min });
-          //   // value.max = -min;
-          // } else if (!isNaN(min)) {
-          //   Object.assign(value, { min: min });
-          //   // value.min = min;
-          // }
-
-          // if (element.isNegative && !isNaN(max)) {
-          //   Object.assign(value, { min: -max });
-          //   // value.min = -max;
-          // } else if (!isNaN(max)) {
-          //   Object.assign(value, { max: max });
-          //   // value.max = max;
-          // }
 
           if (element.option) {
             Object.assign(value, { option: element.option });
@@ -1157,7 +1141,9 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1){
+      mdStat = stat;
+    }else if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
@@ -1168,8 +1154,10 @@ export class HomeComponent implements OnInit {
     }
     console.log(mdStat);
     //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1 || mdStat.indexOf('陷阱造成') > -1 || mdStat.indexOf('怪物造成的') > -1 || mdStat.indexOf('頭目') > -1 || mdStat.indexOf('販售') > -1 || mdStat.indexOf('稀有怪物') > -1 || mdStat.indexOf('怪物減少') > -1 || mdStat.indexOf('藥劑魔力') > -1 || mdStat.indexOf('攻擊與') > -1) {
+    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1 || mdStat.indexOf('陷阱造成') > -1 || mdStat.indexOf('怪物造成的') > -1 || mdStat.indexOf('頭目') > -1 || mdStat.indexOf('販售') > -1 || mdStat.indexOf('稀有怪物') > -1 || mdStat.indexOf('怪物減少') > -1 || mdStat.indexOf('藥劑魔力') > -1 || mdStat.indexOf('攻擊與') > -1 || mdStat.indexOf('照亮範圍') > -1 || mdStat.indexOf('充能率') > -1 || (mdStat.indexOf('傷害') > -1 && (mdStat.length - mdStat.indexOf('傷害')) == 2) || mdStat.indexOf('施放速度') > -1) {
       mdStat = mdStat.replace('減少', '增加');
+    } else if (mdStat.indexOf('藥劑充能使用') > -1 || mdStat.indexOf('的藥劑充能') > -1) { //處理只有減少，字串有增加字樣
+      mdStat = mdStat.replace('增加', '減少');
     }
 
     let findStat = stat;

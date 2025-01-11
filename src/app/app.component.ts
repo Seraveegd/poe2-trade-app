@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    RouterLink
+    RouterLink,
+    CommonModule
   ],
   providers: [],
   templateUrl: './app.component.html',
@@ -26,6 +28,18 @@ export class AppComponent implements OnInit {
       // Save prefers-color-scheme from localStorage
       (<any>window).ipcRenderer.send('toggle-theme', localStorageColorScheme);
     }
+
+    (<any>window).ipcRenderer.on('visibility-change', (e: any, state: any) => {
+      if (document.body.style.display) {
+        document.body.style.display = '';
+      } else {
+        document.body.style.display = 'none';
+      }
+    });
+
+    (<any>window).ipcRenderer.on('focus-change', (e: any, state: any) => {
+      console.log('focus-change', state);
+    });
   }
 
   changeTheme() {

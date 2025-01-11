@@ -28,14 +28,19 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    a {
-        color: white;
+    #app {
+        background-color: rgba(19, 19, 19, 0.8);
+
+        a {
+            color: white;
+        }
     }
 }
 
 @media (prefers-color-scheme: light) {
     #app {
-        box-shadow: 1px 1px 5px #b1b1b1;
+        box-shadow: 1px 1px 5px rgba(255, 255, 255, 0.5);
+        background-color: #ccc;
 
         a {
             color: #0067ff;

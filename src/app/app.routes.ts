@@ -19,11 +19,11 @@ export const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'about',
+        redirectTo: 'home',
         pathMatch: 'full'
     },
     {
         path: '**',
-        component: AboutComponent
+        component: HomeComponent
     },
 ];

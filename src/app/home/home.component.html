@@ -294,7 +294,7 @@
             @if(item.name !== ''){
             <div style="text-align: center;">
                 <h5 [innerHTML]="item.name"
-                    style="text-align: center; cursor: pointer;padding-top: 6px;display: inline-block;"
+                    style="text-align: center; cursor: pointer;padding-top: 6px;display: inline-block; color: white;"
                     (click)="ui.collapse.stats = !ui.collapse.stats"></h5>
             </div>
             }
@@ -466,7 +466,7 @@
 <h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
 } -->
 @if (searchResult.status !== '') {
-<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
+<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;cursor: pointer;"></h6>
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>
 @if (searchResult.searchTotal > 0){

@@ -57,6 +57,26 @@ export class HomeComponent implements OnInit {
     ['weapon.twomelee', '雙手近戰武器']
   ]);
 
+  //有減少的詞綴部分字串
+  private reduceStrs: any = [
+    '充能使用',
+    '的藥劑充能',
+    '對你的擊中',
+    '點燃的持續時間',
+    '冰緩的持續時間',
+    '冰凍的持續時間',
+    '承受的暴擊傷害',
+    '感電的持續時間',
+    '魔力消耗',
+    '感電效果',
+    '冰緩效果',
+    '點燃效果',
+    '技能保留',
+    '不死召喚物',
+    '每使用一次閃避翻滾',
+    '敵人暈眩門檻'
+  ]
+
   //目前相關狀態
   public app: any = {
     baseUrl: 'https://pathofexile.tw',
@@ -339,6 +359,7 @@ export class HomeComponent implements OnInit {
       }
 
       if (text.indexOf('稀有度: ') > -1 && !this.app.onReady) { // POE 內的文字必定有稀有度
+        this.showWindow();
         this.app.preCopyText = text;
         this.app.onReady = true;
         (<any>window).ipcRenderer.send('analyze-item');
@@ -1141,9 +1162,9 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1){
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1) {
       mdStat = stat;
-    }else if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
+    } else if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
@@ -1152,11 +1173,14 @@ export class HomeComponent implements OnInit {
     } else {
       mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
     }
+
     console.log(mdStat);
-    //處理只有增加，字串有減少字樣
-    if (mdStat.indexOf('能力值需求') > -1 || mdStat.indexOf('緩速程度') > -1 || mdStat.indexOf('最大魔力') > -1 || mdStat.indexOf('中毒的') > -1 || mdStat.indexOf('流血的持續時間') > -1 || mdStat.indexOf('每次使用') > -1 || mdStat.indexOf('陷阱造成') > -1 || mdStat.indexOf('怪物造成的') > -1 || mdStat.indexOf('頭目') > -1 || mdStat.indexOf('販售') > -1 || mdStat.indexOf('稀有怪物') > -1 || mdStat.indexOf('怪物減少') > -1 || mdStat.indexOf('藥劑魔力') > -1 || mdStat.indexOf('攻擊與') > -1 || mdStat.indexOf('照亮範圍') > -1 || mdStat.indexOf('充能率') > -1 || (mdStat.indexOf('傷害') > -1 && (mdStat.length - mdStat.indexOf('傷害')) == 2) || mdStat.indexOf('施放速度') > -1) {
+
+    if (mdStat.indexOf('增加') > -1 && mdStat.indexOf('減少') > -1) {
+      //不動作
+    } else if (this.reduceStrs.every((str: any) => mdStat.indexOf(str) === -1)) { //其餘皆做取代動作
       mdStat = mdStat.replace('減少', '增加');
-    } else if (mdStat.indexOf('藥劑充能使用') > -1 || mdStat.indexOf('的藥劑充能') > -1) { //處理只有減少，字串有增加字樣
+    } else if (this.reduceStrs.some((str: any) => mdStat.indexOf(str) > -1)) { //處理只有減少，字串有增加字樣
       mdStat = mdStat.replace('增加', '減少');
     }
 
@@ -1846,5 +1870,9 @@ export class HomeComponent implements OnInit {
     } else {
       return 0;
     }
+  }
+
+  showWindow() {
+    document.body.style.display = '';
   }
 }

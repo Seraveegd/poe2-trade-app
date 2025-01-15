@@ -334,6 +334,8 @@ export class HomeComponent implements OnInit {
       }
     });
 
+    this.clipboard.writeText('');
+
     this.loadData();
   }
 
@@ -359,7 +361,6 @@ export class HomeComponent implements OnInit {
       }
 
       if (text.indexOf('稀有度: ') > -1 && !this.app.onReady) { // POE 內的文字必定有稀有度
-        this.showWindow();
         this.app.preCopyText = text;
         this.app.onReady = true;
         (<any>window).ipcRenderer.send('analyze-item');
@@ -684,6 +685,11 @@ export class HomeComponent implements OnInit {
   //物品詞綴分析
   itemStatsAnalysis(itemArray: any, rarityFlag: any) {
     this.ui.collapse.stats = rarityFlag ? true : false;
+
+    //刪除地圖描述
+    if(this.item.type.indexOf('map') > -1){
+      itemArray.splice(-1, 2);
+    }
 
     let tempStat: any = [];
     let itemDisplayStats: any = []; // 該物品顯示的詞綴陣列
@@ -1870,9 +1876,5 @@ export class HomeComponent implements OnInit {
     } else {
       return 0;
     }
-  }
-
-  showWindow() {
-    document.body.style.display = '';
   }
 }

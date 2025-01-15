@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     RouterLink,
-    CommonModule
+    CommonModule,
+    NgbTooltipModule
   ],
   providers: [],
   templateUrl: './app.component.html',
@@ -30,15 +32,7 @@ export class AppComponent implements OnInit {
     }
 
     (<any>window).ipcRenderer.on('visibility-change', (e: any, state: any) => {
-      if (document.body.style.display) {
-        document.body.style.display = '';
-      } else {
-        document.body.style.display = 'none';
-      }
-    });
-
-    (<any>window).ipcRenderer.on('focus-change', (e: any, state: any) => {
-      console.log('focus-change', state);
+      this.isDisplay(state);
     });
   }
 
@@ -52,5 +46,25 @@ export class AppComponent implements OnInit {
     localStorage.setItem('prefers-color', this.colorScheme);
 
     (<any>window).ipcRenderer.send('toggle-theme', this.colorScheme);
+  }
+
+  isDisplay(state: any) {
+    console.log(state, document.body.style.display);
+    if (state === true) {
+      document.body.style.display = 'block';
+      // (<any>window).ipcRenderer.send('overlay');
+    } else if (state === false) {
+      document.body.style.display = 'none';
+    } else if (state == 'blur') {
+      (<any>window).ipcRenderer.send('blur');
+    } else if (typeof state === 'undefined') {
+      if (document.body.style.display === 'none') {
+        console.log('+');
+        document.body.style.display = 'block';
+      } else {
+        console.log('-');
+        document.body.style.display = 'none';
+      }
+    }
   }
 }

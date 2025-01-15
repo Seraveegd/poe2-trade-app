@@ -16,12 +16,6 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 600,
         height: 800,
-        // backgroundColor: '#ffffff',
-        // autoHideMenuBar: true,
-        // frame: false,
-        // fullscreen: false,
-        // fullscreenable: false,
-        // resizable: false,
         icon: `dist/poe2-trade-app/browser/favicon.ico`,
         webPreferences: {
             defaultFontFamily: {
@@ -38,16 +32,6 @@ function createWindow() {
     win.once('ready-to-show', () => {
         win.show();
     });
-
-    //查看事件blur
-    // win.on('blur', (e) => {
-    //     console.log('blur');
-    // });
-
-    //查看事件focus
-    // win.on('focus', (e) => {
-    //     console.log('focus');
-    // });
 
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
@@ -79,39 +63,52 @@ function createWindow() {
             if (isInteractable) {
                 isInteractable = false;
                 OverlayController.focusTarget();
-                win.webContents.send('focus-change', false);
             } else {
                 isInteractable = true;
                 OverlayController.activateOverlay();
-                win.webContents.send('focus-change', true);
             }
         }
 
         win.on('blur', () => {
+            console.log('blur');
             isInteractable = false;
-            win.webContents.send('focus-change', false);
-            win.webContents.send('visibility-change', true);
+            OverlayController.focusTarget();
+
+            win.webContents.send('visibility-change', false);
         })
 
         ipcMain.on('analyze-item', (msg) => {
+            console.log('analyze-item');
+
             isInteractable = true;
             OverlayController.activateOverlay();
-            win.webContents.send('focus-change', true);
+
+            win.webContents.send('visibility-change', true);
+        });
+
+        // ipcMain.on('overlay', (msg) => {
+        //     isInteractable = true;
+        //     OverlayController.activateOverlay();
+        // });
+
+
+        ipcMain.on('blur', (msg) => {
+            win.blur();
         });
 
         globalShortcut.register(toggleMouseKey, toggleOverlayState);
 
         globalShortcut.register(toggleShowKey, () => {
-            win.webContents.send('visibility-change', false)
+            win.webContents.send('visibility-change');
+
             isInteractable = true;
             OverlayController.activateOverlay();
-            win.webContents.send('focus-change', true);
         })
     }
 }
 
 app.whenReady().then(() => {
-    const icon = nativeImage.createFromPath('dist/poe2-trade-app/browser/favicon.ico');
+    const icon = nativeImage.createFromPath(path.join(__dirname, 'dist/poe2-trade-app/browser/favicon.ico'));
     tray = new Tray(icon);
 
     const contextMenu = Menu.buildFromTemplate([
@@ -123,6 +120,7 @@ app.whenReady().then(() => {
         }
     ])
 
+    tray.setToolTip('POE2 查價工具 v0.4.1');
     tray.setContextMenu(contextMenu);
 
     setTimeout(

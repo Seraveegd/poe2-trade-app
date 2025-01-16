@@ -844,8 +844,9 @@ export class HomeComponent implements OnInit {
 
         if (itemStatText.startsWith('配置 ') || itemStatText.startsWith('範圍 ')) {
           let tempA = itemStatText.split(' ');
+          let count = (tempA[1].match(/\|/g) || []).length;
 
-          randomMinValue = itemStatText.startsWith('配置 ') ? this.nodes.rnp.get(tempA[1]) : this.nodes.p.get(tempA[1]);
+          randomMinValue = itemStatText.startsWith('配置 ') ? this.nodes.rnp.get(this.replaceIllustrate(tempA[1], count)) : this.nodes.p.get(this.replaceIllustrate(tempA[1], count));
           randomMaxValue = randomMinValue;
 
           apiStatText = itemStatText.replace('(enchant)', '');

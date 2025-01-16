@@ -107,7 +107,15 @@ export class HomeComponent implements OnInit {
     items: [], // 交易網物品 API 資料
     stats: [],  // 交易網詞綴 API 資料
     // duplicateStats: duplicateStatsData, // 重複的詞綴 API 資料
+    pNodes: [], //Passive Skill
+    rnpNodes: [] //Random Notable Passive Skill
   };
+
+  //天賦節點資料
+  public nodes: any = {
+    p: new Map(),
+    rnp: new Map()
+  }
 
   //物品資料
   public basics: any = {
@@ -347,11 +355,17 @@ export class HomeComponent implements OnInit {
   public async loadData() {
     const allItems = this.poe_service.getItemData();
     const allStats = this.poe_service.getStatsData();
+    const allpNodes = this.poe_service.getpNodesData();
+    const allrnpNodes = this.poe_service.getrnpNodesData();
     this.datas.items = await lastValueFrom(allItems);
     this.datas.stats = await lastValueFrom(allStats);
+    this.datas.pNodes = await lastValueFrom(allpNodes);
+    this.datas.rnpNodes = await lastValueFrom(allrnpNodes);
 
     this.dealWithitemsData();
     this.dealWithstatsData();
+    this.dealWithpNodesData();
+    this.dealWithrnpNodesData();
 
     const getCopyText = interval(1000).pipe(map(() => this.clipboard.readText()));
 
@@ -687,7 +701,7 @@ export class HomeComponent implements OnInit {
     this.ui.collapse.stats = rarityFlag ? true : false;
 
     //刪除地圖描述
-    if(this.item.type.indexOf('map') > -1){
+    if (this.item.type.indexOf('map') > -1) {
       itemArray.splice(-1, 2);
     }
 
@@ -828,7 +842,14 @@ export class HomeComponent implements OnInit {
         //   apiStatText = `只會影響『${areaStat}』範圍內的天賦`
         // } else {
 
-        if (itemStatText.indexOf("試煉地圖") > -1) {
+        if (itemStatText.startsWith('配置 ') || itemStatText.startsWith('範圍 ')) {
+          let tempA = itemStatText.split(' ');
+
+          randomMinValue = itemStatText.startsWith('配置 ') ? this.nodes.rnp.get(tempA[1]) : this.nodes.p.get(tempA[1]);
+          randomMaxValue = randomMinValue;
+
+          apiStatText = itemStatText.replace('(enchant)', '');
+        } else if (itemStatText.indexOf("試煉地圖") > -1) {
           for (let index = 0; index < itemStatArray.length; index++) {
             if (!isNaN(itemStatArray[index])) { // 物品詞綴最小值
               console.log(itemStatArray[index]);
@@ -866,7 +887,7 @@ export class HomeComponent implements OnInit {
         }
 
         // 物品中包含 "# 至 #" 的詞綴，在官方市集搜尋中皆以相加除二作搜尋
-        if (randomMaxValue) {
+        if (randomMaxValue && randomMinValue != randomMaxValue) {
           randomMinValue = (randomMinValue + randomMaxValue) / 2;
           randomMaxValue = 0;
         }
@@ -979,6 +1000,8 @@ export class HomeComponent implements OnInit {
     this.app.apiErrorStr = '';
     this.item.supported = true;
 
+    let searchCount = 0;
+
     if (this.filters.searchJson.query.stats[0].filters.length === 0) {
       this.item.searchStats.forEach((element: any, index: any, array: any) => {
         if (element.id !== '') {
@@ -1016,12 +1039,32 @@ export class HomeComponent implements OnInit {
           //     }
           //   });
           // } else {
-          this.filters.searchJson.query.stats[0].filters.push({
-            "id": element.id,
-            "disabled": !element.isSearch,
-            "value": value
-          })
-          // }
+
+          if (element.isSearch) searchCount++;
+
+          if (element.text.startsWith('配置 ') && this.item.type.indexOf('jewel') > -1) {
+            ['enchant.stat_3353051436', 'enchant.stat_3944917080', 'enchant.stat_5991090'].forEach((id: any) => {
+              this.filters.searchJson.query.stats[0].filters.push({
+                "id": id,
+                "disabled": !element.isSearch,
+                "value": value
+              })
+
+              if (this.filters.searchJson.query.stats[0].type == 'and') {
+                this.filters.searchJson.query.stats[0].type = 'count';
+
+                Object.assign(this.filters.searchJson.query.stats[0], { value: { min: searchCount } });
+              } else {
+                this.filters.searchJson.query.stats[0].value.min = searchCount;
+              }
+            })
+          } else {
+            this.filters.searchJson.query.stats[0].filters.push({
+              "id": element.id,
+              "disabled": !element.isSearch,
+              "value": value
+            })
+          }
         }
       })
     }
@@ -1168,7 +1211,12 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1) {
+    if (stat.startsWith('配置 ') || stat.startsWith('範圍 ')) {
+      let tempA = stat.split(' ');
+      tempA.splice(1, 1);
+
+      mdStat = tempA.length > 1 ? tempA.join(' # ') : tempA[0] + ' #';
+    } else if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1) {
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
@@ -1876,5 +1924,23 @@ export class HomeComponent implements OnInit {
     } else {
       return 0;
     }
+  }
+
+  //Passive Skill格式化
+  dealWithpNodesData() {
+    let result = this.datas.pNodes.result;
+
+    result.forEach((e: any) => {
+      this.nodes.p.set(e.name, e.hash);
+    });
+  }
+
+  //Random Notable Passive Skill格式化
+  dealWithrnpNodesData() {
+    let result = this.datas.rnpNodes.result;
+
+    result.forEach((e: any) => {
+      this.nodes.rnp.set(e.name, e.hash);
+    });
   }
 }

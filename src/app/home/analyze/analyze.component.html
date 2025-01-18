@@ -1,6 +1,6 @@
 @if (searchResult.fetchQueryID !== '') {
 <div id="fetchResult" style="padding-top: 10px;">
-    <div style="text-align: center;">
+    <div style="text-align: center;margin-bottom: 10px;">
         <img [src]="itemImage" style="max-height:100px;" />
     </div>
     <div style="text-align: center;">
@@ -11,9 +11,12 @@
                     <th scope="col">
                         前 {{ fetchResult.length }} 筆價格分析
                         @if (corruptedCount > 0) {
-                            <div>
-                                {{ corruptedCount }}筆已汙染
-                            </div>
+                        <div>
+                            {{ corruptedCount }}筆已汙染
+                        </div>
+                        }
+                        @if (searchResult.extraFilterStr !== ''){
+                        <br>搜尋群組再過濾：{{ searchResult.extraFilterStr }}
                         }
                         <!-- <span v-if="corruptedCount && corruptedCount === fetchResultPrice.length"
                             style="color: lightpink;">{{ corruptedCount }} 筆皆汙染</span> -->
@@ -31,7 +34,9 @@
                 @for (currencys of computed; track $index) {
                 @for (currency of currencys[1]; track $index;) {
                 <tr>
-                    <td>報價：{{ currency[0] }} x <img [src]="currencysList.get(currencys[0]).image" placement="top" [ngbTooltip]="currencysList.get(currencys[0]).text" style="cursor: pointer;"> / {{ currency[1] }}筆</td>
+                    <td>報價：{{ currency[0] }} x <img [src]="currencysList.get(currencys[0]).image" placement="top"
+                            [ngbTooltip]="currencysList.get(currencys[0]).text" style="cursor: pointer;"> / {{
+                        currency[1] }}筆</td>
                 </tr>
                 }
                 }

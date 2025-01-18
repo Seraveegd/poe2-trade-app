@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../app.service';
-// import { RouterLink, RouterOutlet } from '@angular/router';
 import { interval, lastValueFrom, map } from 'rxjs';
 import { AnalyzeComponent } from "./analyze/analyze.component";
 import { FormsModule } from '@angular/forms';
@@ -108,7 +107,8 @@ export class HomeComponent implements OnInit {
     stats: [],  // 交易網詞綴 API 資料
     // duplicateStats: duplicateStatsData, // 重複的詞綴 API 資料
     pNodes: [], //Passive Skill
-    rnpNodes: [] //Random Notable Passive Skill
+    rnpNodes: [], //Random Notable Passive Skill
+    pobJewel: [] //信仰棱鏡查詢值
   };
 
   //天賦節點資料
@@ -116,6 +116,9 @@ export class HomeComponent implements OnInit {
     p: new Map(),
     rnp: new Map()
   }
+
+  //信仰棱鏡查詢值
+  public pobs: any = new Map();
 
   //物品資料
   public basics: any = {
@@ -321,6 +324,7 @@ export class HomeComponent implements OnInit {
     resultLength: 0,
     searchTotal: 0, //總共幾筆
     status: '', //狀態文字
+    extraFilterStr: '' //額外過濾
   }
 
   constructor(private poe_service: AppService) {
@@ -357,15 +361,18 @@ export class HomeComponent implements OnInit {
     const allStats = this.poe_service.getStatsData();
     const allpNodes = this.poe_service.getpNodesData();
     const allrnpNodes = this.poe_service.getrnpNodesData();
+    const allpobJewel = this.poe_service.getpobJewelData();
     this.datas.items = await lastValueFrom(allItems);
     this.datas.stats = await lastValueFrom(allStats);
     this.datas.pNodes = await lastValueFrom(allpNodes);
     this.datas.rnpNodes = await lastValueFrom(allrnpNodes);
+    this.datas.pobJewel = await lastValueFrom(allpobJewel);
 
     this.dealWithitemsData();
     this.dealWithstatsData();
     this.dealWithpNodesData();
     this.dealWithrnpNodesData();
+    this.dealWithpobJewelData();
 
     const getCopyText = interval(1000).pipe(map(() => this.clipboard.readText()));
 
@@ -523,7 +530,7 @@ export class HomeComponent implements OnInit {
         let levelPos = item.substring(item.indexOf('區域等級: ') + 6);
         let levelPosEnd = levelPos.indexOf(NL);
         let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
-        this.searchOptions.mapAreaLevel.min = level;
+        this.searchOptions.itemLevel.min = level;
 
         let maxLevel = 0;
         switch (true) {
@@ -542,9 +549,9 @@ export class HomeComponent implements OnInit {
           default:
             break;
         }
-        this.searchOptions.mapAreaLevel.max = maxLevel;
-        this.searchOptions.mapAreaLevel.isSearch = true;
-        this.isMapAreaLevelSearch();
+        this.searchOptions.itemLevel.max = maxLevel;
+        this.searchOptions.itemLevel.isSearch = true;
+        this.isItemLevelSearch();
 
         this.item.name += ("<br>區域等級: " + level);
       }
@@ -564,6 +571,21 @@ export class HomeComponent implements OnInit {
       console.log(this.item.type);
       if (this.item.type.indexOf('armour') > -1) {
         this.itemDefencesAnalysis(itemArray);
+      }
+      //探險日誌地區等級
+      if (this.item.type.startsWith('map')) {
+        let levelPos = item.substring(item.indexOf('地區等級: ') + 6);
+        let levelPosEnd = levelPos.indexOf(NL);
+        let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
+        this.searchOptions.mapAreaLevel.min = level;
+        this.searchOptions.mapAreaLevel.max = level;
+        this.searchOptions.mapAreaLevel.isSearch = true;
+
+        console.log(this.searchOptions.mapAreaLevel);
+
+        this.isMapAreaLevelSearch();
+
+        this.item.name += ("<br>地區等級: " + level);
       }
       // console.log(this.searchOptions);
       if (!this.ui.collapse.item) {
@@ -629,6 +651,8 @@ export class HomeComponent implements OnInit {
 
     this.searchResult.fetchQueryID = '';
     this.searchResult.status = '';
+    this.searchResult.extraFilterStr = '';
+
     this.item.searchStats = [];
     this.item.searchDefences = [];
 
@@ -842,7 +866,14 @@ export class HomeComponent implements OnInit {
         //   apiStatText = `只會影響『${areaStat}』範圍內的天賦`
         // } else {
 
-        if (itemStatText.startsWith('配置 ') || itemStatText.startsWith('範圍 ')) {
+        if (statID === 'explicit.stat_448592698') {//信仰棱鏡          
+          let tempL = itemStatText.split(' ');
+
+          randomMinValue = this.pobs.get(tempL[2] + ' ' + tempL[0]);
+          randomMaxValue = randomMinValue;
+
+          apiStatText = itemStatText;
+        } else if (itemStatText.startsWith('配置 ') || itemStatText.startsWith('範圍 ')) { //從無到有與妄想症
           let tempA = itemStatText.split(' ');
           let count = (tempA[1].match(/\|/g) || []).length;
 
@@ -1022,28 +1053,13 @@ export class HomeComponent implements OnInit {
             Object.assign(value, { option: element.option });
           }
 
-          // 比較 element.id 與 duplicateStats 內的 allIds 陣列，如果 element.id 有包含在內，則搜尋詞綴時就改為 type: "count"
-          // let isCountType = this.options.duplicateStats.allIds.find((data: any) => data.includes(element.id));
-
-          // if (isCountType) {
-          //   let matchedItem = this.duplicateStats.result.find(item => item.ids.includes(isCountType));
-          //   let filters = matchedItem.ids.map(id => ({
-          //     id: id,
-          //     disabled: element.isSearch ? false : true,
-          //   }));
-
-          //   this.searchJson.query.stats.push({
-          //     "type": "count",
-          //     filters,
-          //     "value": {
-          //       "min": 1
-          //     }
-          //   });
-          // } else {
-
           if (element.isSearch) searchCount++;
 
-          if (element.text.startsWith('配置 ') && this.item.type.indexOf('jewel') > -1) {
+          if (element.id === 'explicit.stat_448592698' && element.isSearch) {//信仰棱鏡          
+            this.searchResult.extraFilterStr = element.text;
+          }
+
+          if (element.text.startsWith('配置 ') && this.item.type.indexOf('jewel') > -1) { //從無到有與妄想症
             ['enchant.stat_3353051436', 'enchant.stat_3944917080', 'enchant.stat_5991090'].forEach((id: any) => {
               this.filters.searchJson.query.stats[0].filters.push({
                 "id": id,
@@ -1149,58 +1165,6 @@ export class HomeComponent implements OnInit {
     });
 
     return;
-    // this.axios.post(`http://localhost:3031/trade`, {
-    //   searchJson: obj,
-    //   baseUrl: this.options.baseUrl,
-    //   league: this.options.leagues.chosenL,
-    //   cookie: this.$store.state.POESESSID, //之後處理
-    // })
-    //   .then((response) => {
-    //     this.resultLength = response.data.resultLength
-    //     this.searchTotal = response.data.total // 總共搜到幾項物品
-    //     if (JSON.stringify(this.searchJson) == JSON.stringify(this.searchJson_Def)) { // 嘗試修復有時搜尋會無法代入條件的 bug
-    //       this.copyText = ''
-    //     }
-    //     this.status = ` 共 ${response.data.total} 筆符合 ${this.isPriceCollapse && response.data.total !== response.data.resultLength ? '- 報價已摺疊' : ''}`
-    //     this.fetchID = response.data.fetchID
-    //     this.fetchQueryID = response.data.id
-    //     let limitState = response.data.limitState
-    //     // console.log(limitState, this.$moment().format('HH:mm:ss.SSS'))
-    //     switch (true) { // X-Rate-Limit-Ip: 5:10:60,15:60:300,30:300:1800
-    //       case limitState.third >= 28:
-    //         this.startCountdown(50)
-    //         break;
-    //       case limitState.third >= 24:
-    //         this.startCountdown(10)
-    //         break;
-    //       case limitState.second >= 14:
-    //         this.startCountdown(8)
-    //         break;
-    //       case limitState.second >= 12:
-    //         this.startCountdown(4)
-    //         break;
-    //       case limitState.first >= 4:
-    //         this.startCountdown(2)
-    //         break;
-    //       default:
-    //         break;
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     let errMsg = JSON.stringify(error.response.data)
-    //     if (error.response.status === 429) {
-    //       errMsg += `\n被 Server 限制發送需求了，請等待後再重試`
-    //     }
-    //     vm.issueText = `Version: v1.325.0, Server: ${vm.storeServerString}\n此次搜尋異常！\n${errMsg}\n\`\`\`\n${vm.copyText.replace('稀有度: ', 'Rarity: ')}\`\`\``
-    //     vm.itemsAPI()
-    //     vm.isSupported = false
-    //     vm.isStatsCollapse = false
-    //     vm.$message({
-    //       type: 'error',
-    //       message: errMsg
-    //     });
-    //     console.log(errMsg);
-    //   })
   }
 
   //取得詞綴
@@ -1209,21 +1173,26 @@ export class HomeComponent implements OnInit {
     //計算有幾位數字
     let count = (stat.match(/\d+/g) || []).length;
     let countI = [...stat.matchAll(/\d+/g)];
+    let countP = [...stat.matchAll(/\%/g)];
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.startsWith('配置 ') || stat.startsWith('範圍 ')) {
+    if (stat.endsWith('技能的等級') && stat.split(' ').length == 4) {//信仰棱鏡
+      mdStat = '# 至所有 # 技能的等級';
+    } else if (stat.startsWith('配置 ') || stat.startsWith('範圍 ')) { //從無到有與妄想症
       let tempA = stat.split(' ');
       tempA.splice(1, 1);
 
       mdStat = tempA.length > 1 ? tempA.join(' # ') : tempA[0] + ' #';
-    } else if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1) {
+    } else if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外')) { //固定數字
       mdStat = stat;
-    } else if (stat.indexOf('每有一個鑲嵌') > -1) { //詞綴有+號
-      mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
+    } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
+      mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
-    } else if (count > 1 && perPos > -1 && periodPos === -1) { //解決雙數字有%
+    } else if (countP.length == 2) { //解決雙數字雙%，前#%
+      mdStat = stat.replace(stat.substring(countI[0].index, perPos), '#');
+    } else if (count > 1 && perPos > -1 && periodPos === -1 && countP.length == 1) { //解決雙數字有%
       mdStat = stat.replace(stat.substring((perPos - countI[0].index) > (perPos - countI[1].index) ? countI[1].index : countI[0].index, perPos), '#');
     } else {
       mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
@@ -1398,11 +1367,9 @@ export class HomeComponent implements OnInit {
     if (!this.searchOptions.mapAreaLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("area_level")) {
       delete this.filters.searchJson.query.filters.misc_filters.filters.area_level; // 刪除地圖區域等級 filter
     } else if (this.searchOptions.mapAreaLevel.isSearch) {
-      this.filters.searchJson.query.filters.misc_filters.filters = {// 指定地圖區域等級最小 / 最大值 filter
-        area_level: {
-          min: this.searchOptions.mapAreaLevel.min ? this.searchOptions.mapAreaLevel.min : null,
-          max: this.searchOptions.mapAreaLevel.max ? this.searchOptions.mapAreaLevel.max : null
-        }
+      this.filters.searchJson.query.filters.misc_filters.filters.area_level = {// 指定地圖區域等級最小 / 最大值 filter
+        min: this.searchOptions.mapAreaLevel.min ? this.searchOptions.mapAreaLevel.min : null,
+        max: this.searchOptions.mapAreaLevel.max ? this.searchOptions.mapAreaLevel.max : null
       };
     }
   }
@@ -1871,13 +1838,15 @@ export class HomeComponent implements OnInit {
   //已汙染設定
   corruptedSet() {
     if (this.searchOptions.corruptedSet.chosenObj === 'any') {
-      this.filters.searchJson.query.filters.misc_filters.filters = {}; // 刪除已汙染 filter
+      if (Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("corrupted")) {
+        delete this.filters.searchJson.query.filters.misc_filters.filters.corrupted; // 刪除已汙染 filter
+      }
     } else {
-      this.filters.searchJson.query.filters.misc_filters.filters = { // 增加已汙染 filter
+      Object.assign(this.filters.searchJson.query.filters.misc_filters.filters, { // 增加已汙染 filter
         corrupted: {
           option: this.searchOptions.corruptedSet.chosenObj
         }
-      };
+      });
     }
   }
 
@@ -1934,6 +1903,8 @@ export class HomeComponent implements OnInit {
     result.forEach((e: any) => {
       this.nodes.p.set(e.name, e.hash);
     });
+
+    this.datas.pNodes = [];
   }
 
   //Random Notable Passive Skill格式化
@@ -1943,5 +1914,18 @@ export class HomeComponent implements OnInit {
     result.forEach((e: any) => {
       this.nodes.rnp.set(e.name, e.hash);
     });
+
+    this.datas.rnpNodes = [];
+  }
+
+  //信仰棱鏡格式化
+  dealWithpobJewelData() {
+    let result = this.datas.pobJewel.result;
+
+    result.forEach((e: any) => {
+      this.pobs.set(e.name, e.value);
+    });
+
+    this.datas.pobJewel = [];
   }
 }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AppService } from '../../app.service';
-import { connect, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -183,6 +183,10 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       this.itemImage = this.fetchResult[0].item.icon;
 
       this.fetchResult.forEach((item: any) => {
+        if (this.searchResult.extraFilterStr !== '' && item.item.explicitMods[0] !== this.searchResult.extraFilterStr) {
+            return;
+        }
+
         if (item.listing.price) {
           if (this.computed.has(item.listing.price.currency)) {
             if (!this.computed.get(item.listing.price.currency).has(item.listing.price.amount)) {

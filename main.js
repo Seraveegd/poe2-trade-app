@@ -36,7 +36,7 @@ function createWindow() {
     win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
     // Open the DevTools.
-    // win.webContents.openDevTools({ mode: 'detach', activate: false });
+    win.webContents.openDevTools({ mode: 'detach', activate: false });
 
     makeInteractive();
 
@@ -120,7 +120,7 @@ app.whenReady().then(() => {
         }
     ])
 
-    tray.setToolTip('POE2 查價工具 v0.4.1');
+    tray.setToolTip('POE2 查價工具 v0.4.2');
     tray.setContextMenu(contextMenu);
 
     setTimeout(

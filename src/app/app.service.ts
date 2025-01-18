@@ -41,4 +41,8 @@ export class AppService {
   getrnpNodesData(): any {
     return this.http.get<any[]>('poe2/rnpNodes.json');
   }
+
+  getpobJewelData(): any {
+    return this.http.get<any[]>('poe2/pobJewel.json');
+  }
 }

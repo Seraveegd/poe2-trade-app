@@ -1119,7 +1119,7 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外')) { //固定數字
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留')) { //固定數字
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");

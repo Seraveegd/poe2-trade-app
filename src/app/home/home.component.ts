@@ -238,7 +238,7 @@ export class HomeComponent implements OnInit {
     },
     priceSetting: { // 搜尋設定->價格設定
       options: [{
-        label: "Relative",
+        label: "與崇高石等值",
         prop: ''
       }, {
         label: "崇高石",
@@ -252,6 +252,9 @@ export class HomeComponent implements OnInit {
       }, {
         label: "神聖石",
         prop: 'divine'
+      }, {
+        label: "崇高或神聖石",
+        prop: 'exalted_divine'
       }],
       chosenObj: ''
     },
@@ -543,7 +546,7 @@ export class HomeComponent implements OnInit {
       this.searchOptions.itemSocket.min = this.getSocketNumber(item);
       this.searchOptions.itemSocket.max = this.getSocketNumber(item);
       //分析詞綴
-      if (Rarity !== '普通' || searchName.indexOf('碑牌') > -1) {
+      if (Rarity !== '普通' || searchName.indexOf('碑牌') > -1 || searchName.indexOf('Tablet') > -1) {
         this.itemStatsAnalysis(itemArray, 0);
       }
       //分析防禦
@@ -1470,66 +1473,96 @@ export class HomeComponent implements OnInit {
     });
     //"id": "weapon", "label": "武器"
     result[result.findIndex((e: any) => e.id === "weapon")].entries.forEach((element: any) => {
-      const basetype = ["木製棍棒", "雜響權杖", "凋零法杖", "粗製弓", "臨時十字弓", "纏繞細杖", "灰燼長杖", "分裂巨斧", "墮落巨棍棒"]
+      const basetype = ["分裂鏈錘", "鈍斧", "木製棍棒", "戰爭長鋒", "闊劍", "雜響權杖", "凋零法杖", "粗製弓", "臨時十字弓", "纏繞細杖", "灰燼長杖", "分裂巨斧", "墮落巨棍棒", "鍛鐵巨劍"]
 
       if (basetype.includes(element.type) && !('flags' in element)) {
         weaponIndex += 1;
       }
 
       switch (weaponIndex) {
-        case 1: // 單手錘起始點 { "type": "木製棍棒", "text": "木製棍棒" }
+        case 1: // 鏈錘起始點 { "type": "分裂鏈錘", "text": "分裂鏈錘" }
+          element.name = "鏈錘";
+          element.option = "weapon.flail";
+          element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
+          this.basics.categorizedItems.push(element);
+          break;
+        case 2: // 單手斧起始點 { "type": "鈍斧", "text": "鈍斧" }
+          element.name = "單手斧";
+          element.option = "weapon.oneaxe";
+          element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
+          this.basics.categorizedItems.push(element);
+          break;
+        case 3: // 單手錘起始點 { "type": "木製棍棒", "text": "木製棍棒" }
           element.name = "單手錘";
           element.option = "weapon.onemace";
           element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
           this.basics.categorizedItems.push(element);
           break;
-        case 2: // 權杖起始點 { "type": "雜響權杖", "text": "雜響權杖" }
+        case 4: // 長鋒起始點 { "type": "戰爭長鋒", "text": "戰爭長鋒" }
+          element.name = "長鋒";
+          element.option = "weapon.spear";
+          element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
+          this.basics.categorizedItems.push(element);
+          break;
+        case 5: // 單手劍起始點 { "type": "闊劍", "text": "闊劍" }
+          element.name = "單手劍";
+          element.option = "weapon.onesword";
+          element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
+          this.basics.categorizedItems.push(element);
+          break;
+        case 6: // 權杖起始點 { "type": "雜響權杖", "text": "雜響權杖" }
           element.name = "權杖";
           element.option = "weapon.sceptre";
           element.weapon = "weapon.caster";
           this.basics.categorizedItems.push(element);
           break;
-        case 3: // 法杖起始點 { "type": "凋零法杖", "text": "凋零法杖" }
+        case 7: // 法杖起始點 { "type": "凋零法杖", "text": "凋零法杖" }
           element.name = "法杖";
           element.option = "weapon.wand";
           element.weapon = "weapon.caster";
           this.basics.categorizedItems.push(element);
           break;
-        case 4: // 弓起始點 { "type": "粗製弓", "text": "粗製弓" }
+        case 8: // 弓起始點 { "type": "粗製弓", "text": "粗製弓" }
           element.name = "弓";
           element.option = "weapon.bow";
           element.weapon = "weapon.ranged";
           // element.weapon = "weapon.one"
           this.basics.categorizedItems.push(element);
           break;
-        case 5: // 十字弓起始點 { "type": "鏽劍", "text": "鏽劍" }
+        case 9: // 十字弓起始點 { "type": "鏽劍", "text": "鏽劍" }
           element.name = "十字弓";
           element.option = "weapon.crossbow";
           element.weapon = "weapon.ranged";
           // element.weapon = "weapon.one"
           this.basics.categorizedItems.push(element);
           break;
-        case 6: // 細杖起始點 { "type": "纏繞細杖", "text": "纏繞細杖" }
+        case 10: // 細杖起始點 { "type": "纏繞細杖", "text": "纏繞細杖" }
           element.name = "細杖";
           element.option = "weapon.warstaff";
           element.weapon = "weapon.twomelee";
           this.basics.categorizedItems.push(element);
           break;
-        case 7: // 長杖起始點{ "type": "灰燼長杖", "text": "灰燼長杖" }
+        case 11: // 長杖起始點{ "type": "灰燼長杖", "text": "灰燼長杖" }
           element.name = "長杖";
           element.option = "weapon.staff";
           element.weapon = "weapon.caster";
           this.basics.categorizedItems.push(element);
           break;
-        case 8: // 雙手斧起始點 { "type": "分裂巨斧", "text": "分裂巨斧" }
+        case 12: // 雙手斧起始點 { "type": "分裂巨斧", "text": "分裂巨斧" }
           element.name = "雙手斧";
           element.option = "weapon.twoaxe";
           element.weapon = "weapon.twomelee";
           this.basics.categorizedItems.push(element);
           break;
-        case 9: // 雙手錘起始點 { "type": "墮落巨棍棒", "text": "墮落巨棍棒" }
+        case 13: // 雙手錘起始點 { "type": "墮落巨棍棒", "text": "墮落巨棍棒" }
           element.name = "雙手錘";
           element.option = "weapon.twomace";
+          element.weapon = "weapon.twomelee";
+          this.basics.categorizedItems.push(element);
+          break;
+        case 14: // 雙手劍起始點 { "type": "鍛鐵巨劍", "text": "鍛鐵巨劍" }
+          element.name = "雙手劍";
+          element.option = "weapon.twosword";
           element.weapon = "weapon.twomelee";
           this.basics.categorizedItems.push(element);
           break;

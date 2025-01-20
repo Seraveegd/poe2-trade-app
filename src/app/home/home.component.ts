@@ -1125,14 +1125,14 @@ export class HomeComponent implements OnInit {
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
-    } else if (countI.length == 2 && periodPos === -1 && countP.length == 0) { //解決雙數字，後固定
+    } else if (countI.length == 2 && periodPos === -1 && countP.length == 0 && stat.indexOf('附加') === -1) { //解決雙數字，後固定
       mdStat = stat.replace(countI[0].toString(), '#');
     } else if (countP.length == 2) { //解決雙數字雙%，前#%
       mdStat = stat.replace(stat.substring(countI[0].index, perPos), '#');
     } else if (count > 1 && perPos > -1 && periodPos === -1 && countP.length == 1) { //解決雙數字有%
       mdStat = stat.replace((perPos - countI[0].index) > (perPos - countI[1].index) ? countI[1].toString() : countI[0].toString(), '#');
     } else {
-      mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
+      mdStat = stat.replace("+", "").replace("-", "").replace("[", "").replace("]", "").replace(/\d+/g, "#").replace("#.#", "#");
     }
 
     console.log(mdStat);

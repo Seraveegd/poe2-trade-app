@@ -16,7 +16,8 @@
                         </div>
                         }
                         @if (searchResult.extraFilterStr !== ''){
-                        <br>搜尋群組再過濾：{{ searchResult.extraFilterStr }}
+                        <br>群組內過濾：{{ searchResult.extraFilterStr }}
+                        <br>剩餘{{ extraFilterCount }}筆
                         }
                         <!-- <span v-if="corruptedCount && corruptedCount === fetchResultPrice.length"
                             style="color: lightpink;">{{ corruptedCount }} 筆皆汙染</span> -->

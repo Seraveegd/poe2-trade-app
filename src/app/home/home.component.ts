@@ -106,19 +106,7 @@ export class HomeComponent implements OnInit {
     items: [], // 交易網物品 API 資料
     stats: [],  // 交易網詞綴 API 資料
     // duplicateStats: duplicateStatsData, // 重複的詞綴 API 資料
-    pNodes: [], //Passive Skill
-    rnpNodes: [], //Random Notable Passive Skill
-    pobJewel: [] //信仰棱鏡查詢值
   };
-
-  //天賦節點資料
-  public nodes: any = {
-    p: new Map(),
-    rnp: new Map()
-  }
-
-  //信仰棱鏡查詢值
-  public pobs: any = new Map();
 
   //物品資料
   public basics: any = {
@@ -359,20 +347,11 @@ export class HomeComponent implements OnInit {
   public async loadData() {
     const allItems = this.poe_service.getItemData();
     const allStats = this.poe_service.getStatsData();
-    const allpNodes = this.poe_service.getpNodesData();
-    const allrnpNodes = this.poe_service.getrnpNodesData();
-    const allpobJewel = this.poe_service.getpobJewelData();
     this.datas.items = await lastValueFrom(allItems);
     this.datas.stats = await lastValueFrom(allStats);
-    this.datas.pNodes = await lastValueFrom(allpNodes);
-    this.datas.rnpNodes = await lastValueFrom(allrnpNodes);
-    this.datas.pobJewel = await lastValueFrom(allpobJewel);
 
     this.dealWithitemsData();
     this.dealWithstatsData();
-    this.dealWithpNodesData();
-    this.dealWithrnpNodesData();
-    this.dealWithpobJewelData();
 
     const getCopyText = interval(1000).pipe(map(() => this.clipboard.readText()));
 
@@ -573,7 +552,7 @@ export class HomeComponent implements OnInit {
         this.itemDefencesAnalysis(itemArray);
       }
       //探險日誌地區等級
-      if (this.item.type.startsWith('map')) {
+      if (this.item.type.indexOf('logbook') > -1) {
         let levelPos = item.substring(item.indexOf('地區等級: ') + 6);
         let levelPosEnd = levelPos.indexOf(NL);
         let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
@@ -866,22 +845,7 @@ export class HomeComponent implements OnInit {
         //   apiStatText = `只會影響『${areaStat}』範圍內的天賦`
         // } else {
 
-        if (statID === 'explicit.stat_448592698') {//信仰棱鏡          
-          let tempL = itemStatText.split(' ');
-
-          randomMinValue = this.pobs.get(tempL[2] + ' ' + tempL[0]);
-          randomMaxValue = randomMinValue;
-
-          apiStatText = itemStatText;
-        } else if (itemStatText.startsWith('配置 ') || itemStatText.startsWith('範圍 ')) { //從無到有與妄想症
-          let tempA = itemStatText.split(' ');
-          let count = (tempA[1].match(/\|/g) || []).length;
-
-          randomMinValue = itemStatText.startsWith('配置 ') ? this.nodes.rnp.get(this.replaceIllustrate(tempA[1], count)) : this.nodes.p.get(this.replaceIllustrate(tempA[1], count));
-          randomMaxValue = randomMinValue;
-
-          apiStatText = itemStatText.replace('(enchant)', '');
-        } else if (itemStatText.indexOf("試煉地圖") > -1) {
+        if (itemStatText.indexOf("試煉地圖") > -1) {
           for (let index = 0; index < itemStatArray.length; index++) {
             if (!isNaN(itemStatArray[index])) { // 物品詞綴最小值
               console.log(itemStatArray[index]);
@@ -913,7 +877,7 @@ export class HomeComponent implements OnInit {
         // }
 
         // API 詞綴只有"增加"，但物品可能有"減少"詞綴相關處理
-        if ((apiStatText.includes('增加') && itemStatText.includes('減少')) || (apiStatText.includes('減少') && itemStatText.includes('增加'))) {
+        if ((apiStatText.includes('增加') && itemStatText.includes('減少')) || (apiStatText.includes('減少') && itemStatText.includes('增加')) || (apiStatText.includes('恢復') && itemStatText.includes('失去'))) {
           // apiStatText = apiStatText.replace('增加', '減少');
           randomMinValue = -randomMinValue;
         }
@@ -1055,33 +1019,11 @@ export class HomeComponent implements OnInit {
 
           if (element.isSearch) searchCount++;
 
-          if (element.id === 'explicit.stat_448592698' && element.isSearch) {//信仰棱鏡          
-            this.searchResult.extraFilterStr = element.text;
-          }
-
-          if (element.text.startsWith('配置 ') && this.item.type.indexOf('jewel') > -1) { //從無到有與妄想症
-            ['enchant.stat_3353051436', 'enchant.stat_3944917080', 'enchant.stat_5991090'].forEach((id: any) => {
-              this.filters.searchJson.query.stats[0].filters.push({
-                "id": id,
-                "disabled": !element.isSearch,
-                "value": value
-              })
-
-              if (this.filters.searchJson.query.stats[0].type == 'and') {
-                this.filters.searchJson.query.stats[0].type = 'count';
-
-                Object.assign(this.filters.searchJson.query.stats[0], { value: { min: searchCount } });
-              } else {
-                this.filters.searchJson.query.stats[0].value.min = searchCount;
-              }
-            })
-          } else {
-            this.filters.searchJson.query.stats[0].filters.push({
-              "id": element.id,
-              "disabled": !element.isSearch,
-              "value": value
-            })
-          }
+          this.filters.searchJson.query.stats[0].filters.push({
+            "id": element.id,
+            "disabled": !element.isSearch,
+            "value": value
+          })
         }
       })
     }
@@ -1177,23 +1119,18 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.endsWith('技能的等級') && stat.split(' ').length == 4) {//信仰棱鏡
-      mdStat = '# 至所有 # 技能的等級';
-    } else if (stat.startsWith('配置 ') || stat.startsWith('範圍 ')) { //從無到有與妄想症
-      let tempA = stat.split(' ');
-      tempA.splice(1, 1);
-
-      mdStat = tempA.length > 1 ? tempA.join(' # ') : tempA[0] + ' #';
-    } else if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外')) { //固定數字
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外')) { //固定數字
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
+    } else if (countI.length == 2 && periodPos === -1 && countP.length == 0) { //解決雙數字，後固定
+      mdStat = stat.replace(countI[0].toString(), '#');
     } else if (countP.length == 2) { //解決雙數字雙%，前#%
       mdStat = stat.replace(stat.substring(countI[0].index, perPos), '#');
     } else if (count > 1 && perPos > -1 && periodPos === -1 && countP.length == 1) { //解決雙數字有%
-      mdStat = stat.replace(stat.substring((perPos - countI[0].index) > (perPos - countI[1].index) ? countI[1].index : countI[0].index, perPos), '#');
+      mdStat = stat.replace((perPos - countI[0].index) > (perPos - countI[1].index) ? countI[1].toString() : countI[0].toString(), '#');
     } else {
       mdStat = stat.replace("+", "").replace("-", "").replace(/\d+/g, "#").replace("#.#", "#");
     }
@@ -1206,6 +1143,10 @@ export class HomeComponent implements OnInit {
       mdStat = mdStat.replace('減少', '增加');
     } else if (this.reduceStrs.some((str: any) => mdStat.indexOf(str) > -1)) { //處理只有減少，字串有增加字樣
       mdStat = mdStat.replace('增加', '減少');
+    }
+
+    if (mdStat.startsWith('擊殺時')) { //處理只有恢復，字串有失去字樣
+      mdStat = mdStat.replace('失去', '恢復');
     }
 
     let findStat = stat;
@@ -1894,38 +1835,5 @@ export class HomeComponent implements OnInit {
     } else {
       return 0;
     }
-  }
-
-  //Passive Skill格式化
-  dealWithpNodesData() {
-    let result = this.datas.pNodes.result;
-
-    result.forEach((e: any) => {
-      this.nodes.p.set(e.name, e.hash);
-    });
-
-    this.datas.pNodes = [];
-  }
-
-  //Random Notable Passive Skill格式化
-  dealWithrnpNodesData() {
-    let result = this.datas.rnpNodes.result;
-
-    result.forEach((e: any) => {
-      this.nodes.rnp.set(e.name, e.hash);
-    });
-
-    this.datas.rnpNodes = [];
-  }
-
-  //信仰棱鏡格式化
-  dealWithpobJewelData() {
-    let result = this.datas.pobJewel.result;
-
-    result.forEach((e: any) => {
-      this.pobs.set(e.name, e.value);
-    });
-
-    this.datas.pobJewel = [];
   }
 }

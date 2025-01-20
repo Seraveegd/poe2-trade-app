@@ -20,7 +20,8 @@ export class AnalyzeComponent implements OnInit, OnChanges {
   public maxRead = 40; //每次讀取
   public itemImage = ''; //物品圖示
   public observ: any = []; //紀錄序列
-  public corruptedCount: number = 0;
+  public corruptedCount: number = 0; //汙染統計
+  public extraFilterCount: number = 0; //額外過濾統計
 
   public currencysList: any = new Map([
     ["transmute", {
@@ -204,6 +205,8 @@ export class AnalyzeComponent implements OnInit, OnChanges {
         if (item.item.corrupted) {
           this.corruptedCount += 1;
         }
+
+        this.extraFilterCount += 1;
       });
 
       console.log(this.computed);

@@ -11,8 +11,6 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        // certificateFile: './cert.pfx',
-        // certificatePassword: process.env.CERTIFICATE_PASSWORD,
         setupIcon: __dirname + '/public/favicon.ico',
         iconUrl: __dirname + '/public/favicon.ico'
       },

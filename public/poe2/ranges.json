@@ -1,0 +1,3400 @@
+{
+    "ranges": {
+        "explicit.stat_4080418644": {
+            "belt": {
+                "min": 5.0,
+                "max": 36.0
+            },
+            "gloves": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "boots": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "chest": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "helmet": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "ring": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "amulet": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "shield": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "onesword": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "oneaxe": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "onemace": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "sceptre": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "spear": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "flail": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "twoaxe": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "twomace": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "crossbow": {
+                "min": 5.0,
+                "max": 33.0
+            }
+        },
+        "explicit.stat_3372524247": {
+            "belt": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "gloves": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "boots": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "chest": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "helmet": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "ring": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "amulet": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "shield": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "focus": {
+                "min": 6.0,
+                "max": 45.0
+            }
+        },
+        "explicit.stat_4220027924": {
+            "belt": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "gloves": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "boots": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "chest": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "helmet": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "ring": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "amulet": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "shield": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "focus": {
+                "min": 6.0,
+                "max": 45.0
+            }
+        },
+        "explicit.stat_1671376347": {
+            "belt": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "gloves": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "boots": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "chest": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "helmet": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "ring": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "amulet": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "shield": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "focus": {
+                "min": 6.0,
+                "max": 45.0
+            }
+        },
+        "explicit.stat_2923486259": {
+            "belt": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "gloves": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "boots": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "chest": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "helmet": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "ring": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "amulet": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "shield": {
+                "min": 4.0,
+                "max": 27.0
+            },
+            "focus": {
+                "min": 4.0,
+                "max": 27.0
+            }
+        },
+        "explicit.stat_3299347043": {
+            "belt": {
+                "min": 10.0,
+                "max": 174.0
+            },
+            "gloves": {
+                "min": 10.0,
+                "max": 149.0
+            },
+            "boots": {
+                "min": 10.0,
+                "max": 149.0
+            },
+            "chest": {
+                "min": 10.0,
+                "max": 214.0
+            },
+            "helmet": {
+                "min": 10.0,
+                "max": 174.0
+            },
+            "ring": {
+                "min": 10.0,
+                "max": 119.0
+            },
+            "amulet": {
+                "min": 10.0,
+                "max": 149.0
+            },
+            "shield": {
+                "min": 10.0,
+                "max": 189.0
+            }
+        },
+        "explicit.stat_1050105434": {
+            "belt": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "gloves": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "boots": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "helmet": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "ring": {
+                "min": 10.0,
+                "max": 189.0
+            },
+            "amulet": {
+                "min": 10.0,
+                "max": 189.0
+            },
+            "shield": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "focus": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "wand": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "sceptre": {
+                "min": 10.0,
+                "max": 179.0
+            },
+            "staff": {
+                "min": 14.0,
+                "max": 251.0
+            }
+        },
+        "explicit.stat_3484657501": {
+            "belt": {
+                "min": 12.0,
+                "max": 255.0
+            },
+            "gloves": {
+                "min": 16.0,
+                "max": 160.0
+            },
+            "boots": {
+                "min": 16.0,
+                "max": 160.0
+            },
+            "chest": {
+                "min": 16.0,
+                "max": 276.0
+            },
+            "helmet": {
+                "min": 16.0,
+                "max": 202.0
+            },
+            "shield": {
+                "min": 16.0,
+                "max": 256.0
+            }
+        },
+        "explicit.stat_915769802": {
+            "belt": {
+                "min": 6.0,
+                "max": 304.0
+            },
+            "boots": {
+                "min": 6.0,
+                "max": 352.0
+            },
+            "chest": {
+                "min": 6.0,
+                "max": 304.0
+            },
+            "shield": {
+                "min": 6.0,
+                "max": 304.0
+            }
+        },
+        "explicit.stat_2881298780": {
+            "belt": {
+                "min": 2.0,
+                "max": 47.0
+            },
+            "chest": {
+                "min": 2.0,
+                "max": 47.0
+            },
+            "shield": {
+                "min": 2.0,
+                "max": 47.0
+            }
+        },
+        "explicit.stat_3325883026": {
+            "belt": {
+                "min": 1.0,
+                "max": 29.0
+            },
+            "boots": {
+                "min": 1.0,
+                "max": 23.0
+            },
+            "chest": {
+                "min": 1.0,
+                "max": 36.0
+            },
+            "helmet": {
+                "min": 1.0,
+                "max": 23.0
+            },
+            "ring": {
+                "min": 1.0,
+                "max": 18.0
+            },
+            "amulet": {
+                "min": 1.0,
+                "max": 33.0
+            }
+        },
+        "explicit.stat_51994685": {
+            "belt": {
+                "min": 5.0,
+                "max": 40.0
+            }
+        },
+        "explicit.stat_1412217137": {
+            "belt": {
+                "min": 5.0,
+                "max": 40.0
+            }
+        },
+        "explicit.stat_1389754388": {
+            "belt": {
+                "min": 4.0,
+                "max": 33.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1836676211": {
+            "belt": {
+                "min": 5.0,
+                "max": 40.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_644456512": {
+            "belt": {
+                "min": 8.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_3585532255": {
+            "belt": {
+                "min": 5.0,
+                "max": 40.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1570770415": {
+            "belt": {
+                "min": 8.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_1416292992": {
+            "belt": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_3261801346": {
+            "gloves": {
+                "min": 5.0,
+                "max": 36.0
+            },
+            "chest": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "helmet": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "ring": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "amulet": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "shield": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "quiver": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "onesword": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "spear": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "bow": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "crossbow": {
+                "min": 5.0,
+                "max": 33.0
+            }
+        },
+        "explicit.stat_328541901": {
+            "gloves": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "boots": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "chest": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "helmet": {
+                "min": 5.0,
+                "max": 36.0
+            },
+            "ring": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "amulet": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "shield": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "focus": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "wand": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "sceptre": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "flail": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "staff": {
+                "min": 5.0,
+                "max": 33.0
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 33.0
+            }
+        },
+        "explicit.stat_4052037485": {
+            "gloves": {
+                "min": 10.0,
+                "max": 60.0
+            },
+            "boots": {
+                "min": 10.0,
+                "max": 60.0
+            },
+            "chest": {
+                "min": 10.0,
+                "max": 96.0
+            },
+            "helmet": {
+                "min": 10.0,
+                "max": 73.0
+            },
+            "shield": {
+                "min": 10.0,
+                "max": 90.0
+            },
+            "focus": {
+                "min": 10.0,
+                "max": 90.0
+            }
+        },
+        "explicit.stat_1062208444": {
+            "gloves": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "boots": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "chest": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "helmet": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "shield": {
+                "min": 15.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_4015621042": {
+            "gloves": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "boots": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "chest": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "helmet": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "shield": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "focus": {
+                "min": 15.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_3639275092": {
+            "gloves": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "boots": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "chest": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "helmet": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "shield": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "focus": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "wand": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "onesword": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "oneaxe": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "onemace": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "sceptre": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "spear": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "flail": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "bow": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "staff": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "twosword": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "twoaxe": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "twomace": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "warstaff": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "crossbow": {
+                "min": -15.0,
+                "max": -35.0
+            }
+        },
+        "explicit.stat_3032590688": {
+            "gloves": {
+                "min": 2.0,
+                "max": 25.5
+            },
+            "ring": {
+                "min": 2.0,
+                "max": 25.5
+            },
+            "quiver": {
+                "min": 2.0,
+                "max": 26.0
+            }
+        },
+        "explicit.stat_1573130764": {
+            "gloves": {
+                "min": 2.0,
+                "max": 37.0
+            },
+            "ring": {
+                "min": 2.0,
+                "max": 37.0
+            },
+            "quiver": {
+                "min": 2.0,
+                "max": 37.0
+            }
+        },
+        "explicit.stat_4067062424": {
+            "gloves": {
+                "min": 2.0,
+                "max": 30.5
+            },
+            "ring": {
+                "min": 2.0,
+                "max": 30.5
+            },
+            "quiver": {
+                "min": 2.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_1754445556": {
+            "gloves": {
+                "min": 3.0,
+                "max": 37.5
+            },
+            "ring": {
+                "min": 3.0,
+                "max": 37.5
+            }
+        },
+        "explicit.stat_9187492": {
+            "gloves": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "amulet": {
+                "min": 1.0,
+                "max": 3.0
+            },
+            "onesword": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "oneaxe": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "onemace": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "spear": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "flail": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "twosword": {
+                "min": 1.0,
+                "max": 7.0
+            },
+            "twoaxe": {
+                "min": 1.0,
+                "max": 7.0
+            },
+            "twomace": {
+                "min": 1.0,
+                "max": 7.0
+            },
+            "warstaff": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_2557965901": {
+            "gloves": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "ring": {
+                "min": 5.0,
+                "max": 7.9
+            }
+        },
+        "explicit.stat_707457662": {
+            "gloves": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "ring": {
+                "min": 4.0,
+                "max": 6.9
+            }
+        },
+        "explicit.stat_3695891184": {
+            "gloves": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "ring": {
+                "min": 4.0,
+                "max": 53.0
+            },
+            "quiver": {
+                "min": 4.0,
+                "max": 53.0
+            },
+            "wand": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "onesword": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "oneaxe": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "onemace": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "spear": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "flail": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "bow": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "staff": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "twosword": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "twoaxe": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "twomace": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "warstaff": {
+                "min": 4.0,
+                "max": 84.0
+            },
+            "crossbow": {
+                "min": 4.0,
+                "max": 84.0
+            }
+        },
+        "explicit.stat_1368271171": {
+            "gloves": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "ring": {
+                "min": 2.0,
+                "max": 27.0
+            },
+            "quiver": {
+                "min": 2.0,
+                "max": 27.0
+            },
+            "wand": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "onesword": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "oneaxe": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "onemace": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "spear": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "flail": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "bow": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "staff": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "twosword": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "twoaxe": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "twomace": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "warstaff": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "crossbow": {
+                "min": 2.0,
+                "max": 45.0
+            }
+        },
+        "explicit.stat_2797971005": {
+            "gloves": {
+                "min": 2.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_681332047": {
+            "gloves": {
+                "min": 5.0,
+                "max": 16.0
+            },
+            "onesword": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "oneaxe": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "onemace": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "spear": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "flail": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "bow": {
+                "min": 5.0,
+                "max": 19.0
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "twoaxe": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "twomace": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "crossbow": {
+                "min": 5.0,
+                "max": 19.0
+            }
+        },
+        "explicit.stat_803737631": {
+            "gloves": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "helmet": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "ring": {
+                "min": 11.0,
+                "max": 450.0
+            },
+            "amulet": {
+                "min": 11.0,
+                "max": 450.0
+            },
+            "quiver": {
+                "min": 11.0,
+                "max": 550.0
+            }
+        },
+        "explicit.stat_3556824919": {
+            "gloves": {
+                "min": 10.0,
+                "max": 34.0
+            },
+            "amulet": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3917489142": {
+            "gloves": {
+                "min": 6.0,
+                "max": 30.0
+            },
+            "boots": {
+                "min": 6.0,
+                "max": 30.0
+            },
+            "helmet": {
+                "min": 14.0,
+                "max": 62.0
+            },
+            "ring": {
+                "min": 14.0,
+                "max": 62.0
+            },
+            "amulet": {
+                "min": 14.0,
+                "max": 62.0
+            }
+        },
+        "explicit.stat_53045048": {
+            "gloves": {
+                "min": 11.0,
+                "max": 142.0
+            },
+            "chest": {
+                "min": 26.0,
+                "max": 351.0
+            },
+            "helmet": {
+                "min": 11.0,
+                "max": 181.0
+            },
+            "shield": {
+                "min": 11.0,
+                "max": 232.0
+            }
+        },
+        "explicit.stat_124859000": {
+            "gloves": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "helmet": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "shield": {
+                "min": 15.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_2451402625": {
+            "gloves": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "chest": {
+                "min": 15.0,
+                "max": 210.0
+            },
+            "helmet": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "shield": {
+                "min": 15.0,
+                "max": 210.0
+            }
+        },
+        "explicit.stat_3321629045": {
+            "gloves": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "chest": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "helmet": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "shield": {
+                "min": 15.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_1999113824": {
+            "gloves": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "chest": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "helmet": {
+                "min": 15.0,
+                "max": 100.0
+            },
+            "shield": {
+                "min": 15.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_2250533757": {
+            "boots": {
+                "min": 10.0,
+                "max": 35.0
+            },
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_99927264": {
+            "boots": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_1874553720": {
+            "boots": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_2160282525": {
+            "boots": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_3981240776": {
+            "chest": {
+                "min": 30.0,
+                "max": 61.0
+            },
+            "amulet": {
+                "min": 30.0,
+                "max": 50.0
+            }
+        },
+        "explicit.stat_1692879867": {
+            "chest": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_3301100256": {
+            "chest": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_986397080": {
+            "chest": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_2162097452": {
+            "helmet": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "amulet": {
+                "min": 1.0,
+                "max": 3.0
+            },
+            "sceptre": {
+                "min": 1.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_587431675": {
+            "helmet": {
+                "min": 10.0,
+                "max": 34.0
+            },
+            "amulet": {
+                "min": 10.0,
+                "max": 38.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1379411836": {
+            "ring": {
+                "min": 2.0,
+                "max": 13.0
+            },
+            "amulet": {
+                "min": 2.0,
+                "max": 24.0
+            }
+        },
+        "explicit.stat_2901986750": {
+            "ring": {
+                "min": 3.0,
+                "max": 16.0
+            },
+            "amulet": {
+                "min": 3.0,
+                "max": 18.0
+            },
+            "shield": {
+                "min": 3.0,
+                "max": 18.0
+            }
+        },
+        "explicit.stat_2144192055": {
+            "ring": {
+                "min": 8.0,
+                "max": 203.0
+            }
+        },
+        "explicit.stat_789117908": {
+            "ring": {
+                "min": 10.0,
+                "max": 69.0
+            },
+            "amulet": {
+                "min": 10.0,
+                "max": 69.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "shield": {
+                "min": 10.0,
+                "max": 69.0
+            },
+            "focus": {
+                "min": 10.0,
+                "max": 69.0
+            },
+            "wand": {
+                "min": 10.0,
+                "max": 69.0
+            },
+            "sceptre": {
+                "min": 10.0,
+                "max": 69.0
+            },
+            "staff": {
+                "min": 10.0,
+                "max": 69.0
+            }
+        },
+        "explicit.stat_2891184298": {
+            "ring": {
+                "min": 9.0,
+                "max": 24.0
+            },
+            "amulet": {
+                "min": 9.0,
+                "max": 28.0
+            },
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            },
+            "shield": {
+                "min": 9.0,
+                "max": 32.0
+            },
+            "focus": {
+                "min": 9.0,
+                "max": 32.0
+            },
+            "wand": {
+                "min": 9.0,
+                "max": 35.0
+            },
+            "staff": {
+                "min": 14.0,
+                "max": 52.0
+            }
+        },
+        "explicit.stat_3962278098": {
+            "ring": {
+                "min": 3.0,
+                "max": 30.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "shield": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "focus": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "wand": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "staff": {
+                "min": 35.0,
+                "max": 169.0
+            }
+        },
+        "explicit.stat_3291658075": {
+            "ring": {
+                "min": 3.0,
+                "max": 30.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "shield": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "focus": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "wand": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "staff": {
+                "min": 35.0,
+                "max": 169.0
+            }
+        },
+        "explicit.stat_2231156303": {
+            "ring": {
+                "min": 3.0,
+                "max": 30.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "shield": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "focus": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "quiver": {
+                "min": 3.0,
+                "max": 38.0
+            },
+            "wand": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "staff": {
+                "min": 35.0,
+                "max": 169.0
+            }
+        },
+        "explicit.stat_736967255": {
+            "ring": {
+                "min": 3.0,
+                "max": 30.0
+            },
+            "jewel": {
+                "min": 6.0,
+                "max": 12.0
+            },
+            "shield": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "focus": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "wand": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "staff": {
+                "min": 35.0,
+                "max": 169.0
+            }
+        },
+        "explicit.stat_983749596": {
+            "amulet": {
+                "min": 3.0,
+                "max": 8.0
+            }
+        },
+        "explicit.stat_2748665614": {
+            "amulet": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_3489782002": {
+            "amulet": {
+                "min": 8.0,
+                "max": 89.0
+            }
+        },
+        "explicit.stat_2866361420": {
+            "amulet": {
+                "min": 10.0,
+                "max": 50.0
+            },
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2106365538": {
+            "amulet": {
+                "min": 10.0,
+                "max": 50.0
+            },
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2482852589": {
+            "amulet": {
+                "min": 10.0,
+                "max": 50.0
+            },
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_124131830": {
+            "amulet": {
+                "min": 1.0,
+                "max": 3.0
+            },
+            "shield": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "focus": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "wand": {
+                "min": 1.0,
+                "max": 4.0
+            },
+            "staff": {
+                "min": 1.0,
+                "max": 6.0
+            }
+        },
+        "explicit.stat_1202301673": {
+            "amulet": {
+                "min": 1.0,
+                "max": 3.0
+            },
+            "quiver": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "bow": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "crossbow": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1444556985": {
+            "amulet": {
+                "min": 10.0,
+                "max": 24.0
+            },
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_472520716": {
+            "amulet": {
+                "min": 10.0,
+                "max": 24.0
+            }
+        },
+        "explicit.stat_2974417149": {
+            "amulet": {
+                "min": 3.0,
+                "max": 30.0
+            },
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "shield": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "focus": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "wand": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "staff": {
+                "min": 35.0,
+                "max": 169.0
+            }
+        },
+        "explicit.stat_280731498": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_1776411443": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2215233444": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2843214518": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2174054121": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1459321413": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_4147897060": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_2301718443": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_3141070085": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1569101201": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2653955271": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2968503605": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "wand": {
+                "min": 51.0,
+                "max": 100.0
+            },
+            "staff": {
+                "min": 51.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_3791899485": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3377888098": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_565784293": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2480498143": {
+            "jewel": {
+                "min": 4.0,
+                "max": 8.0
+            }
+        },
+        "explicit.stat_2112395885": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_44972811": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1181419800": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_872504239": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_4095671657": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1181501418": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1002362373": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3811191316": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_770672621": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "sceptre": {
+                "min": 21.0,
+                "max": 50.0
+            }
+        },
+        "explicit.stat_3119612865": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_1310194496": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2709367754": {
+            "jewel": {
+                "min": 1.0,
+                "max": 1.0
+            }
+        },
+        "explicit.stat_3292710273": {
+            "jewel": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1215155013": {
+            "jewel": {
+                "min": 18.0,
+                "max": 32.0
+            }
+        },
+        "explicit.stat_239367161": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_680068163": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_3166958180": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1315743832": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3851254963": {
+            "jewel": {
+                "min": 10.0,
+                "max": 18.0
+            }
+        },
+        "explicit.stat_686254215": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3374165039": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3037553757": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_4159248054": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1594812856": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_1316278494": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3233599707": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_624954515": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_1772247089": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1303248024": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3544800472": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2194114101": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            },
+            "quiver": {
+                "min": 10.0,
+                "max": 38.0
+            }
+        },
+        "explicit.stat_3714003708": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "quiver": {
+                "min": 10.0,
+                "max": 39.0
+            }
+        },
+        "explicit.stat_210067635": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            },
+            "quiver": {
+                "min": 5.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_1585769763": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_318953428": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1852872083": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_169946467": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_4188894176": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_3759735052": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_4081947835": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_627767961": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_1004011302": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_440490623": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_427684353": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_3192728503": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_1135928777": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_1829102168": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1949833742": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_1238227257": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1062710370": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_538241406": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_3741323227": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3003542304": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_21071013": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_821241191": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_4009879772": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_818778753": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2222186378": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3590792340": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2839066308": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_4189061307": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2594634307": {
+            "jewel": {
+                "min": 18.0,
+                "max": 32.0
+            }
+        },
+        "explicit.stat_712554801": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_1011760251": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2321178454": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "quiver": {
+                "min": 12.0,
+                "max": 26.0
+            }
+        },
+        "explicit.stat_3473929743": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_795138349": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2487305362": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2011656677": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1839076647": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3759663284": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            },
+            "quiver": {
+                "min": 10.0,
+                "max": 46.0
+            }
+        },
+        "explicit.stat_4045894391": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_1697447343": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3283482523": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_1200678966": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_293638271": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "wand": {
+                "min": 51.0,
+                "max": 100.0
+            },
+            "staff": {
+                "min": 51.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_3668351662": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_2527686725": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_924253255": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_1405298142": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_3485067555": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_3417711605": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2118708619": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_274716455": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "shield": {
+                "min": 10.0,
+                "max": 34.0
+            },
+            "focus": {
+                "min": 10.0,
+                "max": 34.0
+            },
+            "wand": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "staff": {
+                "min": 10.0,
+                "max": 39.0
+            }
+        },
+        "explicit.stat_153777645": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_1104825894": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_3824372849": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_2353576063": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_458438597": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_4236566306": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1782086450": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2339757871": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "shield": {
+                "min": 26.0,
+                "max": 50.0
+            },
+            "focus": {
+                "min": 26.0,
+                "max": 50.0
+            }
+        },
+        "explicit.stat_3174700878": {
+            "jewel": {
+                "min": 30.0,
+                "max": 50.0
+            }
+        },
+        "explicit.stat_473429811": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            },
+            "wand": {
+                "min": 31.0,
+                "max": 80.0
+            },
+            "staff": {
+                "min": 31.0,
+                "max": 80.0
+            }
+        },
+        "explicit.stat_3780644166": {
+            "jewel": {
+                "min": 18.0,
+                "max": 32.0
+            }
+        },
+        "explicit.stat_2023107756": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1604736568": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_3676141501": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            },
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1718147982": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3091578504": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_3837707023": {
+            "jewel": {
+                "min": 7.0,
+                "max": 13.0
+            }
+        },
+        "explicit.stat_491450213": {
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_1854213750": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_1589917703": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1423639565": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2957407601": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_3787460122": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
+        "explicit.stat_737908626": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            },
+            "shield": {
+                "min": 10.0,
+                "max": 99.0
+            },
+            "focus": {
+                "min": 10.0,
+                "max": 99.0
+            },
+            "wand": {
+                "min": 10.0,
+                "max": 109.0
+            },
+            "staff": {
+                "min": 10.0,
+                "max": 109.0
+            }
+        },
+        "explicit.stat_416040624": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_3067892458": {
+            "jewel": {
+                "min": 10.0,
+                "max": 18.0
+            }
+        },
+        "explicit.stat_2545584555": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2481353198": {
+            "shield": {
+                "min": 40.0,
+                "max": 81.0
+            }
+        },
+        "explicit.stat_3855016469": {
+            "shield": {
+                "min": 21.0,
+                "max": 54.0
+            }
+        },
+        "explicit.stat_3771516363": {
+            "shield": {
+                "min": 4.0,
+                "max": 8.0
+            }
+        },
+        "explicit.stat_1301765461": {
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1978899297": {
+            "shield": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2768835289": {
+            "shield": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "focus": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "wand": {
+                "min": 25.0,
+                "max": 119.0
+            },
+            "staff": {
+                "min": 35.0,
+                "max": 169.0
+            }
+        },
+        "explicit.stat_1241625305": {
+            "quiver": {
+                "min": 11.0,
+                "max": 59.0
+            }
+        },
+        "explicit.stat_828533480": {
+            "flask": {
+                "min": 21.0,
+                "max": 35.0
+            }
+        },
+        "explicit.stat_3196823591": {
+            "flask": {
+                "min": 23.0,
+                "max": 70.0
+            }
+        },
+        "explicit.stat_388617051": {
+            "flask": {
+                "min": -17.0,
+                "max": -30.0
+            }
+        },
+        "explicit.stat_1366840608": {
+            "flask": {
+                "min": 23.0,
+                "max": 70.0
+            }
+        },
+        "explicit.stat_1873752457": {
+            "flask": {
+                "min": 0.15,
+                "max": 0.25
+            }
+        },
+        "explicit.stat_2416869319": {
+            "flask": {
+                "min": 51.0,
+                "max": 80.0
+            }
+        },
+        "explicit.stat_700317374": {
+            "flask": {
+                "min": 41.0,
+                "max": 80.0
+            }
+        },
+        "explicit.stat_886931978": {
+            "flask": {
+                "min": 51.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_173226756": {
+            "flask": {
+                "min": 41.0,
+                "max": 70.0
+            }
+        },
+        "explicit.stat_2503377690": {
+            "flask": {
+                "min": 20.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_1811130680": {
+            "flask": {
+                "min": 61.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_3276224428": {
+            "flask": {
+                "min": 61.0,
+                "max": 100.0
+            }
+        },
+        "explicit.stat_2365392475": {
+            "flask": {
+                "min": 4.0,
+                "max": 82.0
+            }
+        },
+        "explicit.stat_1120862500": {
+            "flask": {
+                "min": 3.0,
+                "max": 47.0
+            }
+        },
+        "explicit.stat_2676834156": {
+            "flask": {
+                "min": 15.0,
+                "max": 209.0
+            }
+        },
+        "explicit.stat_2541588185": {
+            "flask": {
+                "min": 16.0,
+                "max": 40.0
+            }
+        },
+        "explicit.stat_591105508": {
+            "wand": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "staff": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_2254480358": {
+            "wand": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "staff": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1545858329": {
+            "wand": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "staff": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_4226189338": {
+            "wand": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "staff": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1600707273": {
+            "wand": {
+                "min": 1.0,
+                "max": 5.0
+            },
+            "staff": {
+                "min": 1.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_3015669065": {
+            "wand": {
+                "min": 13.0,
+                "max": 30.0
+            },
+            "staff": {
+                "min": 13.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_2505884597": {
+            "wand": {
+                "min": 13.0,
+                "max": 30.0
+            },
+            "staff": {
+                "min": 13.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_3278136794": {
+            "wand": {
+                "min": 13.0,
+                "max": 30.0
+            },
+            "staff": {
+                "min": 13.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_1940865751": {
+            "onesword": {
+                "min": 2.5,
+                "max": 52.5
+            },
+            "oneaxe": {
+                "min": 2.5,
+                "max": 52.5
+            },
+            "onemace": {
+                "min": 2.5,
+                "max": 52.5
+            },
+            "spear": {
+                "min": 2.5,
+                "max": 52.5
+            },
+            "flail": {
+                "min": 2.5,
+                "max": 52.5
+            },
+            "bow": {
+                "min": 2.5,
+                "max": 52.5
+            },
+            "twosword": {
+                "min": 3.5,
+                "max": 74.5
+            },
+            "twoaxe": {
+                "min": 3.5,
+                "max": 74.5
+            },
+            "twomace": {
+                "min": 3.5,
+                "max": 74.5
+            },
+            "warstaff": {
+                "min": 3.5,
+                "max": 74.5
+            },
+            "crossbow": {
+                "min": 2.5,
+                "max": 52.5
+            }
+        },
+        "explicit.stat_709508406": {
+            "onesword": {
+                "min": 3.0,
+                "max": 98.5
+            },
+            "oneaxe": {
+                "min": 3.0,
+                "max": 98.5
+            },
+            "onemace": {
+                "min": 3.0,
+                "max": 98.5
+            },
+            "spear": {
+                "min": 3.0,
+                "max": 98.5
+            },
+            "flail": {
+                "min": 3.0,
+                "max": 98.5
+            },
+            "bow": {
+                "min": 3.0,
+                "max": 98.5
+            },
+            "twosword": {
+                "min": 3.5,
+                "max": 140.5
+            },
+            "twoaxe": {
+                "min": 3.5,
+                "max": 140.5
+            },
+            "twomace": {
+                "min": 3.5,
+                "max": 140.5
+            },
+            "warstaff": {
+                "min": 3.5,
+                "max": 140.5
+            },
+            "crossbow": {
+                "min": 3.0,
+                "max": 98.5
+            }
+        },
+        "explicit.stat_1037193709": {
+            "onesword": {
+                "min": 2.0,
+                "max": 79.0
+            },
+            "oneaxe": {
+                "min": 2.0,
+                "max": 79.0
+            },
+            "onemace": {
+                "min": 2.0,
+                "max": 79.0
+            },
+            "spear": {
+                "min": 2.0,
+                "max": 79.0
+            },
+            "flail": {
+                "min": 2.0,
+                "max": 79.0
+            },
+            "bow": {
+                "min": 2.0,
+                "max": 79.0
+            },
+            "twosword": {
+                "min": 3.0,
+                "max": 112.0
+            },
+            "twoaxe": {
+                "min": 3.0,
+                "max": 112.0
+            },
+            "twomace": {
+                "min": 3.0,
+                "max": 112.0
+            },
+            "warstaff": {
+                "min": 3.0,
+                "max": 112.0
+            },
+            "crossbow": {
+                "min": 2.0,
+                "max": 79.0
+            }
+        },
+        "explicit.stat_3336890334": {
+            "onesword": {
+                "min": 4.0,
+                "max": 99.0
+            },
+            "oneaxe": {
+                "min": 4.0,
+                "max": 99.0
+            },
+            "onemace": {
+                "min": 4.0,
+                "max": 99.0
+            },
+            "spear": {
+                "min": 4.0,
+                "max": 99.0
+            },
+            "flail": {
+                "min": 4.0,
+                "max": 99.0
+            },
+            "bow": {
+                "min": 4.0,
+                "max": 99.0
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 140.5
+            },
+            "twoaxe": {
+                "min": 5.0,
+                "max": 140.5
+            },
+            "twomace": {
+                "min": 5.0,
+                "max": 140.5
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 140.5
+            },
+            "crossbow": {
+                "min": 4.0,
+                "max": 99.0
+            }
+        },
+        "explicit.stat_1509134228": {
+            "onesword": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "oneaxe": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "onemace": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "spear": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "flail": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "bow": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "twosword": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "twoaxe": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "twomace": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "warstaff": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "crossbow": {
+                "min": 40.0,
+                "max": 179.0
+            }
+        },
+        "explicit.stat_55876295": {
+            "onesword": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "oneaxe": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "onemace": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "spear": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "flail": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "bow": {
+                "min": 5.0,
+                "max": 8.9
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "twoaxe": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "twomace": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 9.9
+            },
+            "crossbow": {
+                "min": 5.0,
+                "max": 8.9
+            }
+        },
+        "explicit.stat_669069897": {
+            "onesword": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "oneaxe": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "onemace": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "spear": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "flail": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "bow": {
+                "min": 4.0,
+                "max": 7.9
+            },
+            "twosword": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "twoaxe": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "twomace": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "warstaff": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "crossbow": {
+                "min": 4.0,
+                "max": 7.9
+            }
+        },
+        "explicit.stat_821021828": {
+            "onesword": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "oneaxe": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "onemace": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "spear": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "flail": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "bow": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "twosword": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "twoaxe": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "twomace": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "warstaff": {
+                "min": 2.0,
+                "max": 5.0
+            },
+            "crossbow": {
+                "min": 2.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_691932474": {
+            "onesword": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "oneaxe": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "onemace": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "spear": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "flail": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "bow": {
+                "min": 11.0,
+                "max": 650.0
+            },
+            "twosword": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "twoaxe": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "twomace": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "warstaff": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "crossbow": {
+                "min": 11.0,
+                "max": 650.0
+            }
+        },
+        "explicit.stat_518292764": {
+            "onesword": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "oneaxe": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "onemace": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "spear": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "flail": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "bow": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "twosword": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "twoaxe": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "twomace": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "warstaff": {
+                "min": 1.01,
+                "max": 5.0
+            },
+            "crossbow": {
+                "min": 1.01,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_2694482655": {
+            "onesword": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "oneaxe": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "onemace": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "spear": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "flail": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "bow": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "twosword": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "twoaxe": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "twomace": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "warstaff": {
+                "min": 10.0,
+                "max": 39.0
+            },
+            "crossbow": {
+                "min": 10.0,
+                "max": 39.0
+            }
+        },
+        "explicit.stat_748522257": {
+            "onesword": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "oneaxe": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "onemace": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "spear": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "flail": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "twosword": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "twoaxe": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "twomace": {
+                "min": 11.0,
+                "max": 30.0
+            },
+            "warstaff": {
+                "min": 11.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_791928121": {
+            "onesword": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "oneaxe": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "onemace": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "spear": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "flail": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "twosword": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "twoaxe": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "twomace": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "warstaff": {
+                "min": 21.0,
+                "max": 80.0
+            }
+        },
+        "explicit.stat_387439868": {
+            "onesword": {
+                "min": 19.0,
+                "max": 100.0
+            },
+            "oneaxe": {
+                "min": 19.0,
+                "max": 100.0
+            },
+            "onemace": {
+                "min": 19.0,
+                "max": 100.0
+            },
+            "spear": {
+                "min": 19.0,
+                "max": 100.0
+            },
+            "flail": {
+                "min": 19.0,
+                "max": 100.0
+            },
+            "bow": {
+                "min": 19.0,
+                "max": 100.0
+            },
+            "twosword": {
+                "min": 34.0,
+                "max": 139.0
+            },
+            "twoaxe": {
+                "min": 34.0,
+                "max": 139.0
+            },
+            "twomace": {
+                "min": 34.0,
+                "max": 139.0
+            },
+            "warstaff": {
+                "min": 34.0,
+                "max": 139.0
+            },
+            "crossbow": {
+                "min": 34.0,
+                "max": 139.0
+            }
+        },
+        "explicit.stat_3850614073": {
+            "sceptre": {
+                "min": 3.0,
+                "max": 18.0
+            }
+        },
+        "explicit.stat_1574590649": {
+            "sceptre": {
+                "min": 2.0,
+                "max": 26.0
+            }
+        },
+        "explicit.stat_849987426": {
+            "sceptre": {
+                "min": 1.0,
+                "max": 37.0
+            }
+        },
+        "explicit.stat_2347036682": {
+            "sceptre": {
+                "min": 2.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_2854751904": {
+            "sceptre": {
+                "min": 3.0,
+                "max": 38.0
+            }
+        },
+        "explicit.stat_1798257884": {
+            "sceptre": {
+                "min": 25.0,
+                "max": 119.0
+            }
+        },
+        "explicit.stat_4010677958": {
+            "sceptre": {
+                "min": 1.0,
+                "max": 33.0
+            }
+        },
+        "explicit.stat_1998951374": {
+            "sceptre": {
+                "min": 5.0,
+                "max": 16.0
+            }
+        },
+        "explicit.stat_289128254": {
+            "sceptre": {
+                "min": 5.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_3169585282": {
+            "sceptre": {
+                "min": 11.0,
+                "max": 450.0
+            }
+        },
+        "explicit.stat_1250712710": {
+            "sceptre": {
+                "min": 10.0,
+                "max": 38.0
+            }
+        },
+        "explicit.stat_3057012405": {
+            "sceptre": {
+                "min": 10.0,
+                "max": 39.0
+            }
+        },
+        "explicit.stat_3984865854": {
+            "sceptre": {
+                "min": 30.0,
+                "max": 65.0
+            }
+        },
+        "explicit.stat_101878827": {
+            "sceptre": {
+                "min": 13.0,
+                "max": 30.0
+            }
+        },
+        "explicit.stat_3885405204": {
+            "bow": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1967051901": {
+            "crossbow": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        }
+    }
+}

@@ -30,23 +30,22 @@
         td {
             position: relative;
             vertical-align: middle;
-
-            &:first-child {
-                text-align: center;
-            }
+            padding: 2px !important;
 
             input {
                 border: 1px solid #ccc;
             }
-
-            .form-check {
-                position: absolute;
-                top: 10px;
-                left: 12px;
-            }
         }
     }
 }
+
+input[type=range]::-webkit-slider-thumb {
+    background: #ccc;
+}
+
+.form-range::-webkit-slider-runnable-track { 
+    background-color: rgba(79, 76, 76, 0.877); 
+} 
 
 @media (prefers-color-scheme: dark) {
     #stats {
@@ -116,5 +115,13 @@
                 text-shadow: 1px 1px 2px #ddd2d2;
             }
         }
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        background: rgb(53, 51, 51)
+    }
+    
+    .form-range::-webkit-slider-runnable-track { 
+        background-color: rgba(138, 137, 137, 0.8); 
     }
 }

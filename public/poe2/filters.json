@@ -72,7 +72,7 @@
                             },
                             {
                                 "id": "weapon.warstaff",
-                                "text": "Quarterstaff"
+                                "text": "細杖"
                             },
                             {
                                 "id": "weapon.ranged",
@@ -373,7 +373,7 @@
                 },
                 {
                     "id": "rune_sockets",
-                    "text": "Rune Sockets",
+                    "text": "符文插槽",
                     "minMax": true
                 }
             ]
@@ -534,7 +534,7 @@
                 },
                 {
                     "id": "unidentified_tier",
-                    "text": "Unidentified Tier",
+                    "text": "未鑑定階級",
                     "minMax": true
                 }
             ]
@@ -651,11 +651,11 @@
                         "options": [
                             {
                                 "id": null,
-                                "text": "Exalted Orb Equivalent"
+                                "text": "等同崇高石"
                             },
                             {
                                 "id": "exalted_divine",
-                                "text": "Exalted or Divine Orbs"
+                                "text": "崇高石或神聖石"
                             },
                             {
                                 "id": "aug",
@@ -691,7 +691,7 @@
                             },
                             {
                                 "id": "annul",
-                                "text": "Orb of Annulment"
+                                "text": "無效石"
                             },
                             {
                                 "id": "mirror",

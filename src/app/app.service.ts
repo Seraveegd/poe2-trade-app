@@ -34,15 +34,7 @@ export class AppService {
     return this.http.get<any[]>('poe2/stats.json');
   }
 
-  getpNodesData(): any {
-    return this.http.get<any[]>('poe2/pNodes.json');
-  }
-
-  getrnpNodesData(): any {
-    return this.http.get<any[]>('poe2/rnpNodes.json');
-  }
-
-  getpobJewelData(): any {
-    return this.http.get<any[]>('poe2/pobJewel.json');
+  getStatsRangesData(): any {
+    return this.http.get<any[]>('poe2/ranges.json');
   }
 }

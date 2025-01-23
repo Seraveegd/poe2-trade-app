@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
 
   private defenceTypes: any = new Map([
     ['能量護盾', 'es'],
-    ['護甲', 'ar'],
+    ['護甲值', 'ar'],
     ['閃避值', 'ev'],
     ['格擋機率', 'block']
   ]);
@@ -106,6 +106,7 @@ export class HomeComponent implements OnInit {
     items: [], // 交易網物品 API 資料
     stats: [],  // 交易網詞綴 API 資料
     // duplicateStats: duplicateStatsData, // 重複的詞綴 API 資料
+    ranges: [] //詞綴範圍資料
   };
 
   //物品資料
@@ -125,9 +126,10 @@ export class HomeComponent implements OnInit {
 
   //查詢物品資料
   public item: any = {
-    name: '',
-    category: '',
-    type: '',
+    name: '', //物品名稱
+    category: '', //物品種類
+    type: '', //物品分類
+    basic: '', //物品基底
     supported: true,
     copyText: '',
     searchStats: [], // 分析拆解後的物品詞綴陣列，提供使用者在界面勾選是否查詢及輸入數值
@@ -238,7 +240,7 @@ export class HomeComponent implements OnInit {
     },
     priceSetting: { // 搜尋設定->價格設定
       options: [{
-        label: "與崇高石等值",
+        label: "等同崇高石",
         prop: ''
       }, {
         label: "崇高石",
@@ -253,7 +255,7 @@ export class HomeComponent implements OnInit {
         label: "神聖石",
         prop: 'divine'
       }, {
-        label: "崇高或神聖石",
+        label: "崇高石或神聖石",
         prop: 'exalted_divine'
       }],
       chosenObj: ''
@@ -350,8 +352,10 @@ export class HomeComponent implements OnInit {
   public async loadData() {
     const allItems = this.poe_service.getItemData();
     const allStats = this.poe_service.getStatsData();
+    const allStatsRanges = this.poe_service.getStatsRangesData();
     this.datas.items = await lastValueFrom(allItems);
     this.datas.stats = await lastValueFrom(allStats);
+    this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges:any) => ranges.ranges);
 
     this.dealWithitemsData();
     this.dealWithstatsData();
@@ -392,8 +396,7 @@ export class HomeComponent implements OnInit {
 
     this.filters.searchJson = JSON.parse(JSON.stringify(this.filters.searchJson_Def)); // Deep Copy：用JSON.stringify把物件轉成字串 再用JSON.parse把字串轉成新的物件
 
-    const NL = this.newLine;
-    let itemArray = item.split(NL); // 以行數拆解複製物品文字
+    let itemArray = item.split(this.newLine); // 以行數拆解複製物品文字
 
     console.log(itemArray);
 
@@ -416,6 +419,8 @@ export class HomeComponent implements OnInit {
     if (Rarity == '魔法' || Rarity == '普通') {
       itemBasic = this.checkBasicName(itemBasic);
     }
+
+    this.item.basic = itemBasic;
 
     console.log(itemBasic);
 
@@ -475,7 +480,7 @@ export class HomeComponent implements OnInit {
 
       if (item.indexOf('輔助寶石') === -1) {
         let levelPos = item.substring(item.indexOf('等級: ') + 4);
-        let levelPosEnd = levelPos.indexOf(NL);
+        let levelPosEnd = levelPos.indexOf(this.newLine);
         this.searchOptions.gemLevel.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
         this.searchOptions.gemLevel.isSearch = true;
 
@@ -498,7 +503,7 @@ export class HomeComponent implements OnInit {
 
       if (searchName.indexOf('寶石') > -1) {
         let levelPos = item.substring(item.indexOf('等級: ') + 4);
-        let levelPosEnd = levelPos.indexOf(NL);
+        let levelPosEnd = levelPos.indexOf(this.newLine);
         let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
         this.searchOptions.itemLevel.min = level;
         this.searchOptions.itemLevel.max = level;
@@ -510,7 +515,7 @@ export class HomeComponent implements OnInit {
 
       if (searchName.indexOf("巨靈之幣") > -1 || searchName.indexOf('最後通牒雕刻') > -1) {
         let levelPos = item.substring(item.indexOf('區域等級: ') + 6);
-        let levelPosEnd = levelPos.indexOf(NL);
+        let levelPosEnd = levelPos.indexOf(this.newLine);
         let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
         this.searchOptions.itemLevel.min = level;
 
@@ -557,7 +562,7 @@ export class HomeComponent implements OnInit {
       //探險日誌地區等級
       if (this.item.type.indexOf('logbook') > -1) {
         let levelPos = item.substring(item.indexOf('地區等級: ') + 6);
-        let levelPosEnd = levelPos.indexOf(NL);
+        let levelPosEnd = levelPos.indexOf(this.newLine);
         let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
         this.searchOptions.mapAreaLevel.min = level;
         this.searchOptions.mapAreaLevel.max = level;
@@ -643,7 +648,6 @@ export class HomeComponent implements OnInit {
 
   //物品分析
   itemAnalysis(item: any, itemArray: any, matchItem: any) {
-    const NL = this.newLine;
     this.searchOptions.itemCategory.option.length = 0;
     this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
@@ -655,7 +659,7 @@ export class HomeComponent implements OnInit {
     // 判斷物品等級
     if (item.indexOf('物品等級: ') > -1) {
       let levelPos = item.substring(item.indexOf('物品等級: ') + 5);
-      let levelPosEnd = levelPos.indexOf(NL);
+      let levelPosEnd = levelPos.indexOf(this.newLine);
       let levelValue = parseInt(levelPos.substring(0, levelPosEnd).trim(), 10);
       this.searchOptions.itemLevel.min = levelValue >= 86 ? 86 : levelValue; // 物等超過86 只留86
     }
@@ -684,15 +688,13 @@ export class HomeComponent implements OnInit {
   //換界石分析
   mapAnalysis(item: any, itemArray: any, Rarity: any) {
     // this.itemStatsAnalysis(itemArray, 1) 地圖先不加入詞綴判斷
-    const NL = this.newLine;
-
     this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
 
     let mapPos = item.indexOf('換界石階級:') > -1 ? item.substring(item.indexOf('換界石階級:') + 6) : 0; // 地圖階級截斷字串
 
     if (mapPos) {
-      let mapPosEnd = mapPos.indexOf(NL); // 地圖階級換行定位點
+      let mapPosEnd = mapPos.indexOf(this.newLine); // 地圖階級換行定位點
       let mapTier = parseInt(mapPos.substring(0, mapPosEnd).trim(), 10);
       this.searchOptions.mapLevel.min = mapTier;
       this.searchOptions.mapLevel.max = mapTier;
@@ -795,58 +797,10 @@ export class HomeComponent implements OnInit {
 
         let itemStatArray = itemStatText.split(' ') // 將物品上的詞綴拆解
         let matchStatArray = apiStatText.split(' ') // 將詞綴資料庫上的詞綴拆解
-        // console.log(itemStatText)
-        // console.log(matchStatArray)
+
         let randomMinValue = 0; // 預設詞綴隨機數值最小值為空值(之後修)
         let randomMaxValue = 0; // 預設詞綴隨機數值最大值為空值(之後修)
         let optionValue = 0; // 星團珠寶附魔 / 項鍊塗油配置 / 禁忌烈焰.血肉配置 的 ID
-
-        // //塗油~之後修
-        // if (statID === "enchant.stat_2954116742") {
-        //   let obj = stringSimilarity.findBestMatch(itemStatText, this.stats.allocates);
-        //   optionValue = parseInt(obj.ratings[obj.bestMatchIndex + 1].target, 10);
-        //   apiStatText = `配置 塗油天賦：${obj.ratings[obj.bestMatchIndex].target}`;
-        // }
-
-        //  else if (statID === "explicit.stat_2460506030" || statID === "explicit.stat_1190333629") {
-        //   isStatSearch = true
-        //   this.isStatsCollapse = true
-        //   let obj = stringSimilarity.findBestMatch(itemStatText, this.forbiddenZoneStats)
-        //   optionValue = parseInt(obj.ratings[obj.bestMatchIndex + 1].target, 10)
-        //   apiStatText = `若禁忌${statID === "explicit.stat_2460506030" ? '烈焰' : '血肉'}上有符合的詞綴，\n配置：${obj.ratings[obj.bestMatchIndex].target}`
-        // } else if (statID === "explicit.stat_2422708892") {
-        //   isStatSearch = true
-        //   this.isStatsCollapse = true
-        //   let obj = stringSimilarity.findBestMatch(itemStatText, this.impossibleEscapeStats)
-        //   optionValue = parseInt(obj.ratings[obj.bestMatchIndex + 1].target, 10)
-        //   apiStatText = `範圍 ${obj.ratings[obj.bestMatchIndex].target} 內的天賦可以在沒有連結你的天賦樹下被配置`
-        // } else if (statID === "explicit.stat_3642528642") {
-        //   isStatSearch = true
-        //   this.isStatsCollapse = true
-        //   let areaStat = itemStatText.split(',')[1]
-        //   switch (areaStat) {
-        //     case '小':
-        //       optionValue = '1'
-        //       break;
-        //     case '中':
-        //       optionValue = '2'
-        //       break;
-        //     case '大':
-        //       optionValue = '3'
-        //       break;
-        //     case '非':
-        //       optionValue = '4'
-        //       areaStat = '非常大'
-        //       break;
-        //     case '極':
-        //       optionValue = '5'
-        //       areaStat = '極大'
-        //       break;
-        //     default:
-        //       break;
-        //   }
-        //   apiStatText = `只會影響『${areaStat}』範圍內的天賦`
-        // } else {
 
         if (itemStatText.indexOf("試煉地圖") > -1) {
           for (let index = 0; index < itemStatArray.length; index++) {
@@ -891,55 +845,6 @@ export class HomeComponent implements OnInit {
           randomMaxValue = 0;
         }
 
-        // switch (true) { // 計算三元素抗性至偽屬性
-        //   case statID.indexOf('stat_3372524247') > -1 || statID.indexOf('stat_1671376347') > -1 || statID.indexOf('stat_4220027924') > -1:
-        //     // 單抗詞綴 '火焰抗性' || '閃電抗性' || '冰冷抗性'
-        //     elementalResistanceTotal += randomMinValue
-        //     break;
-        //   case statID.indexOf('stat_2915988346') > -1 || statID.indexOf('stat_3441501978') > -1 || statID.indexOf('stat_4277795662') > -1:
-        //     // 雙抗詞綴 '火焰與冰冷抗性' || '火焰與閃電抗性' || '冰冷與閃電抗性'
-        //     elementalResistanceTotal += (randomMinValue * 2)
-        //     break;
-        //   case statID.indexOf('stat_2901986750') > -1:
-        //     // 三抗詞綴 '全部元素抗性'
-        //     elementalResistanceTotal += (randomMinValue * 3)
-        //     break;
-        //   case statID.indexOf('stat_2974417149') > -1:
-        //     // "增加 #% 法術傷害"
-        //     spellDamageTotal += randomMinValue
-        //     break;
-        //   default:
-        //     break;
-        // }
-
-        // if (elementalResistanceTotal && idx === array.length - 1) {
-        //   this.options.searchStats.unshift({ // 若該裝備有抗性詞，增加偽屬性至詞綴最前端
-        //     "id": "pseudo.pseudo_total_elemental_resistance",
-        //     "text": `+#% 元素抗性`,
-        //     "option": optionValue,
-        //     "min": elementalResistanceTotal,
-        //     "max": '',
-        //     "isValue": true,
-        //     "isNegative": false,
-        //     "isSearch": false,
-        //     "type": "偽屬性"
-        //   })
-        // }
-
-        // if (spellDamageTotal && idx === array.length - 1) {
-        //   this.searchStats.unshift({ // 計算法術傷害偽屬性
-        //     "id": "pseudo.pseudo_increased_spell_damage",
-        //     "text": `增加 #% 法術傷害`,
-        //     "option": optionValue,
-        //     "min": spellDamageTotal,
-        //     "max": '',
-        //     "isValue": true,
-        //     "isNegative": false,
-        //     "isSearch": false,
-        //     "type": "偽屬性"
-        //   })
-        // }
-
         this.item.searchStats.push({
           "id": statID,
           "text": apiStatText,
@@ -948,7 +853,9 @@ export class HomeComponent implements OnInit {
           "max": randomMaxValue === 0 ? '' : randomMaxValue,
           "isValue": randomMinValue ? true : false,
           "isSearch": isStatSearch,
-          "type": element.type
+          "type": element.type,
+          "rangeMin": typeof this.datas.ranges[statID] !== 'undefined' && typeof this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') > -1 ? this.item.type.indexOf('.') + 1 : 0)] !== 'undefined' ? this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') + 1)].min : null,
+          "rangeMax": typeof this.datas.ranges[statID] !== 'undefined' && typeof this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') > -1 ? this.item.type.indexOf('.') + 1 : 0)] !== 'undefined' ? this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') + 1)].max : null
         })
       } else {
         //實作未找到
@@ -1122,11 +1029,11 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留')) { //固定數字
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1) { //固定數字
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
-    } else if (stat.indexOf('試煉地圖') > -1) { //原型顯示1，但會有更多
+    } else if (stat.indexOf('試煉地圖') > -1 || stat.startsWith('裝填額外')) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
     } else if (countI.length == 2 && periodPos === -1 && countP.length == 0 && stat.substring(countI[0].index, countI[1].index).indexOf('至') === -1) { //解決雙數字，後固定
       mdStat = stat.replace(countI[0].toString(), '#');
@@ -1161,6 +1068,26 @@ export class HomeComponent implements OnInit {
         if (result) {
           //修正重複攻擊速度詞綴(隨機與傳奇)
           if (this.stats[type][idx + 1] == 'explicit.stat_210067635' && this.item.type.indexOf('weapon') === -1) {
+            return false;
+          }
+          //修正#% 的物理攻擊傷害偷取生命與物理攻擊傷害偷取魔力
+          if ((this.stats[type][idx + 1] == 'explicit.stat_2557965901' || this.stats[type][idx + 1] == 'explicit.stat_707457662') && this.item.type.indexOf('weapon') > -1) {
+            return false;
+          }
+          //修正傳奇護符欄位與擊殺時恢復 #% 魔力
+          if((this.stats[type][idx + 1] == 'explicit.stat_1416292992' || this.stats[type][idx + 1] == 'explicit.stat_1604736568') && this.item.category == 'unique'){
+            return false;
+          }
+          //修正增加 #% 護甲、最大能量護盾、增加 #% 閃避值
+          if((this.stats[type][idx + 1] == 'explicit.stat_1062208444' || this.stats[type][idx + 1] == 'explicit.stat_4052037485' || this.stats[type][idx + 1] == 'explicit.stat_124859000') && this.item.type.indexOf('armour') === -1){
+            return false;
+          }
+          //修正# 點閃避值
+          if(this.stats[type][idx + 1] == 'explicit.stat_53045048' && this.item.type.indexOf('ring') > -1){
+            return false;
+          }
+          //修正擊中時有 #% 機率造成流血
+          if(this.stats[type][idx + 1] == 'explicit.stat_2174054121' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲'){
             return false;
           }
 

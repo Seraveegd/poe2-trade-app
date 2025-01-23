@@ -320,13 +320,15 @@
                                         <tr>
                                             <td
                                                 [ngStyle]="{'backgroundColor': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" name="ststsChecked" type="checkbox"
-                                                        [(ngModel)]="defence.isSearch"
-                                                        [id]="'StstsflexCheckDefault_' + $index">
-                                                    <label class="form-check-label"
-                                                        [for]="'StstsflexCheckDefault_' + $index">
-                                                    </label>
+                                                <div style="display: flex; align-items: center;justify-content: center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" name="ststsChecked"
+                                                            type="checkbox" [(ngModel)]="defence.isSearch"
+                                                            [id]="'StstsflexCheckDefault_' + $index">
+                                                        <label class="form-check-label"
+                                                            [for]="'StstsflexCheckDefault_' + $index">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td
@@ -361,12 +363,15 @@
                                         <tr>
                                             <td
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" name="socketChecked" type="checkbox"
-                                                        [(ngModel)]="searchOptions.itemSocket.isSearch"
-                                                        id="socketflexCheckDefault">
-                                                    <label class="form-check-label" for="socketflexCheckDefault">
-                                                    </label>
+                                                <div style="display: flex; align-items: center;justify-content: center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" name="socketChecked"
+                                                            type="checkbox"
+                                                            [(ngModel)]="searchOptions.itemSocket.isSearch"
+                                                            id="socketflexCheckDefault">
+                                                        <label class="form-check-label" for="socketflexCheckDefault">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td
@@ -375,19 +380,19 @@
                                             <td (click)="searchOptions.itemSocket.isSearch = !searchOptions.itemSocket.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
-                                                空符文插槽數量</td>
+                                                符文插槽數量</td>
                                             <td
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
-                                                        [(ngModel)]="searchOptions.itemSocket.min" disabled="true">
+                                                        [(ngModel)]="searchOptions.itemSocket.min">
                                                 </div>
                                             </td>
                                             <td
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 <div>
                                                     <input type="text" class="form-control" aria-label="max"
-                                                        [(ngModel)]="searchOptions.itemSocket.max" disabled="true">
+                                                        [(ngModel)]="searchOptions.itemSocket.max">
                                                 </div>
                                             </td>
                                         </tr>
@@ -398,13 +403,15 @@
                                             <td
                                                 [ngStyle]="{'backgroundColor': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
                                                 @if (stat.id !== '') {
-                                                <div class="form-check">
-                                                    <input class="form-check-input" name="ststsChecked" type="checkbox"
-                                                        [(ngModel)]="stat.isSearch"
-                                                        [id]="'StstsflexCheckDefault_' + $index">
-                                                    <label class="form-check-label"
-                                                        [for]="'StstsflexCheckDefault_' + $index">
-                                                    </label>
+                                                <div style="display: flex; align-items: center;justify-content: center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" name="ststsChecked"
+                                                            type="checkbox" [(ngModel)]="stat.isSearch"
+                                                            [id]="'StstsflexCheckDefault_' + $index">
+                                                        <label class="form-check-label"
+                                                            [for]="'StstsflexCheckDefault_' + $index">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                                 }
                                                 @else {
@@ -419,8 +426,13 @@
                                             <td (click)="stat.isSearch = !stat.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': (stat.id=='') ? 'red' : null}">
-                                                {{
-                                                stat.text }}
+                                                <div>{{ stat.text }}</div>
+                                                @if (stat.rangeMin != null && item.category !== 'unique'){
+                                                <input type="range" class="form-range"
+                                                    [min]="stat.rangeMin < 0 ? stat.rangeMax : stat.rangeMin"
+                                                    [max]="stat.rangeMax < 0 ? stat.rangeMin : stat.rangeMax"
+                                                    [(ngModel)]="stat.min" style="border: none !important; width: 90%;">
+                                                }
                                             </td>
                                             <td
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
@@ -466,7 +478,8 @@
 <h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
 } -->
 @if (searchResult.status !== '') {
-<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;cursor: pointer;"></h6>
+<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;cursor: pointer;">
+</h6>
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>
 @if (searchResult.searchTotal > 0){

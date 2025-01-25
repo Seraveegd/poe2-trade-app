@@ -355,7 +355,7 @@ export class HomeComponent implements OnInit {
     const allStatsRanges = this.poe_service.getStatsRangesData();
     this.datas.items = await lastValueFrom(allItems);
     this.datas.stats = await lastValueFrom(allStats);
-    this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges:any) => ranges.ranges);
+    this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges: any) => ranges.ranges);
 
     this.dealWithitemsData();
     this.dealWithstatsData();
@@ -845,6 +845,15 @@ export class HomeComponent implements OnInit {
           randomMaxValue = 0;
         }
 
+        let rangeStatID = statID;
+
+        //聖物範圍
+        if ((statID === 'sanctum.stat_3970123360' || statID === 'sanctum.sanctum.stat_1583320325' || statID === 'sanctum.stat_2287831219') && (this.item.basic === '陶罐聖物' || this.item.basic === '聖經聖物')) {
+          rangeStatID = statID + '_1';
+        } else if (statID === 'sanctum.stat_386901949' && (this.item.basic === '寶箱聖物' || this.item.basic === '香爐聖物')) {
+          rangeStatID = statID + '_1';
+        }
+
         this.item.searchStats.push({
           "id": statID,
           "text": apiStatText,
@@ -854,8 +863,8 @@ export class HomeComponent implements OnInit {
           "isValue": randomMinValue ? true : false,
           "isSearch": isStatSearch,
           "type": element.type,
-          "rangeMin": typeof this.datas.ranges[statID] !== 'undefined' && typeof this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') > -1 ? this.item.type.indexOf('.') + 1 : 0)] !== 'undefined' ? this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') + 1)].min : null,
-          "rangeMax": typeof this.datas.ranges[statID] !== 'undefined' && typeof this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') > -1 ? this.item.type.indexOf('.') + 1 : 0)] !== 'undefined' ? this.datas.ranges[statID][this.item.type.substring(this.item.type.indexOf('.') + 1)].max : null
+          "rangeMin": typeof this.datas.ranges[rangeStatID] !== 'undefined' && typeof this.datas.ranges[rangeStatID][this.item.type.substring(this.item.type.indexOf('.') > -1 ? this.item.type.indexOf('.') + 1 : 0)] !== 'undefined' ? this.datas.ranges[rangeStatID][this.item.type.substring(this.item.type.indexOf('.') + 1)].min : null,
+          "rangeMax": typeof this.datas.ranges[rangeStatID] !== 'undefined' && typeof this.datas.ranges[rangeStatID][this.item.type.substring(this.item.type.indexOf('.') > -1 ? this.item.type.indexOf('.') + 1 : 0)] !== 'undefined' ? this.datas.ranges[rangeStatID][this.item.type.substring(this.item.type.indexOf('.') + 1)].max : null
         })
       } else {
         //實作未找到
@@ -1033,7 +1042,7 @@ export class HomeComponent implements OnInit {
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
-    } else if (stat.indexOf('試煉地圖') > -1 || stat.startsWith('裝填額外')) { //原型顯示1，但會有更多
+    } else if (stat.indexOf('試煉地圖') > -1 || stat.startsWith('裝填額外') || stat.startsWith('商人有')) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
     } else if (countI.length == 2 && periodPos === -1 && countP.length == 0 && stat.substring(countI[0].index, countI[1].index).indexOf('至') === -1) { //解決雙數字，後固定
       mdStat = stat.replace(countI[0].toString(), '#');
@@ -1075,19 +1084,19 @@ export class HomeComponent implements OnInit {
             return false;
           }
           //修正傳奇護符欄位與擊殺時恢復 #% 魔力
-          if((this.stats[type][idx + 1] == 'explicit.stat_1416292992' || this.stats[type][idx + 1] == 'explicit.stat_1604736568') && this.item.category == 'unique'){
+          if ((this.stats[type][idx + 1] == 'explicit.stat_1416292992' || this.stats[type][idx + 1] == 'explicit.stat_1604736568') && this.item.category == 'unique') {
             return false;
           }
           //修正增加 #% 護甲、最大能量護盾、增加 #% 閃避值
-          if((this.stats[type][idx + 1] == 'explicit.stat_1062208444' || this.stats[type][idx + 1] == 'explicit.stat_4052037485' || this.stats[type][idx + 1] == 'explicit.stat_124859000') && this.item.type.indexOf('armour') === -1){
+          if ((this.stats[type][idx + 1] == 'explicit.stat_1062208444' || this.stats[type][idx + 1] == 'explicit.stat_4052037485' || this.stats[type][idx + 1] == 'explicit.stat_124859000') && this.item.type.indexOf('armour') === -1) {
             return false;
           }
           //修正# 點閃避值
-          if(this.stats[type][idx + 1] == 'explicit.stat_53045048' && this.item.type.indexOf('ring') > -1){
+          if (this.stats[type][idx + 1] == 'explicit.stat_53045048' && this.item.type.indexOf('ring') > -1) {
             return false;
           }
           //修正擊中時有 #% 機率造成流血
-          if(this.stats[type][idx + 1] == 'explicit.stat_2174054121' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲'){
+          if (this.stats[type][idx + 1] == 'explicit.stat_2174054121' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲') {
             return false;
           }
 

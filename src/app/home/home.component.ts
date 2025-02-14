@@ -701,7 +701,11 @@ export class HomeComponent implements OnInit {
       this.searchOptions.mapLevel.isSearch = true;
     }
 
-    this.searchTrade();
+    // this.searchTrade();
+
+    if (Rarity !== '普通') {
+      this.itemStatsAnalysis(itemArray, 0);
+    }
   }
 
   //物品詞綴分析
@@ -1697,14 +1701,16 @@ export class HomeComponent implements OnInit {
 
   //點擊後搜尋
   clickToSearch() { // TODO: 重構物品/地圖交替搜尋時邏輯 stats: [{type: "and", filters: [], disabled: true(?)}]
-    if (this.item.category === 'item' || this.item.category === 'unique') {
+    if (this.item.category === 'item' || this.item.category === 'unique' || this.item.category === 'map') {
       this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
       this.filters.searchJson.query.filters.equipment_filters = { filters: {} };
-    } else if (this.item.category === 'map' && this.basics.map.isSearch) {
-      this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;
-    } else if (this.item.category === 'gem' && this.basics.gem.isSearch) { //需要重看
-      this.item.name = `物品名稱 <br>『${this.basics.gem.chosenG}』`
     }
+    // else if (this.item.category === 'map' && this.basics.map.isSearch) {
+    //   console.log('map進來了');
+    //   this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;
+    // } else if (this.item.category === 'gem' && this.basics.gem.isSearch) { //需要重看
+    //   this.item.name = `物品名稱 <br>『${this.basics.gem.chosenG}』`
+    // }
 
     this.searchTrade();
   }

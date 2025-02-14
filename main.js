@@ -120,7 +120,7 @@ app.whenReady().then(() => {
         }
     ])
 
-    tray.setToolTip('POE2 查價工具 v0.5.2');
+    tray.setToolTip('POE2 查價工具 v0.5.3');
     tray.setContextMenu(contextMenu);
 
     setTimeout(

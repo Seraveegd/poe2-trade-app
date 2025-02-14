@@ -848,10 +848,10 @@ export class HomeComponent implements OnInit {
         let rangeStatID = statID;
 
         //聖物範圍
-        if ((statID === 'sanctum.stat_3970123360' || statID === 'sanctum.sanctum.stat_1583320325' || statID === 'sanctum.stat_2287831219') && (this.item.basic === '陶罐聖物' || this.item.basic === '聖經聖物')) {
-          rangeStatID = statID + '_1';
-        } else if (statID === 'sanctum.stat_386901949' && (this.item.basic === '寶箱聖物' || this.item.basic === '香爐聖物')) {
-          rangeStatID = statID + '_1';
+        if ((rangeStatID === 'sanctum.stat_3970123360' || rangeStatID === 'sanctum.sanctum.stat_1583320325' || rangeStatID === 'sanctum.stat_2287831219') && (this.item.basic === '陶罐聖物' || this.item.basic === '聖經聖物')) {
+          rangeStatID = rangeStatID + '_1';
+        } else if (rangeStatID === 'sanctum.stat_386901949' && (this.item.basic === '寶箱聖物' || this.item.basic === '香爐聖物')) {
+          rangeStatID = rangeStatID + '_1';
         }
 
         this.item.searchStats.push({

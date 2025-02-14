@@ -2836,8 +2836,8 @@
                 },
                 {
                     "type": "俠客鎧甲",
-                    "text": "永生者 俠客鎧甲",
-                    "name": "永生者",
+                    "text": "無畏戰士 俠客鎧甲",
+                    "name": "無畏戰士",
                     "flags": {
                         "unique": true
                     }
@@ -4493,7 +4493,7 @@
                     "type": "自動裝填"
                 },
                 {
-                    "type": "Bidding"
+                    "type": "出價"
                 },
                 {
                     "type": "打破忍耐"
@@ -4637,7 +4637,7 @@
                     "type": "極速苦痛"
                 },
                 {
-                    "type": "Tremors"
+                    "type": "威震"
                 },
                 {
                     "type": "動亂"
@@ -4858,7 +4858,7 @@
                     "type": "先行者碑牌"
                 },
                 {
-                    "type": "Overseer Precursor Tablet"
+                    "type": "總督的先行者碑牌"
                 },
                 {
                     "type": "祭祀碑牌"
@@ -5191,6 +5191,9 @@
                     "type": "分裂巨斧"
                 },
                 {
+                    "type": "輕巧斧槍"
+                },
+                {
                     "type": "拱形巨斧"
                 },
                 {
@@ -5425,6 +5428,14 @@
                 {
                     "type": "焦黑短劍",
                     "text": "未完成 焦黑短劍",
+                    "name": "未完成",
+                    "flags": {
+                        "unique": true
+                    }
+                },
+                {
+                    "type": "輕巧斧槍",
+                    "text": "未完成 輕巧斧槍",
                     "name": "未完成",
                     "flags": {
                         "unique": true

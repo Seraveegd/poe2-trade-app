@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification } = require('electron');
 const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window');
 const path = require('path');
 
@@ -13,7 +13,7 @@ const toggleMouseKey = 'CmdOrCtrl + J';
 const toggleShowKey = 'CmdOrCtrl + K';
 
 function createWindow() {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 600,
         height: 800,
         icon: `dist/poe2-trade-app/browser/favicon.ico`,
@@ -45,6 +45,28 @@ function createWindow() {
         'Path of Exile 2',
         { hasTitleBarOnMac: true }
     )
+
+    OverlayController.events.on('attach', () => {
+        console.log('OC: attach');
+
+        new Notification({
+            title: 'POE2 查價通知',
+            body: '檢測到POE2視窗。',
+            timeoutType: '2000',
+            icon: `dist/poe2-trade-app/browser/favicon.ico`
+        }).show();
+    });
+
+    OverlayController.events.on('detach', () => {
+        console.log('OC: detach');
+
+        new Notification({
+            title: 'POE2 查價通知',
+            body: '未檢測到POE2視窗。',
+            timeoutType: '2000',
+            icon: `dist/poe2-trade-app/browser/favicon.ico`
+        }).show();
+    });
 
     ipcMain.on('toggle-theme', (event, msg) => {
         if (msg === 'dark') {

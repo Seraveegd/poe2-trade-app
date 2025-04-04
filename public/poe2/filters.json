@@ -253,6 +253,10 @@
                             {
                                 "id": "currency.soulcore",
                                 "text": "靈魂核心"
+                            },
+                            {
+                                "id": "currency.talisman",
+                                "text": "魔符聯盟（標準）"
                             }
                         ]
                     }

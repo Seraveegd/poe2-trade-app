@@ -1324,7 +1324,7 @@ export class HomeComponent implements OnInit {
     });
     //"id": "armour", "label": "護甲"
     result[result.findIndex((e: any) => e.id === "armour")].entries.forEach((element: any) => {
-      const basetype = ["皮革背心", "生皮長靴", "枝條法器", "麂皮護腕", "破舊兜帽", "朽木塔盾", "寬頭箭袋"];
+      const basetype = ["皮革背心", "生皮長靴", "枝條法器", "麂皮護腕", "黃金面紗", "朽木塔盾", "寬頭箭袋"];
 
       if (basetype.includes(element.type) && !('flags' in element)) {
         armourIndex += 1;
@@ -1351,7 +1351,7 @@ export class HomeComponent implements OnInit {
           element.option = "armour.gloves";
           this.basics.categorizedItems.push(element);
           break;
-        case 5: // 頭部起始點 { "type": "破舊兜帽", "text": "破舊兜帽" }
+        case 5: // 頭部起始點 { "type": "黃金面紗", "text": "黃金面紗" }
           element.name = "頭部";
           element.option = "armour.helmet";
           this.basics.categorizedItems.push(element);

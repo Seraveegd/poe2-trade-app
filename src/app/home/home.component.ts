@@ -852,9 +852,14 @@ export class HomeComponent implements OnInit {
         let rangeStatID = statID;
 
         //聖物範圍
-        if ((rangeStatID === 'sanctum.stat_3970123360' || rangeStatID === 'sanctum.sanctum.stat_1583320325' || rangeStatID === 'sanctum.stat_2287831219') && (this.item.basic === '陶罐聖物' || this.item.basic === '聖經聖物')) {
+        if ((rangeStatID === 'sanctum.stat_3970123360' || rangeStatID === 'sanctum.stat_1583320325' || rangeStatID === 'sanctum.stat_2287831219') && (this.item.basic === '陶罐聖物' || this.item.basic === '聖經聖物')) {
           rangeStatID = rangeStatID + '_1';
         } else if (rangeStatID === 'sanctum.stat_386901949' && (this.item.basic === '寶箱聖物' || this.item.basic === '香爐聖物')) {
+          rangeStatID = rangeStatID + '_1';
+        }
+
+        //珠寶範圍
+        if(this.item.basic.indexOf('時迭') > -1 && this.datas.ranges[rangeStatID + '_1'] !== 'undefined'){
           rangeStatID = rangeStatID + '_1';
         }
 
@@ -1101,6 +1106,10 @@ export class HomeComponent implements OnInit {
           }
           //修正擊中時有 #% 機率造成流血
           if (this.stats[type][idx + 1] == 'explicit.stat_2174054121' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲') {
+            return false;
+          }
+          //修正# 點護甲
+          if(this.stats[type][idx + 1] == 'explicit.stat_3484657501' && this.item.type.indexOf('belt') > -1){
             return false;
           }
 

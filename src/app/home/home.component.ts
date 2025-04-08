@@ -29,6 +29,7 @@ export class HomeComponent implements OnInit {
   // private ipc!: IpcRenderer;
   public isCollapsed: boolean = false;
   public typeColors: any = new Map([
+    ['技能', '#BFBC2E'],
     ['固定', '#BD5A5A'],
     ['符文', '#85A1A5'],
     ['附魔', '#F8E169'],
@@ -724,7 +725,7 @@ export class HomeComponent implements OnInit {
 
     //尋找結束行
     itemArray.forEach((element: any, index: any) => {
-      let isEndPoint = index > 0 ? itemArray[index - 1].indexOf("(enchant)") > -1 || itemArray[index - 1].indexOf("(implicit)") > -1 || itemArray[index - 1].indexOf("(scourge)") > -1 || itemArray[index - 1].indexOf("(rune)") > -1 : false;
+      let isEndPoint = index > 0 ? itemArray[index - 1].indexOf("賦予技能") > -1 || itemArray[index - 1].indexOf("(enchant)") > -1 || itemArray[index - 1].indexOf("(implicit)") > -1 || itemArray[index - 1].indexOf("(scourge)") > -1 || itemArray[index - 1].indexOf("(rune)") > -1 : false;
 
       if (element.indexOf('物品等級:') > -1) {
         itemStatStart = index + 2;
@@ -749,8 +750,12 @@ export class HomeComponent implements OnInit {
         itemDisplayStats.push(text);
 
         let count = (itemArray[index].match(/\|/g) || []).length;
-
-        if (itemArray[index].indexOf('(implicit)') > -1) { // 固定屬性
+        if(itemArray[index].indexOf('賦予技能') > -1) { // 技能屬性
+          console.log("技能");
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'skill') });
+          tempStat[tempStat.length - 1].type = "技能";
+          tempStat[tempStat.length - 1].category = "skill";
+        }else if (itemArray[index].indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
           text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });

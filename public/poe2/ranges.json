@@ -1858,6 +1858,12 @@
                 "max": 3.0
             }
         },
+        "explicit.stat_145497481": {
+            "jewel": {
+                "min": 18.0,
+                "max": 32.0
+            }
+        },
         "explicit.stat_239367161": {
             "jewel": {
                 "min": 10.0,
@@ -2690,6 +2696,12 @@
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
+            }
+        },
+        "explicit.stat_145497481_1": {
+            "jewel": {
+                "min": 8.0,
+                "max": 15.0
             }
         },
         "explicit.stat_1060572482_1": {

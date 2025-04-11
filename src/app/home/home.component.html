@@ -431,7 +431,7 @@
                                                 <input type="range" class="form-range"
                                                     [min]="stat.rangeMin < 0 ? stat.rangeMax : stat.rangeMin"
                                                     [max]="stat.rangeMax < 0 ? stat.rangeMin : stat.rangeMax"
-                                                    [(ngModel)]="stat.min" style="border: none !important; width: 90%;">
+                                                    [(ngModel)]="stat.min" style="border: none !important; width: 90%;" [step]="(stat.rangeMin % 1) != 0 ? 0.01 : 1">
                                                 }
                                             </td>
                                             <td

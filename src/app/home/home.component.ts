@@ -749,25 +749,27 @@ export class HomeComponent implements OnInit {
         let text = itemArray[index];
         itemDisplayStats.push(text);
 
-        let count = (itemArray[index].match(/\|/g) || []).length;
-        if(itemArray[index].indexOf('賦予技能') > -1) { // 技能屬性
+        let count = (text.match(/\|/g) || []).length;
+        if(text.indexOf('賦予技能') > -1) { // 技能屬性
           console.log("技能");
+          let tempA = text.split(' ');
+          text = "賦予技能: 等級 # " + tempA[tempA.length - 1];
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'skill') });
           tempStat[tempStat.length - 1].type = "技能";
           tempStat[tempStat.length - 1].category = "skill";
-        }else if (itemArray[index].indexOf('(implicit)') > -1) { // 固定屬性
+        }else if (text.indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
           text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });
           tempStat[tempStat.length - 1].type = "固定";
           tempStat[tempStat.length - 1].category = "implicit";
-        } else if (itemArray[index].indexOf('(rune)') > -1) { //符文屬性
+        } else if (text.indexOf('(rune)') > -1) { //符文屬性
           console.log("符文");
           text = text.substring(0, text.indexOf('(rune)')).trim(); // 刪除(rune)字串
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'rune') });
           tempStat[tempStat.length - 1].type = "符文";
           tempStat[tempStat.length - 1].category = "rune";
-        } else if (itemArray[index].indexOf('(enchant)') > -1) { // 附魔
+        } else if (text.indexOf('(enchant)') > -1) { // 附魔
           console.log("附魔");
           text = text.substring(0, text.indexOf('(enchant)')).trim(); // 刪除(enchant)字串
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'enchant') });
@@ -1089,8 +1091,10 @@ export class HomeComponent implements OnInit {
         const result = e === mdStat;
 
         if (result) {
+          console.log(this.stats[type][idx + 1]);
+
           //修正重複攻擊速度詞綴(隨機與傳奇)
-          if (this.stats[type][idx + 1] == 'explicit.stat_210067635' && this.item.type.indexOf('weapon') === -1) {
+          if (this.stats[type][idx + 1] == 'explicit.stat_681332047' && this.item.type.indexOf('weapon') > -1) {
             return false;
           }
           //修正#% 的物理攻擊傷害偷取生命與物理攻擊傷害偷取魔力

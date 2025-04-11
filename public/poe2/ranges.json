@@ -1568,8 +1568,8 @@
                 "max": 50.0
             },
             "jewel": {
-                "min": 10.0,
-                "max": 20.0
+                "min": 2.0,
+                "max": 3.0
             }
         },
         "explicit.stat_2482852589": {
@@ -1796,22 +1796,6 @@
                 "max": 25.0
             }
         },
-        "explicit.stat_4095671657": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            },
-            "shield": {
-                "min": 1.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1181501418": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            }
-        },
         "explicit.stat_1002362373": {
             "jewel": {
                 "min": 5.0,
@@ -1844,12 +1828,6 @@
             "jewel": {
                 "min": 5.0,
                 "max": 15.0
-            }
-        },
-        "explicit.stat_2709367754": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
             }
         },
         "explicit.stat_3292710273": {
@@ -2170,16 +2148,6 @@
                 "max": 8.0
             }
         },
-        "explicit.stat_1011760251": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            },
-            "shield": {
-                "min": 1.0,
-                "max": 3.0
-            }
-        },
         "explicit.stat_2321178454": {
             "jewel": {
                 "min": 10.0,
@@ -2292,6 +2260,12 @@
                 "max": 25.0
             }
         },
+        "explicit.stat_315791320": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
         "explicit.stat_3485067555": {
             "jewel": {
                 "min": 15.0,
@@ -2348,6 +2322,12 @@
             "jewel": {
                 "min": 15.0,
                 "max": 25.0
+            }
+        },
+        "explicit.stat_2353576063": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
             }
         },
         "explicit.stat_458438597": {
@@ -2418,16 +2398,6 @@
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
-            }
-        },
-        "explicit.stat_3676141501": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            },
-            "shield": {
-                "min": 1.0,
-                "max": 3.0
             }
         },
         "explicit.stat_1718147982": {
@@ -2506,6 +2476,12 @@
                 "max": 109.0
             }
         },
+        "explicit.stat_416040624": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
         "explicit.stat_3067892458": {
             "jewel": {
                 "min": 10.0,
@@ -2546,12 +2522,6 @@
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
-            }
-        },
-        "explicit.stat_2174054121_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
             }
         },
         "explicit.stat_1459321413_1": {
@@ -2824,12 +2794,6 @@
                 "max": 5.0
             }
         },
-        "explicit.stat_318953428_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            }
-        },
         "explicit.stat_169946467_1": {
             "jewel": {
                 "min": 1.0,
@@ -2932,12 +2896,6 @@
                 "max": 5.0
             }
         },
-        "explicit.stat_124859000_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
         "explicit.stat_538241406_1": {
             "jewel": {
                 "min": 2.0,
@@ -3028,12 +2986,6 @@
                 "max": 3.0
             }
         },
-        "explicit.stat_2250533757_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            }
-        },
         "explicit.stat_2321178454_1": {
             "jewel": {
                 "min": 5.0,
@@ -3044,12 +2996,6 @@
             "jewel": {
                 "min": 5.0,
                 "max": 10.0
-            }
-        },
-        "explicit.stat_795138349_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
             }
         },
         "explicit.stat_2487305362_1": {
@@ -3130,6 +3076,12 @@
                 "max": 3.0
             }
         },
+        "explicit.stat_315791320_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
         "explicit.stat_2891184298_1": {
             "jewel": {
                 "min": 1.0,
@@ -3184,12 +3136,6 @@
                 "max": 4.0
             }
         },
-        "explicit.stat_458438597_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            }
-        },
         "explicit.stat_4236566306_1": {
             "jewel": {
                 "min": 2.0,
@@ -3230,24 +3176,6 @@
             "jewel": {
                 "min": 2.0,
                 "max": 4.0
-            }
-        },
-        "explicit.stat_2023107756_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            }
-        },
-        "explicit.stat_1444556985_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
-            }
-        },
-        "explicit.stat_1604736568_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 1.0
             }
         },
         "explicit.stat_789117908_1": {
@@ -3328,6 +3256,12 @@
                 "max": 2.0
             }
         },
+        "explicit.stat_416040624_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
         "explicit.stat_3067892458_1": {
             "jewel": {
                 "min": 2.0,
@@ -3350,6 +3284,24 @@
             "shield": {
                 "min": 4.0,
                 "max": 8.0
+            }
+        },
+        "explicit.stat_4095671657": {
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3676141501": {
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1011760251": {
+            "shield": {
+                "min": 1.0,
+                "max": 3.0
             }
         },
         "explicit.stat_1301765461": {

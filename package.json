@@ -29,6 +29,7 @@
     "bootstrap": "^5.3.3",
     "electron-overlay-window": "^3.3.0",
     "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

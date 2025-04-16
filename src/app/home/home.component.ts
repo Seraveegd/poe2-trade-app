@@ -417,25 +417,17 @@ export class HomeComponent implements OnInit {
 
     //物品基底 - type
     let itemBasic = itemArray[start + 2] === "--------" ? itemArray[start + 1] : itemArray[start + 2];
-    if (Rarity == '魔法' || Rarity == '普通') {
-      itemBasic = this.checkBasicName(itemBasic);
-    }
-
-    this.item.basic = itemBasic;
-
-    console.log(itemBasic);
-
-    let itemNameString = itemArray[start + 2] === "--------" ? itemArray[start + 1] : `${itemArray[start + 1]} ${itemArray[start + 2]}`;
-    let itemBasicCount = 0;
 
     //物品檢查
     this.basics.categorizedItems.some((element: any) => {
-      // console.log(element);
-      let itemNameStringIndex = itemBasic === element.type;
-      console.log(itemNameString, itemNameStringIndex);
+      const i = itemBasic.indexOf(element.type);
 
-      if (itemNameStringIndex && !itemBasicCount) {
-        itemBasicCount++;
+      if(i > -1 && itemBasic.length === (i + element.type.length)){
+        console.log(itemBasic);
+
+        itemBasic = element.type;
+        this.item.basic = element.type;
+
         this.itemAnalysis(item, itemArray, element);
         if (Rarity !== '傳奇') {
           this.item.category = 'item';
@@ -443,8 +435,7 @@ export class HomeComponent implements OnInit {
             this.ui.collapse.item = false;
           }
         }
-        // this.options.isItem = true;
-        // this.options.isItemCollapse = true;
+
         return true;
       }
 
@@ -1792,34 +1783,7 @@ export class HomeComponent implements OnInit {
   //子元件回傳狀態
   countingStatus($e: any) {
     this.app.isCounting = $e;
-  }
-
-  //檢查基底名稱
-  checkBasicName(itemBasic: string): string {
-    if (itemBasic.indexOf('精良的') > -1) {
-      itemBasic = itemBasic.substring(itemBasic.indexOf('精良的') + 4, itemBasic.length);
-    }
-    //的count
-    let countFirst = (itemBasic.match(/\的/g) || []).length;
-    let countSecond = (itemBasic.match(/\之/g) || []).length;
-    // console.log([...itemBasic.matchAll(/\的/g)]);
-    //的位置
-    let firstPos = itemBasic.indexOf("的");
-    //之位置
-    let SecondPos = countFirst > 1 ? +[...itemBasic.matchAll(/\的/g)][1].index : countSecond > 1 ? +[...itemBasic.matchAll(/\之/g)][1].index : itemBasic.indexOf("之");
-
-    if (SecondPos > firstPos && firstPos !== -1) {
-      itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);
-    } else if (firstPos > SecondPos) {
-      itemBasic = itemBasic.substring(firstPos + 1, itemBasic.length);
-    } else if (firstPos === -1) {
-      itemBasic = itemBasic.substring(SecondPos + 1, itemBasic.length);
-    }
-
-    console.log(itemBasic);
-
-    return itemBasic;
-  }
+  }  
 
   //取得插槽數量
   getSocketNumber(text: string): number {

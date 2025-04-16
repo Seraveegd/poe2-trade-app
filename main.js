@@ -82,7 +82,7 @@ let store;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         makeInteractive();
 
@@ -222,7 +222,7 @@ let store;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.6.4');
+        tray.setToolTip('POE2 查價工具 v0.6.5');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

@@ -1094,7 +1094,7 @@ export class HomeComponent implements OnInit {
           console.log(this.stats[type][idx + 1]);
 
           //修正重複攻擊速度詞綴(隨機與傳奇)
-          if (this.stats[type][idx + 1] == 'explicit.stat_681332047' && this.item.type.indexOf('weapon') > -1) {
+          if ((this.stats[type][idx + 1] == 'explicit.stat_681332047' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_210067635') && this.item.type.indexOf('weapon') == -1) {
             return false;
           }
           //修正#% 的物理攻擊傷害偷取生命與物理攻擊傷害偷取魔力

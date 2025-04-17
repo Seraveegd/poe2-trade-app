@@ -422,7 +422,7 @@ export class HomeComponent implements OnInit {
     this.basics.categorizedItems.some((element: any) => {
       const i = itemBasic.indexOf(element.type);
 
-      if(i > -1 && itemBasic.length === (i + element.type.length)){
+      if(i > -1 && (itemBasic.length === (i + element.type.length) || i == 0)){
         console.log(itemBasic);
 
         itemBasic = element.type;
@@ -751,6 +751,7 @@ export class HomeComponent implements OnInit {
         }else if (text.indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
           text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
+          text = text.replace('Slots', 'Slot'); //插槽英文複數
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });
           tempStat[tempStat.length - 1].type = "固定";
           tempStat[tempStat.length - 1].category = "implicit";
@@ -778,6 +779,7 @@ export class HomeComponent implements OnInit {
           tempStat[tempStat.length - 1].category = "explicit";
         } else { // 隨機屬性
           console.log("隨機");
+          text = text.replace('Slots', 'Slot'); //插槽英文複數
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
           tempStat[tempStat.length - 1].type = "隨機";
           tempStat[tempStat.length - 1].category = "explicit";

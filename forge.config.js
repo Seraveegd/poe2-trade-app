@@ -4,7 +4,8 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: __dirname + '/public/favicon'
+    icon: __dirname + '/public/favicon',
+    extraResource: __dirname + '/resources/autohotkey.exe'
   },
   rebuildConfig: {},
   makers: [

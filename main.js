@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, T
 const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window');
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 app.disableHardwareAcceleration();
 
@@ -11,11 +12,17 @@ let store;
     const Store = (await import('electron-store')).default;
     store = new Store();
 
-    if (typeof store.get('mode') == 'undefined') {
+    if (typeof store.get('mode') == 'undefined' || typeof store.get('autohotkey') == 'undefined') {
         store.set('mode', 'overlay');
+        store.set('autohotkey', 'true');
     }
 
     const mode = store.get('mode');
+    let autohotkey = store.get('autohotkey');
+
+    console.log(process.cwd())
+
+    if(autohotkey) exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
 
     if (require('electron-squirrel-startup')) app.quit();
 
@@ -82,7 +89,7 @@ let store;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         makeInteractive();
 
@@ -215,8 +222,29 @@ let store;
                 }
             },
             {
+                label: 'AutoHotKey',
+                type: 'checkbox',
+                checked: autohotkey == 'true',
+                click: () => {
+                    if(autohotkey == 'true'){
+                        console.log('kill');
+                        exec('TASKKILL /IM autohotkey.exe');
+
+                        autohotkey = 'false';
+                    }else{
+                        console.log(path.join(process.cwd(), '/resources/autohotkey.exe'));
+                        exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
+                        
+                        autohotkey = 'true';
+                    }
+                    
+                    store.set('autohotKey', autohotkey);
+                }
+            },
+            {
                 label: '離開',
                 click: () => {
+                    exec('TASKKILL /IM autohotkey.exe');
                     app.quit();
                 }
             }
@@ -237,6 +265,7 @@ let store;
 
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
+            exec('TASKKILL /IM autohotkey.exe');
             app.quit();
         }
     })

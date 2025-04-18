@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Clipboard, Shell } from 'electron';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,7 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 export class HomeComponent implements OnInit {
   private clipboard!: Clipboard;
   private shell!: Shell;
-  // private ipc!: IpcRenderer;
+
   public isCollapsed: boolean = false;
   public typeColors: any = new Map([
     ['技能', '#BFBC2E'],
@@ -351,12 +352,30 @@ export class HomeComponent implements OnInit {
   }
 
   public async loadData() {
-    const allItems = this.poe_service.getItemData();
-    const allStats = this.poe_service.getStatsData();
+    (<any>window).ipcRenderer.on('reply-local-items', (event: any, arg: any) => {
+      this.datas.items = arg;
+    });
+    (<any>window).ipcRenderer.on('reply-local-stats', (event: any, arg: any) => {
+      this.datas.stats = arg;
+    });
+
+    const allItems = this.poe_service.getOfficialItemData();
+    const allStats = this.poe_service.getOfficialStatesData();
     const allStatsRanges = this.poe_service.getStatsRangesData();
-    this.datas.items = await lastValueFrom(allItems);
-    this.datas.stats = await lastValueFrom(allStats);
+
+    this.datas.items = await lastValueFrom(allItems).catch((error: HttpErrorResponse) => {
+      console.log("error: ", error);
+      (<any>window).ipcRenderer.send('get-local-items');
+    });
+    this.datas.stats = await lastValueFrom(allStats).catch((error: HttpErrorResponse) => {
+      console.log("error: ", error);
+      (<any>window).ipcRenderer.send('get-local-stats');
+    });
     this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges: any) => ranges.ranges);
+
+    //更新本地資料
+    (<any>window).ipcRenderer.send('update-local-items', this.datas.items);
+    (<any>window).ipcRenderer.send('update-local-stats', this.datas.stats);
 
     this.dealWithitemsData();
     this.dealWithstatsData();
@@ -422,7 +441,7 @@ export class HomeComponent implements OnInit {
     this.basics.categorizedItems.some((element: any) => {
       const i = itemBasic.indexOf(element.type);
 
-      if(i > -1 && (itemBasic.length === (i + element.type.length) || i == 0)){
+      if (i > -1 && (itemBasic.length === (i + element.type.length) || i == 0)) {
         console.log(itemBasic);
 
         itemBasic = element.type;
@@ -741,14 +760,14 @@ export class HomeComponent implements OnInit {
         itemDisplayStats.push(text);
 
         let count = (text.match(/\|/g) || []).length;
-        if(text.indexOf('賦予技能') > -1) { // 技能屬性
+        if (text.indexOf('賦予技能') > -1) { // 技能屬性
           console.log("技能");
           let tempA = text.split(' ');
           text = "賦予技能: 等級 # " + tempA[tempA.length - 1];
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'skill') });
           tempStat[tempStat.length - 1].type = "技能";
           tempStat[tempStat.length - 1].category = "skill";
-        }else if (text.indexOf('(implicit)') > -1) { // 固定屬性
+        } else if (text.indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
           text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
           text = text.replace('Slots', 'Slot'); //插槽英文複數
@@ -859,7 +878,7 @@ export class HomeComponent implements OnInit {
         }
 
         //珠寶範圍
-        if(this.item.basic.indexOf('時迭') > -1 && this.datas.ranges[rangeStatID + '_1'] !== 'undefined'){
+        if (this.item.basic.indexOf('時迭') > -1 && this.datas.ranges[rangeStatID + '_1'] !== 'undefined') {
           rangeStatID = rangeStatID + '_1';
         }
 
@@ -1111,7 +1130,7 @@ export class HomeComponent implements OnInit {
             return false;
           }
           //修正# 點護甲
-          if(this.stats[type][idx + 1] == 'explicit.stat_3484657501' && this.item.type.indexOf('belt') > -1){
+          if (this.stats[type][idx + 1] == 'explicit.stat_3484657501' && this.item.type.indexOf('belt') > -1) {
             return false;
           }
 
@@ -1785,7 +1804,7 @@ export class HomeComponent implements OnInit {
   //子元件回傳狀態
   countingStatus($e: any) {
     this.app.isCounting = $e;
-  }  
+  }
 
   //取得插槽數量
   getSocketNumber(text: string): number {

@@ -20,9 +20,7 @@ let store;
     const mode = store.get('mode');
     let autohotkey = store.get('autohotkey');
 
-    console.log(process.cwd())
-
-    if(autohotkey) exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
+    if(autohotkey == 'true') exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
 
     if (require('electron-squirrel-startup')) app.quit();
 
@@ -277,6 +275,30 @@ let store;
         } else {
             nativeTheme.themeSource = 'dark';
         }
+    });
+
+    //取得本地物品資料
+    ipcMain.on('get-local-items', (event, msg) => {
+        items = fs.readFileSync(path.join(process.cwd(), '/resources/items.json'), 'utf-8');
+
+        event.sender.send('reply-local-items', JSON.parse(items));
+    });
+
+    //取得本地詞綴資料
+    ipcMain.on('get-local-stats', (event, msg) => {
+        stats = fs.readFileSync(path.join(process.cwd(), '/resources/stats.json'), 'utf-8');
+
+        event.sender.send('reply-local-stats', JSON.parse(stats));
+    });
+
+    //更新本地物品資料
+    ipcMain.on('update-local-items', (event, msg) => {
+        fs.writeFileSync(path.join(process.cwd(), '/resources/items.json'), JSON.stringify(msg));
+    });
+
+    //更新本地詞綴資料
+    ipcMain.on('update-local-stats', (event, msg) => {
+        fs.writeFileSync(path.join(process.cwd(), '/resources/stats.json'), JSON.stringify(msg));
     });
 
 })();

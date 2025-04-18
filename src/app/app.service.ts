@@ -23,7 +23,15 @@ export class AppService {
   }
 
   get_trade_fetch(fetchstr: any, fetchQueryID: any): any {
-    return this.http.get(`${this.config.api_base_url}/api/trade2/fetch/${fetchstr}?query=${fetchQueryID}&realm=poe2`, {})
+    return this.http.get(`${this.config.api_base_url}/api/trade2/fetch/${fetchstr}?query=${fetchQueryID}&realm=poe2`, {});
+  }
+
+  getOfficialItemData(): any {
+    return this.http.get(`${this.config.api_base_url}/api/trade2/data/items`, {});
+  }
+
+  getOfficialStatesData(): any {
+    return this.http.get(`${this.config.api_base_url}/api/trade2/data/stats`, {});
   }
 
   getItemData(): any {

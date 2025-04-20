@@ -6,21 +6,17 @@ const { exec } = require('child_process');
 
 app.disableHardwareAcceleration();
 
-let store;
+let store = null;
 
 (async () => {
     const Store = (await import('electron-store')).default;
     store = new Store();
 
-    if (typeof store.get('mode') == 'undefined' || typeof store.get('autohotkey') == 'undefined') {
+    if (typeof store.get('mode') == 'undefined') {
         store.set('mode', 'overlay');
-        store.set('autohotkey', 'true');
     }
 
     const mode = store.get('mode');
-    let autohotkey = store.get('autohotkey');
-
-    if(autohotkey == 'true') exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
 
     if (require('electron-squirrel-startup')) app.quit();
 
@@ -219,26 +215,25 @@ let store;
                     }
                 }
             },
-            {
-                label: 'AutoHotKey',
-                type: 'checkbox',
-                checked: autohotkey == 'true',
-                click: () => {
-                    if(autohotkey == 'true'){
-                        console.log('kill');
-                        exec('TASKKILL /IM autohotkey.exe');
+            // {
+            //     label: 'AutoHotKey',
+            //     type: 'checkbox',
+            //     checked: autohotkey == 'true',
+            //     click: () => {
+            //         if(autohotkey == 'true'){
+            //             console.log('kill');
+            //             exec('TASKKILL /IM autohotkey.exe');
 
-                        autohotkey = 'false';
-                    }else{
-                        console.log(path.join(process.cwd(), '/resources/autohotkey.exe'));
-                        exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
+            //             autohotkey = 'false';
+            //         }else{
+            //             exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
                         
-                        autohotkey = 'true';
-                    }
-                    
-                    store.set('autohotKey', autohotkey);
-                }
-            },
+            //             autohotkey = 'true';
+            //         }
+
+            //         store.set('autohotkey', autohotkey);
+            //     }
+            // },
             {
                 label: '離開',
                 click: () => {

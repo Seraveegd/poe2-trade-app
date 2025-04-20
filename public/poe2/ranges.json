@@ -873,6 +873,10 @@
                 "min": 5.0,
                 "max": 16.0
             },
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            },
             "quiver": {
                 "min": 5.0,
                 "max": 16.0
@@ -1009,6 +1013,10 @@
                 "min": 5.0,
                 "max": 33.0
             },
+            "focus": {
+                "min": 5.0,
+                "max": 33.0
+            },
             "wand": {
                 "min": 5.0,
                 "max": 33.0
@@ -1050,6 +1058,10 @@
             "shield": {
                 "min": 10.0,
                 "max": 90.0
+            },
+            "focus": {
+                "min": 10.0,
+                "max": 90.0
             }
         },
         "explicit.stat_4015621042": {
@@ -1072,6 +1084,10 @@
             "shield": {
                 "min": 15.0,
                 "max": 110.0
+            },
+            "focus": {
+                "min": 15.0,
+                "max": 100.0
             }
         },
         "explicit.stat_2451402625": {
@@ -1910,56 +1926,6 @@
             "quiver": {
                 "min": 10.0,
                 "max": 39.0
-            }
-        },
-        "explicit.stat_210067635": {
-            "jewel": {
-                "min": 2.0,
-                "max": 4.0
-            },
-            "onesword": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "oneaxe": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "onemace": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "spear": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "flail": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "bow": {
-                "min": 5.0,
-                "max": 19.0
-            },
-            "twosword": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "twoaxe": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "twomace": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "warstaff": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "crossbow": {
-                "min": 5.0,
-                "max": 19.0
             }
         },
         "explicit.stat_1585769763": {
@@ -3888,6 +3854,52 @@
             "crossbow": {
                 "min": 2.0,
                 "max": 5.0
+            }
+        },
+        "explicit.stat_210067635": {
+            "onesword": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "oneaxe": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "onemace": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "spear": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "flail": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "bow": {
+                "min": 5.0,
+                "max": 19.0
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "twoaxe": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "twomace": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "crossbow": {
+                "min": 5.0,
+                "max": 19.0
             }
         },
         "explicit.stat_691932474": {

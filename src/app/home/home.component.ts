@@ -352,6 +352,8 @@ export class HomeComponent implements OnInit {
   }
 
   public async loadData() {
+    let loadlocal = false;
+
     (<any>window).ipcRenderer.on('reply-local-items', (event: any, arg: any) => {
       this.datas.items = arg;
     });
@@ -365,17 +367,21 @@ export class HomeComponent implements OnInit {
 
     this.datas.items = await lastValueFrom(allItems).catch((error: HttpErrorResponse) => {
       console.log("error: ", error);
+      loadlocal = true;
       (<any>window).ipcRenderer.send('get-local-items');
     });
     this.datas.stats = await lastValueFrom(allStats).catch((error: HttpErrorResponse) => {
       console.log("error: ", error);
+      loadlocal = true;
       (<any>window).ipcRenderer.send('get-local-stats');
     });
     this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges: any) => ranges.ranges);
 
     //更新本地資料
-    (<any>window).ipcRenderer.send('update-local-items', this.datas.items);
-    (<any>window).ipcRenderer.send('update-local-stats', this.datas.stats);
+    if (!loadlocal) {
+      (<any>window).ipcRenderer.send('update-local-items', this.datas.items);
+      (<any>window).ipcRenderer.send('update-local-stats', this.datas.stats);
+    }
 
     this.dealWithitemsData();
     this.dealWithstatsData();
@@ -1066,13 +1072,15 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1) { //固定數字
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1 || stat.indexOf('擴散傷害') > -1) { //固定數字
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1 || stat.startsWith('裝填額外') || stat.startsWith('商人有')) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
     } else if (countI.length == 2 && periodPos === -1 && countP.length == 0 && stat.substring(countI[0].index, countI[1].index).indexOf('至') === -1) { //解決雙數字，後固定
+      mdStat = stat.replace(countI[0].toString(), '#');
+    } else if (countI.length == 2 && periodPos === -1 && countP.length == 1 && countP[0].index < countI[1].index) { //解決雙數字前#%，後固定
       mdStat = stat.replace(countI[0].toString(), '#');
     } else if (countP.length == 2) { //解決雙數字雙%，前#%
       mdStat = stat.replace(stat.substring(countI[0].index, perPos), '#');

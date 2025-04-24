@@ -4,6 +4,10 @@
   "main": "main.js",
   "author": "Seraveegd",
   "description": "poe2-trade-app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Seraveegd/poe2-trade-app.git"
+  },
   "scripts": {
     "ng": "ng",
     "start": "electron-forge start",
@@ -32,6 +36,7 @@
     "electron-store": "^10.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "update-electron-app": "^3.1.1",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

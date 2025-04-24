@@ -3,8 +3,12 @@ const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-win
 const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
+const { updateElectronApp } = require('update-electron-app')
 
 app.disableHardwareAcceleration();
+
+//自動檢查更新
+updateElectronApp();
 
 let store = null;
 

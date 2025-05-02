@@ -936,7 +936,7 @@
                     "type": "英雄護甲"
                 },
                 {
-                    "type": "鎖鏈鍊甲"
+                    "type": "鐵環鎖甲"
                 },
                 {
                     "type": "盜賊護甲"
@@ -1869,7 +1869,7 @@
                     "type": "金屬塔盾"
                 },
                 {
-                    "type": "高貴塔盾"
+                    "type": "皇族塔盾"
                 },
                 {
                     "type": "障壁塔盾"
@@ -1891,6 +1891,9 @@
                 },
                 {
                     "type": "紋章塔盾"
+                },
+                {
+                    "type": "高貴塔盾"
                 },
                 {
                     "type": "岩石塔盾"
@@ -4026,10 +4029,19 @@
                     "type": "豔陽文物"
                 },
                 {
+                    "type": "烈許的寶庫鑰匙"
+                },
+                {
+                    "type": "湯馬祖的寶庫鑰匙"
+                },
+                {
                     "type": "奧爾羅斯的寶庫鑰匙"
                 },
                 {
                     "type": "儀式寶庫鑰匙"
+                },
+                {
+                    "type": "澤洛克的寶庫鑰匙：力抗黑暗"
                 },
                 {
                     "type": "黎明寶庫鑰匙"
@@ -4053,13 +4065,13 @@
                     "type": "低階冰川符文"
                 },
                 {
-                    "type": "Adept Rune"
+                    "type": "嫻熟符文"
                 },
                 {
-                    "type": "Greater Adept Rune"
+                    "type": "高階嫻熟符文"
                 },
                 {
-                    "type": "Lesser Adept Rune"
+                    "type": "低階嫻熟符文"
                 },
                 {
                     "type": "鍛鐵符文"
@@ -4080,13 +4092,13 @@
                     "type": "低階沙漠符文"
                 },
                 {
-                    "type": "Resolve Rune"
+                    "type": "決心符文"
                 },
                 {
-                    "type": "Greater Resolve Rune"
+                    "type": "高階決心符文"
                 },
                 {
-                    "type": "Lesser Resolve Rune"
+                    "type": "低階決心符文"
                 },
                 {
                     "type": "肉體符文"
@@ -4146,13 +4158,13 @@
                     "type": "高階崇高符文"
                 },
                 {
-                    "type": "Robust Rune"
+                    "type": "堅實符文"
                 },
                 {
-                    "type": "Greater Robust Rune"
+                    "type": "高階堅實符文"
                 },
                 {
-                    "type": "Lesser Robust Rune"
+                    "type": "低階堅實符文"
                 },
                 {
                     "type": "岩石符文"
@@ -4490,7 +4502,7 @@
                     "type": "恢復期"
                 },
                 {
-                    "type": "Cull The Weak"
+                    "type": "撲殺弱者"
                 },
                 {
                     "type": "黑暗雕像"
@@ -5690,6 +5702,9 @@
                     "type": "狂暴"
                 },
                 {
+                    "type": "傀儡"
+                },
+                {
                     "type": "浴血鬥士"
                 },
                 {
@@ -5744,7 +5759,7 @@
                     "type": "切割"
                 },
                 {
-                    "type": "Inhibitor"
+                    "type": "抑制劑"
                 },
                 {
                     "type": "亢奮"

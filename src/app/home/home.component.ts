@@ -39,7 +39,8 @@ export class HomeComponent implements OnInit {
     ['傳奇', '#AB4C11'],
     ['防禦', '#E6CA81'],
     ['插槽', '#8A8A8A'],
-    ['聖所', '#A1422E']
+    ['聖所', '#A1422E'],
+    ['褻瀆', '#075f37ff']
   ]);
 
   private defenceTypes: any = new Map([
@@ -147,7 +148,8 @@ export class HomeComponent implements OnInit {
     rune: [], // 符文詞綴
     skill: [], //技能詞綴
     allocates: [], // 項鍊塗油配置附魔詞綴
-    sanctum: [] //聖所詞綴
+    sanctum: [], //聖所詞綴
+    desecrated: [] //褻瀆詞綴
   }
 
   //搜尋相關設定
@@ -274,7 +276,7 @@ export class HomeComponent implements OnInit {
     searchJson_Def: {
       "query": {
         "status": {
-          "option": "online"
+          "option": "available"
         },
         "stats": [{
           "type": "and",
@@ -792,6 +794,12 @@ export class HomeComponent implements OnInit {
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'enchant') });
           tempStat[tempStat.length - 1].type = "附魔";
           tempStat[tempStat.length - 1].category = "enchant";
+        } else if (text.indexOf('(desecrated)') > -1) { //褻瀆
+          console.log("褻瀆");
+          text = text.substring(0, text.indexOf('(desecrated)')).trim(); // 刪除(desecrated)字串
+          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'desecrated') });
+          tempStat[tempStat.length - 1].type = "褻瀆";
+          tempStat[tempStat.length - 1].category = "desecrated";
         } else if (this.item.type.indexOf('sanctum') > -1) { //聖所詞綴
           console.log("聖所");
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'sanctum') });
@@ -1114,33 +1122,33 @@ export class HomeComponent implements OnInit {
           console.log(this.stats[type][idx + 1]);
 
           //修正重複攻擊速度詞綴(隨機與傳奇)
-          if ((this.stats[type][idx + 1] == 'explicit.stat_681332047' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_210067635') && this.item.type.indexOf('weapon') == -1) {
-            return false;
-          }
+          // if ((this.stats[type][idx + 1] == 'explicit.stat_681332047' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_210067635') && this.item.type.indexOf('weapon') == -1) {
+          //   return false;
+          // }
           //修正#% 的物理攻擊傷害偷取生命與物理攻擊傷害偷取魔力
-          if ((this.stats[type][idx + 1] == 'explicit.stat_2557965901' || this.stats[type][idx + 1] == 'explicit.stat_707457662') && this.item.type.indexOf('weapon') > -1) {
-            return false;
-          }
+          // if ((this.stats[type][idx + 1] == 'explicit.stat_2557965901' || this.stats[type][idx + 1] == 'explicit.stat_707457662') && this.item.type.indexOf('weapon') > -1) {
+          //   return false;
+          // }
           //修正傳奇護符欄位與擊殺時恢復 #% 魔力
           if ((this.stats[type][idx + 1] == 'explicit.stat_1416292992' || this.stats[type][idx + 1] == 'explicit.stat_1604736568') && this.item.category == 'unique') {
             return false;
           }
-          //修正增加 #% 護甲、最大能量護盾、增加 #% 閃避值
-          if ((this.stats[type][idx + 1] == 'explicit.stat_1062208444' || this.stats[type][idx + 1] == 'explicit.stat_4052037485' || this.stats[type][idx + 1] == 'explicit.stat_124859000') && this.item.type.indexOf('armour') === -1) {
-            return false;
-          }
+          //修正最大能量護盾
+          // if ((this.stats[type][idx + 1] == 'explicit.stat_4052037485') && this.item.type.indexOf('armour') === -1) {
+          //   return false;
+          // }
           //修正# 點閃避值
-          if (this.stats[type][idx + 1] == 'explicit.stat_53045048' && this.item.type.indexOf('ring') > -1) {
-            return false;
-          }
+          // if (this.stats[type][idx + 1] == 'explicit.stat_53045048' && this.item.type.indexOf('ring') > -1) {
+          //   return false;
+          // }
           //修正擊中時有 #% 機率造成流血
           if (this.stats[type][idx + 1] == 'explicit.stat_2174054121' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲') {
             return false;
           }
           //修正# 點護甲
-          if (this.stats[type][idx + 1] == 'explicit.stat_3484657501' && this.item.type.indexOf('belt') > -1) {
-            return false;
-          }
+          // if (this.stats[type][idx + 1] == 'explicit.stat_3484657501' && this.item.type.indexOf('belt') > -1) {
+          //   return false;
+          // }
 
           findStat = e;
           findIdx = idx;
@@ -1389,8 +1397,8 @@ export class HomeComponent implements OnInit {
           element.option = "armour.gloves";
           this.basics.categorizedItems.push(element);
           break;
-        case 5: // 頭部起始點 { "type": "黃金面紗", "text": "黃金面紗" }
-          element.name = "頭部";
+        case 5: // 頭盔起始點 { "type": "黃金面紗", "text": "黃金面紗" }
+          element.name = "頭盔";
           element.option = "armour.helmet";
           this.basics.categorizedItems.push(element);
           break;
@@ -1736,6 +1744,16 @@ export class HomeComponent implements OnInit {
       }
 
       this.stats.skill.push(text, element.id);
+    })
+    //褻瀆詞綴
+    result[result.findIndex((e: any) => e.id === "desecrated")].entries.forEach((element: any, index: any) => {
+      let text = element.text;
+      //處理折行詞綴
+      if (text.includes('\n')) {
+        this.stats.wrap.push(text);
+      }
+
+      this.stats.desecrated.push(text, element.id);
     })
 
     //清除資料

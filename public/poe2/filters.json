@@ -1,6 +1,34 @@
 {
     "result": [
         {
+            "id": "status_filters",
+            "filters": [
+                {
+                    "id": "status",
+                    "option": {
+                        "options": [
+                            {
+                                "id": "available",
+                                "text": "即刻購買以及面交"
+                            },
+                            {
+                                "id": "securable",
+                                "text": "僅限即刻購買"
+                            },
+                            {
+                                "id": "online",
+                                "text": "僅限面交"
+                            },
+                            {
+                                "id": "any",
+                                "text": "任何"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
             "id": "type_filters",
             "title": "類別過濾",
             "filters": [
@@ -108,11 +136,11 @@
                             },
                             {
                                 "id": "armour",
-                                "text": "護甲"
+                                "text": "任意護甲"
                             },
                             {
                                 "id": "armour.helmet",
-                                "text": "頭部"
+                                "text": "頭盔"
                             },
                             {
                                 "id": "armour.chest",
@@ -346,6 +374,12 @@
                     "minMax": true
                 },
                 {
+                    "id": "reload_time",
+                    "text": "重新載入時間",
+                    "minMax": true,
+                    "halfSpan": true
+                },
+                {
                     "id": "ar",
                     "text": "護甲",
                     "tip": "包含基礎值、區域詞綴和最大品質",
@@ -353,7 +387,7 @@
                 },
                 {
                     "id": "ev",
-                    "text": "閃避值",
+                    "text": "閃避",
                     "tip": "包含基礎值、區域詞綴和最大品質",
                     "minMax": true
                 },
@@ -365,7 +399,7 @@
                 },
                 {
                     "id": "block",
-                    "text": "格檔",
+                    "text": "格擋",
                     "tip": "包含基礎值和區域詞綴",
                     "minMax": true
                 },
@@ -411,7 +445,7 @@
         },
         {
             "id": "map_filters",
-            "title": "換界石篩選器",
+            "title": "終局篩選器",
             "hidden": true,
             "filters": [
                 {
@@ -420,15 +454,81 @@
                     "minMax": true
                 },
                 {
+                    "id": "map_packsize",
+                    "text": "Waystone Packsize",
+                    "minMax": true
+                },
+                {
+                    "id": "map_iiq",
+                    "text": "Waystone IIQ",
+                    "tip": "Increased Item Quantity",
+                    "minMax": true
+                },
+                {
+                    "id": "map_iir",
+                    "text": "Waystone IIR",
+                    "tip": "Increased Item Rarity",
+                    "minMax": true
+                },
+                {
+                    "id": "map_revives",
+                    "text": "Waystone Revives",
+                    "minMax": true
+                },
+                {
                     "id": "map_bonus",
                     "text": "換界石掉落機率",
                     "minMax": true
+                },
+                {
+                    "id": "map_gold",
+                    "text": "Waystone Gold",
+                    "minMax": true
+                },
+                {
+                    "id": "map_experience",
+                    "text": "Waystone Experience",
+                    "minMax": true
+                },
+                {
+                    "id": "map_magic_monsters",
+                    "text": "Waystone Magic Monsters",
+                    "minMax": true
+                },
+                {
+                    "id": "map_rare_monsters",
+                    "text": "Waystone Rare Monsters",
+                    "minMax": true
+                },
+                {
+                    "id": "ultimatum_hint",
+                    "text": "最後通牒試煉提示",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "Victorious",
+                                "text": "勝利"
+                            },
+                            {
+                                "id": "Cowardly",
+                                "text": "怯懦"
+                            },
+                            {
+                                "id": "Deadly",
+                                "text": "致命"
+                            }
+                        ]
+                    }
                 }
             ]
         },
         {
             "id": "misc_filters",
-            "title": "其他",
+            "title": "其它",
             "hidden": true,
             "filters": [
                 {
@@ -472,6 +572,26 @@
                     }
                 },
                 {
+                    "id": "mirrored",
+                    "text": "已複製",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
                     "id": "corrupted",
                     "text": "已汙染",
                     "option": {
@@ -492,8 +612,68 @@
                     }
                 },
                 {
-                    "id": "mirrored",
-                    "text": "已複製",
+                    "id": "sanctified",
+                    "text": "聖化",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "veiled",
+                    "text": "未揭露",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "desecrated",
+                    "text": "褻瀆",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "foreseeing",
+                    "text": "預見",
                     "option": {
                         "options": [
                             {
@@ -646,6 +826,12 @@
                             }
                         ]
                     }
+                },
+                {
+                    "id": "fee",
+                    "text": "金幣手續費",
+                    "fullSpan": true,
+                    "minMax": true
                 },
                 {
                     "id": "price",

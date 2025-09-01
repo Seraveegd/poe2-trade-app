@@ -7,9 +7,6 @@ const { updateElectronApp } = require('update-electron-app')
 
 app.disableHardwareAcceleration();
 
-//自動檢查更新
-updateElectronApp();
-
 let store = null;
 
 (async () => {
@@ -87,7 +84,7 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        win.webContents.openDevTools({ mode: 'detach', activate: false });
+        // win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         makeInteractive();
 
@@ -175,6 +172,9 @@ let store = null;
     }
 
     app.whenReady().then(() => {
+        //自動檢查更新
+        updateElectronApp();
+
         const icon = nativeImage.createFromPath(path.join(__dirname, 'dist/poe2-trade-app/browser/favicon.ico'));
         tray = new Tray(icon);
 
@@ -231,7 +231,7 @@ let store = null;
             //             autohotkey = 'false';
             //         }else{
             //             exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
-                        
+
             //             autohotkey = 'true';
             //         }
 
@@ -247,7 +247,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.1');
+        tray.setToolTip('POE2 查價工具 v0.7.2');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

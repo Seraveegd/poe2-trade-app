@@ -6,9 +6,8 @@ module.exports = {
     asar: true,
     icon: __dirname + '/public/favicon',
     extraResource: [
-      __dirname + '/resources/autohotkey.exe',
       __dirname + '/resources/items.json',
-      __dirname + '/resources/states.json',
+      __dirname + '/resources/stats.json',
     ]
   },
   rebuildConfig: {},

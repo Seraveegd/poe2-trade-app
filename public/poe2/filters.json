@@ -572,8 +572,8 @@
                     }
                 },
                 {
-                    "id": "mirrored",
-                    "text": "已複製",
+                    "id": "fractured_item",
+                    "text": "破裂",
                     "option": {
                         "options": [
                             {
@@ -692,8 +692,8 @@
                     }
                 },
                 {
-                    "id": "alternate_art",
-                    "text": "特殊造型",
+                    "id": "mirrored",
+                    "text": "已複製",
                     "option": {
                         "options": [
                             {

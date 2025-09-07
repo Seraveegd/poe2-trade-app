@@ -3,7 +3,7 @@ const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-win
 const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
-const { updateElectronApp } = require('update-electron-app')
+const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
 
 app.disableHardwareAcceleration();
 
@@ -173,7 +173,14 @@ let store = null;
 
     app.whenReady().then(() => {
         //自動檢查更新
-        updateElectronApp();
+        updateElectronApp({
+            updateSource: {
+                type: UpdateSourceType.ElectronPublicUpdateService,
+                repo: 'Seraveegd/poe2-trade-app'
+            },
+            updateInterval: '1 hour',
+            logger: require('electron-log')
+        });
 
         const icon = nativeImage.createFromPath(path.join(__dirname, 'dist/poe2-trade-app/browser/favicon.ico'));
         tray = new Tray(icon);
@@ -247,7 +254,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.2');
+        tray.setToolTip('POE2 查價工具 v0.7.3');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

@@ -906,54 +906,6 @@
             "quiver": {
                 "min": 5.0,
                 "max": 16.0
-            },
-            "onesword": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "oneaxe": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "onemace": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "spear": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "flail": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "bow": {
-                "min": 5.0,
-                "max": 19.0
-            },
-            "twosword": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "twoaxe": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "twomace": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "warstaff": {
-                "min": 5.0,
-                "max": 28.0
-            },
-            "crossbow": {
-                "min": 5.0,
-                "max": 19.0
-            },
-            "claw": {
-                "min": 5.0,
-                "max": 28.0
             }
         },
         "explicit.stat_803737631": {
@@ -4158,6 +4110,56 @@
             "claw": {
                 "min": 2.0,
                 "max": 5.0
+            }
+        },
+        "explicit.stat_210067635": {
+            "onesword": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "oneaxe": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "onemace": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "spear": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "flail": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "bow": {
+                "min": 5.0,
+                "max": 19.0
+            },
+            "twosword": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "twoaxe": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "twomace": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "warstaff": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "crossbow": {
+                "min": 5.0,
+                "max": 19.0
+            },
+            "claw": {
+                "min": 5.0,
+                "max": 28.0
             }
         },
         "explicit.stat_518292764": {

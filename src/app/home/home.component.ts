@@ -64,15 +64,18 @@ export class HomeComponent implements OnInit {
     '充能使用',
     '的藥劑充能',
     '對你的擊中',
-    '點燃的持續時間',
-    '冰緩的持續時間',
-    '冰凍的持續時間',
+    '你身上的點燃持續時間',
+    '你身上的冰緩持續時間',
+    '你身上的冰凍持續時間',
     '承受的暴擊傷害',
-    '感電的持續時間',
+    '你身上的感電持續時間',
+    '身上元素異常狀態時間',
     '魔力消耗',
     '感電效果',
     '冰緩效果',
     '點燃效果',
+    '詛咒效果',
+    '減益效果',
     '技能保留',
     '不死召喚物',
     '每使用一次閃避翻滾',
@@ -813,6 +816,9 @@ export class HomeComponent implements OnInit {
         } else { // 隨機屬性
           console.log("隨機");
           text = text.replace('Slots', 'Slot'); //插槽英文複數
+          if(this.item.type.indexOf('weapon') > -1 && text.indexOf('攻擊速度') > -1){
+            text = text.replace('攻擊速度', '攻擊速度 (部分)');
+          }
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
           tempStat[tempStat.length - 1].type = "隨機";
           tempStat[tempStat.length - 1].category = "explicit";
@@ -1121,34 +1127,30 @@ export class HomeComponent implements OnInit {
         if (result) {
           console.log(this.stats[type][idx + 1]);
 
-          //修正重複攻擊速度詞綴(隨機與傳奇)
-          // if ((this.stats[type][idx + 1] == 'explicit.stat_681332047' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_210067635') && this.item.type.indexOf('weapon') == -1) {
-          //   return false;
-          // }
-          //修正#% 的物理攻擊傷害偷取生命與物理攻擊傷害偷取魔力
-          // if ((this.stats[type][idx + 1] == 'explicit.stat_2557965901' || this.stats[type][idx + 1] == 'explicit.stat_707457662') && this.item.type.indexOf('weapon') > -1) {
-          //   return false;
-          // }
           //修正傳奇護符欄位與擊殺時恢復 #% 魔力
           if ((this.stats[type][idx + 1] == 'explicit.stat_1416292992' || this.stats[type][idx + 1] == 'explicit.stat_1604736568') && this.item.category == 'unique') {
             return false;
           }
-          //修正最大能量護盾
-          // if ((this.stats[type][idx + 1] == 'explicit.stat_4052037485') && this.item.type.indexOf('armour') === -1) {
-          //   return false;
-          // }
-          //修正# 點閃避值
-          // if (this.stats[type][idx + 1] == 'explicit.stat_53045048' && this.item.type.indexOf('ring') > -1) {
-          //   return false;
-          // }
           //修正擊中時有 #% 機率造成流血
-          if (this.stats[type][idx + 1] == 'explicit.stat_2174054121' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲') {
+          if ((this.stats[type][idx + 1] == 'explicit.stat_2174054121' || this.stats[type][idx + 1] == 'explicit.stat_1519615863' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲') || this.stats[type][idx + 1] == 'explicit.stat_2174054121' || this.stats[type][idx + 1] == 'explicit.stat_3423694372' && this.item.category === 'unique' && this.item.basic === '教徒巨錘') {
             return false;
           }
-          //修正# 點護甲
-          // if (this.stats[type][idx + 1] == 'explicit.stat_3484657501' && this.item.type.indexOf('belt') > -1) {
-          //   return false;
-          // }
+          // 精魂增加 #%
+          if((this.stats[type][idx + 1] == 'explicit.stat_3984865854' && this.item.type.indexOf('ring') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_1416406066' && this.item.type.indexOf('ring') === -1)){
+            return false;
+          }
+          // # 精魂
+          if(this.stats[type][idx + 1] == 'explicit.stat_3981240776' && this.item.category === 'unique' && this.item.basic === '貪婪長杖'){
+            return false;
+          }
+          // 擊中時造成目眩
+          if((this.stats[type][idx + 1] == 'explicit.stat_3146310524' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_2933846633' && this.item.type.indexOf('weapon') === -1)){
+            return false;
+          }
+          // 你自己使用的重擊技能有 #% 機率造成餘震
+          if(this.stats[type][idx + 1] == 'explicit.stat_1157523820' && this.item.category === 'unique' && this.item.basic === '橡木巨錘'){
+            return false;
+          }
 
           findStat = e;
           findIdx = idx;

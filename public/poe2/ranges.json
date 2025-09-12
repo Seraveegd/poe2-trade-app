@@ -310,26 +310,6 @@
             "belt": {
                 "min": 12.0,
                 "max": 255.0
-            },
-            "gloves": {
-                "min": 16.0,
-                "max": 160.0
-            },
-            "boots": {
-                "min": 16.0,
-                "max": 160.0
-            },
-            "chest": {
-                "min": 16.0,
-                "max": 276.0
-            },
-            "helmet": {
-                "min": 16.0,
-                "max": 202.0
-            },
-            "shield": {
-                "min": 16.0,
-                "max": 256.0
             }
         },
         "explicit.stat_915769802": {
@@ -506,7 +486,29 @@
                 "max": 33.0
             }
         },
-        "explicit.stat_2866361420": {
+        "explicit.stat_3484657501": {
+            "gloves": {
+                "min": 16.0,
+                "max": 160.0
+            },
+            "boots": {
+                "min": 16.0,
+                "max": 160.0
+            },
+            "chest": {
+                "min": 16.0,
+                "max": 276.0
+            },
+            "helmet": {
+                "min": 16.0,
+                "max": 202.0
+            },
+            "shield": {
+                "min": 16.0,
+                "max": 256.0
+            }
+        },
+        "explicit.stat_1062208444": {
             "gloves": {
                 "min": 15.0,
                 "max": 100.0
@@ -522,14 +524,6 @@
             "helmet": {
                 "min": 15.0,
                 "max": 100.0
-            },
-            "amulet": {
-                "min": 10.0,
-                "max": 50.0
-            },
-            "jewel": {
-                "min": 10.0,
-                "max": 20.0
             },
             "shield": {
                 "min": 15.0,
@@ -908,24 +902,8 @@
                 "max": 16.0
             }
         },
-        "explicit.stat_803737631": {
+        "explicit.stat_691932474": {
             "gloves": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "helmet": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "ring": {
-                "min": 11.0,
-                "max": 450.0
-            },
-            "amulet": {
-                "min": 11.0,
-                "max": 450.0
-            },
-            "quiver": {
                 "min": 11.0,
                 "max": 550.0
             },
@@ -1036,7 +1014,7 @@
                 "max": 50.0
             }
         },
-        "explicit.stat_2144192055": {
+        "explicit.stat_53045048": {
             "gloves": {
                 "min": 11.0,
                 "max": 142.0
@@ -1053,16 +1031,12 @@
                 "min": 11.0,
                 "max": 181.0
             },
-            "ring": {
-                "min": 8.0,
-                "max": 203.0
-            },
             "shield": {
                 "min": 11.0,
                 "max": 232.0
             }
         },
-        "explicit.stat_2106365538": {
+        "explicit.stat_124859000": {
             "gloves": {
                 "min": 15.0,
                 "max": 100.0
@@ -1078,14 +1052,6 @@
             "helmet": {
                 "min": 15.0,
                 "max": 100.0
-            },
-            "amulet": {
-                "min": 10.0,
-                "max": 50.0
-            },
-            "jewel": {
-                "min": 10.0,
-                "max": 20.0
             },
             "shield": {
                 "min": 15.0,
@@ -1168,9 +1134,9 @@
                 "max": 33.0
             }
         },
-        "explicit.stat_3489782002": {
+        "explicit.stat_4052037485": {
             "gloves": {
-                "min": 10.0,
+                "min": 25.0,
                 "max": 60.0
             },
             "boots": {
@@ -1185,10 +1151,6 @@
                 "min": 10.0,
                 "max": 73.0
             },
-            "amulet": {
-                "min": 8.0,
-                "max": 89.0
-            },
             "shield": {
                 "min": 10.0,
                 "max": 90.0
@@ -1200,7 +1162,7 @@
         },
         "explicit.stat_4015621042": {
             "gloves": {
-                "min": 15.0,
+                "min": NaN,
                 "max": 100.0
             },
             "boots": {
@@ -1396,6 +1358,24 @@
                 "max": 4.0
             }
         },
+        "explicit.stat_803737631": {
+            "helmet": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "ring": {
+                "min": 11.0,
+                "max": 450.0
+            },
+            "amulet": {
+                "min": 11.0,
+                "max": 450.0
+            },
+            "quiver": {
+                "min": 11.0,
+                "max": 550.0
+            }
+        },
         "explicit.stat_587431675": {
             "helmet": {
                 "min": 10.0,
@@ -1502,6 +1482,12 @@
             "shield": {
                 "min": 3.0,
                 "max": 18.0
+            }
+        },
+        "explicit.stat_2144192055": {
+            "ring": {
+                "min": 8.0,
+                "max": 203.0
             }
         },
         "explicit.stat_789117908": {
@@ -1682,6 +1668,32 @@
             "amulet": {
                 "min": 3.0,
                 "max": 8.0
+            }
+        },
+        "explicit.stat_3489782002": {
+            "amulet": {
+                "min": 8.0,
+                "max": 89.0
+            }
+        },
+        "explicit.stat_2866361420": {
+            "amulet": {
+                "min": 10.0,
+                "max": 50.0
+            },
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        "explicit.stat_2106365538": {
+            "amulet": {
+                "min": 10.0,
+                "max": 50.0
+            },
+            "jewel": {
+                "min": 10.0,
+                "max": 20.0
             }
         },
         "explicit.stat_124131830": {

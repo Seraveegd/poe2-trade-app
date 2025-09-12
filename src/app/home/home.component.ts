@@ -816,9 +816,18 @@ export class HomeComponent implements OnInit {
         } else { // 隨機屬性
           console.log("隨機");
           text = text.replace('Slots', 'Slot'); //插槽英文複數
-          if(this.item.type.indexOf('weapon') > -1 && text.indexOf('攻擊速度') > -1){
+
+          if (this.item.type.indexOf('weapon') > -1 && (text.indexOf('攻擊速度') > -1 || text.indexOf('命中值') > -1)) {//攻擊速度 (部分) || 命中值 (部分)
             text = text.replace('攻擊速度', '攻擊速度 (部分)');
+            text = text.replace('命中值', '命中值 (部分)');
+          } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('最大能量護盾') > 0 || text.indexOf('閃避值') > 0 || text.indexOf('護甲值') > 0)) { //最大能量護盾 (部分) || 閃避值 (部分) || 護甲值 (部分)
+            text = text.replace('最大能量護盾', '最大能量護盾 (部分)');
+            text = text.replace('閃避值', '閃避值 (部分)');
+            text = text.replace('護甲值', '護甲值 (部分)');
+          } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('護甲值增加') == 0 || text.indexOf('閃避值增加') == 0 || text.indexOf('格擋率增加') == 0)) { // 護甲值增加 (部分) || 閃避值增加 (部分) || 格擋率增加 (部分)
+            text = text + " (部分)";
           }
+
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
           tempStat[tempStat.length - 1].type = "隨機";
           tempStat[tempStat.length - 1].category = "explicit";
@@ -1136,19 +1145,19 @@ export class HomeComponent implements OnInit {
             return false;
           }
           // 精魂增加 #%
-          if((this.stats[type][idx + 1] == 'explicit.stat_3984865854' && this.item.type.indexOf('ring') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_1416406066' && this.item.type.indexOf('ring') === -1)){
+          if ((this.stats[type][idx + 1] == 'explicit.stat_3984865854' && this.item.type.indexOf('ring') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_1416406066' && this.item.type.indexOf('ring') === -1)) {
             return false;
           }
           // # 精魂
-          if(this.stats[type][idx + 1] == 'explicit.stat_3981240776' && this.item.category === 'unique' && this.item.basic === '貪婪長杖'){
+          if (this.stats[type][idx + 1] == 'explicit.stat_3981240776' && this.item.category === 'unique' && this.item.basic === '貪婪長杖') {
             return false;
           }
           // 擊中時造成目眩
-          if((this.stats[type][idx + 1] == 'explicit.stat_3146310524' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_2933846633' && this.item.type.indexOf('weapon') === -1)){
+          if ((this.stats[type][idx + 1] == 'explicit.stat_3146310524' && this.item.type.indexOf('weapon') > -1) || (this.stats[type][idx + 1] == 'explicit.stat_2933846633' && this.item.type.indexOf('weapon') === -1)) {
             return false;
           }
           // 你自己使用的重擊技能有 #% 機率造成餘震
-          if(this.stats[type][idx + 1] == 'explicit.stat_1157523820' && this.item.category === 'unique' && this.item.basic === '橡木巨錘'){
+          if (this.stats[type][idx + 1] == 'explicit.stat_1157523820' && this.item.category === 'unique' && this.item.basic === '橡木巨錘') {
             return false;
           }
 

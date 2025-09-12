@@ -1162,7 +1162,7 @@
         },
         "explicit.stat_4015621042": {
             "gloves": {
-                "min": NaN,
+                "min": 15.0,
                 "max": 100.0
             },
             "boots": {

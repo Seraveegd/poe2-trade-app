@@ -22,6 +22,20 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <select class="form-select" id="floatingSelect_range"
+                                        [(ngModel)]="searchOptions.ranges.chosenObj" aria-label="搜尋範圍">
+                                        @for (item of searchOptions.ranges.options; track $index) {
+                                        <option [ngValue]="item.prop">{{
+                                            item.label }}</option>
+                                        }
+                                    </select>
+                                    <label for="floatingSelect_range">搜尋範圍</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <!-- <div class="col-4">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="OnlineflexSwitchCheckChecked"
@@ -49,12 +63,6 @@
                                     </select>
                                     <label for="floatingSelect_price">價格篩選</label>
                                 </div>
-                                <!-- <select class="form-select" aria-label="價格篩選">
-                                    @for (item of searchOptions.priceSetting.options; track $index) {
-                                    <option [selected]="searchOptions.priceSetting.chosenObj.label == item.label">{{
-                                        item.label }}</option>
-                                    }
-                                </select> -->
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
@@ -69,33 +77,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="row">
-                            <div class="col-4">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="AccountflexSwitchCheckChecked"
-                                        [checked]="searchOptions.isPriceCollapse"
-                                        (click)="searchOptions.isPriceCollapse = !searchOptions.isPriceCollapse">
-                                    <label class="form-check-label" for="AccountflexSwitchCheckChecked">依帳號摺疊</label>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="CorruptedflexSwitchCheckChecked"
-                                        [checked]="searchOptions.corruptedSet.isSearch"
-                                        (click)="searchOptions.corruptedSet.isSearch = !searchOptions.corruptedSet.isSearch">
-                                    <label class="form-check-label" for="CorruptedflexSwitchCheckChecked">已汙染</label>
-                                </div>
-                            </div>
-                            <div class="col-5">
-                                <select class="form-select" aria-label="已汙染"
-                                    [disabled]="!searchOptions.corruptedSet.isSearch">
-                                    @for (item of searchOptions.corruptedSet.options; track $index) {
-                                    <option [selected]="searchOptions.corruptedSet.chosenObj.label == item.label">{{
-                                        item.label }}</option>
-                                    }
-                                </select>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>

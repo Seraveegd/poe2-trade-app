@@ -455,24 +455,24 @@
                 },
                 {
                     "id": "map_packsize",
-                    "text": "Waystone Packsize",
+                    "text": "換界石怪物群大小",
                     "minMax": true
                 },
                 {
                     "id": "map_iiq",
-                    "text": "Waystone IIQ",
-                    "tip": "Increased Item Quantity",
+                    "text": "換界石物品數量",
+                    "tip": "物品數量增加",
                     "minMax": true
                 },
                 {
                     "id": "map_iir",
-                    "text": "Waystone IIR",
-                    "tip": "Increased Item Rarity",
+                    "text": "換界石物品稀有度",
+                    "tip": "物品稀有度增加",
                     "minMax": true
                 },
                 {
                     "id": "map_revives",
-                    "text": "Waystone Revives",
+                    "text": "換界石復活次數",
                     "minMax": true
                 },
                 {
@@ -482,22 +482,22 @@
                 },
                 {
                     "id": "map_gold",
-                    "text": "Waystone Gold",
+                    "text": "換界石金幣數量",
                     "minMax": true
                 },
                 {
                     "id": "map_experience",
-                    "text": "Waystone Experience",
+                    "text": "換界石經驗值獲取",
                     "minMax": true
                 },
                 {
                     "id": "map_magic_monsters",
-                    "text": "Waystone Magic Monsters",
+                    "text": "換界石魔法怪物數量",
                     "minMax": true
                 },
                 {
                     "id": "map_rare_monsters",
-                    "text": "Waystone Rare Monsters",
+                    "text": "換界石稀有怪物數量",
                     "minMax": true
                 },
                 {

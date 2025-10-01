@@ -254,7 +254,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.5');
+        tray.setToolTip('POE2 查價工具 v0.7.6');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

@@ -1537,7 +1537,7 @@ export class HomeComponent implements OnInit {
     });
     //"id": "weapon", "label": "武器"
     result[result.findIndex((e: any) => e.id === "weapon")].entries.forEach((element: any) => {
-      const basetype = ["分裂鏈錘", "鈍斧", "木製棍棒", "硬木長鋒", "闊劍", "雜響權杖", "凋零法杖", "粗製弓", "臨時十字弓", "纏繞細杖", "灰燼長杖", "分裂巨斧", "墮落巨棍棒", "鍛鐵巨劍"]
+      const basetype = ["分裂鏈錘", "鈍斧", "木製棍棒", "硬木長矛", "闊劍", "雜響權杖", "凋零法杖", "粗製弓", "臨時十字弓", "纏繞細杖", "灰燼長杖", "分裂巨斧", "墮落巨棍棒", "鍛鐵巨劍"]
 
       if (basetype.includes(element.type) && !('flags' in element)) {
         weaponIndex += 1;
@@ -1562,8 +1562,8 @@ export class HomeComponent implements OnInit {
           element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
           this.basics.categorizedItems.push(element);
           break;
-        case 4: // 長鋒起始點 { "type": "硬木長鋒", "text": "硬木長鋒" }
-          element.name = "長鋒";
+        case 4: // 長矛起始點 { "type": "硬木長矛", "text": "硬木長矛" }
+          element.name = "長矛";
           element.option = "weapon.spear";
           element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
           this.basics.categorizedItems.push(element);

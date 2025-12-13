@@ -173,14 +173,7 @@ let store = null;
 
     app.whenReady().then(() => {
         //自動檢查更新
-        updateElectronApp({
-            updateSource: {
-                type: UpdateSourceType.ElectronPublicUpdateService,
-                repo: 'Seraveegd/poe2-trade-app'
-            },
-            updateInterval: '1 hour',
-            logger: require('electron-log')
-        });
+        updateElectronApp();
 
         const icon = nativeImage.createFromPath(path.join(__dirname, 'dist/poe2-trade-app/browser/favicon.ico'));
         tray = new Tray(icon);
@@ -254,7 +247,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.6');
+        tray.setToolTip('POE2 查價工具 v0.7.7');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

@@ -9,15 +9,19 @@
                         "options": [
                             {
                                 "id": "available",
-                                "text": "即刻購買以及面交"
+                                "text": "即刻購買以及面對面交易"
                             },
                             {
                                 "id": "securable",
-                                "text": "僅限即刻購買"
+                                "text": "即刻購買"
+                            },
+                            {
+                                "id": "onlineleague",
+                                "text": "面對面交易(聯盟在線)"
                             },
                             {
                                 "id": "online",
-                                "text": "僅限面交"
+                                "text": "面對面交易(在線)"
                             },
                             {
                                 "id": "any",
@@ -101,6 +105,10 @@
                             {
                                 "id": "weapon.warstaff",
                                 "text": "細杖"
+                            },
+                            {
+                                "id": "weapon.talisman",
+                                "text": "魔符聯盟（標準）"
                             },
                             {
                                 "id": "weapon.ranged",
@@ -272,7 +280,7 @@
                             },
                             {
                                 "id": "currency.socketable",
-                                "text": "任何可鑲嵌物品"
+                                "text": "任何增幅"
                             },
                             {
                                 "id": "currency.rune",
@@ -283,8 +291,8 @@
                                 "text": "靈魂核心"
                             },
                             {
-                                "id": "currency.talisman",
-                                "text": "魔符聯盟（標準）"
+                                "id": "currency.idol",
+                                "text": "魔偶"
                             }
                         ]
                     }
@@ -411,7 +419,7 @@
                 },
                 {
                     "id": "rune_sockets",
-                    "text": "符文插槽",
+                    "text": "可增幅插槽",
                     "minMax": true
                 }
             ]
@@ -614,6 +622,46 @@
                 {
                     "id": "sanctified",
                     "text": "聖化",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "twice_corrupted",
+                    "text": "雙重腐化",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "mutated",
+                    "text": "已培育的瓦爾傳奇",
                     "option": {
                         "options": [
                             {

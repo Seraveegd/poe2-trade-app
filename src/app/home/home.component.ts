@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   public typeColors: any = new Map([
     ['技能', '#BFBC2E'],
     ['固定', '#BD5A5A'],
-    ['符文', '#85A1A5'],
+    ['增幅', '#85A1A5'],
     ['附魔', '#F8E169'],
     ['隨機', '#665DAE'],
     ['汙染', '#C62A29'],
@@ -41,7 +41,8 @@ export class HomeComponent implements OnInit {
     ['插槽', '#8A8A8A'],
     ['聖所', '#A1422E'],
     ['褻瀆', '#68A80B'],
-    ['破裂', '#8E7F54']
+    ['破裂', '#8E7F54'],
+    ['偽屬性', '#545454']
   ]);
 
   private defenceTypes: any = new Map([
@@ -60,10 +61,18 @@ export class HomeComponent implements OnInit {
     ['weapon.twomelee', '雙手近戰武器']
   ]);
 
+  //元素抗性偽屬性
+  private pseudoElementalResistance: any = [
+    'explicit.stat_3372524247', //火焰
+    'explicit.stat_4220027924', //冰冷
+    'explicit.stat_1671376347', //閃電
+    'explicit.stat_2901986750' //全部
+  ];
+
   //有減少的詞綴部分字串
   private reduceStrs: any = [
     '充能使用',
-    // '藥劑充能',
+    '藥劑充能',
     '對你的擊中',
     '你身上的點燃持續時間',
     '你身上的冰緩持續時間',
@@ -79,7 +88,13 @@ export class HomeComponent implements OnInit {
     '技能保留的精魂',
     '不死召喚物',
     '每使用一次閃避翻滾',
-    '敵人暈眩門檻'
+    '敵人暈眩門檻',
+    '怪物遭暴擊時'
+  ]
+
+  //有更少的詞綴部分字串
+  private moreStrs = [
+    '怪物身上的詛咒'
   ]
 
   //目前相關狀態
@@ -148,7 +163,7 @@ export class HomeComponent implements OnInit {
     explicit: [], // 隨機屬性
     wrap: [], //拆行詞綴
     enchant: [], // 附魔詞綴
-    rune: [], // 符文詞綴
+    rune: [], // 增幅詞綴
     skill: [], //技能詞綴
     allocates: [], // 項鍊塗油配置附魔詞綴
     sanctum: [], //聖所詞綴
@@ -274,13 +289,16 @@ export class HomeComponent implements OnInit {
     },
     ranges: { // 搜尋設定->搜尋範圍
       options: [{
-        label: "即刻購買以及面交",
+        label: "即刻購買以及面對面交易",
         prop: 'available'
       }, {
-        label: "僅限即刻購買",
+        label: "即刻購買",
         prop: 'securable'
+      },{
+        label: "面對面交易(聯盟在線)",
+        prop: 'onlineleague'
       }, {
-        label: "僅限面交",
+        label: "面對面交易(在線)",
         prop: 'online'
       }, {
         label: "任何",
@@ -726,7 +744,6 @@ export class HomeComponent implements OnInit {
 
   //換界石分析
   mapAnalysis(item: any, itemArray: any, Rarity: any) {
-    // this.itemStatsAnalysis(itemArray, 1) 地圖先不加入詞綴判斷
     this.searchOptions.raritySet.chosenObj = 'nonunique';
     this.searchOptions.raritySet.isSearch = true;
 
@@ -797,34 +814,34 @@ export class HomeComponent implements OnInit {
           tempStat[tempStat.length - 1].category = "skill";
         } else if (text.indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
-          text = text.substring(0, text.indexOf('(implicit)')).trim(); // 刪除(implicit)字串
+          text = text.replaceAll('(implicit)', '').trim(); // 刪除(implicit)字串
           text = text.replace('Slots', 'Slot'); //插槽英文複數
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });
           tempStat[tempStat.length - 1].type = "固定";
           tempStat[tempStat.length - 1].category = "implicit";
-        } else if (text.indexOf('(rune)') > -1) { //符文屬性
-          console.log("符文");
-          text = text.substring(0, text.indexOf('(rune)')).trim(); // 刪除(rune)字串
+        } else if (text.indexOf('(rune)') > -1) { //增幅屬性
+          console.log("增幅");
+          text = text.replaceAll('(rune)', '').trim(); // 刪除(rune)字串
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'rune') });
-          tempStat[tempStat.length - 1].type = "符文";
+          tempStat[tempStat.length - 1].type = "增幅";
           tempStat[tempStat.length - 1].category = "rune";
         } else if (text.indexOf('(enchant)') > -1) { // 附魔
           console.log("附魔");
-          text = text.substring(0, text.indexOf('(enchant)')).trim(); // 刪除(enchant)字串
+          text = text.replaceAll('(enchant)', '').trim(); // 刪除(enchant)字串
           text = this.replacePart(text);
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'enchant') });
           tempStat[tempStat.length - 1].type = "附魔";
           tempStat[tempStat.length - 1].category = "enchant";
         } else if (text.indexOf('(desecrated)') > -1) { //褻瀆
           console.log("褻瀆");
-          text = text.substring(0, text.indexOf('(desecrated)')).trim(); // 刪除(desecrated)字串
+          text = text.replaceAll('(desecrated)', '').trim(); // 刪除(desecrated)字串
           text = this.replacePart(text);
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'desecrated') });
           tempStat[tempStat.length - 1].type = "褻瀆";
           tempStat[tempStat.length - 1].category = "desecrated";
         } else if (text.indexOf('(fractured)') > -1) { //破裂
           console.log("破裂");
-          text = text.substring(0, text.indexOf('(fractured)')).trim(); // 刪除(fractured)字串
+          text = text.replaceAll('(fractured)', '').trim(); // 刪除(fractured)字串
           text = this.replacePart(text);
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'fractured') });
           tempStat[tempStat.length - 1].type = "破裂";
@@ -958,6 +975,29 @@ export class HomeComponent implements OnInit {
         }
       }
     });
+    // 元素抗性偽屬性
+    let resistances = 0;
+    this.item.searchStats.forEach((e : any) => {
+      if(this.pseudoElementalResistance.some((s: any) => s === e.id)){
+        if(e.id == 'explicit.stat_2901986750'){
+          resistances += (e.min*3);
+        }else{
+          resistances += e.min;
+        }
+      }
+    });
+    if(resistances > 0){
+      this.item.searchStats.unshift({
+        "id": "pseudo.pseudo_total_elemental_resistance",
+        "text": '+#% 元素抗性',
+        "option": "",
+        "min": resistances,
+        "max": '',
+        "isValue": false,
+        "isSearch": false,
+        "type": '偽屬性'
+      });
+    }
     // 褻瀆偽屬性
     if (desecrated.reduce((a, b) => a + b) > 0) {
       let [p, s] = desecrated;
@@ -1157,7 +1197,7 @@ export class HomeComponent implements OnInit {
 
     if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1 || stat.indexOf('擴散傷害') > -1) { //固定數字
       mdStat = stat;
-    } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限')) { //詞綴有+號
+    } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限') || stat.indexOf('怪物的元素抗性') > -1) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
     } else if (stat.indexOf('試煉地圖') > -1 || stat.startsWith('裝填額外') || stat.startsWith('商人有')) { //原型顯示1，但會有更多
       mdStat = stat.replace(/\d+/g, "1");
@@ -1183,6 +1223,14 @@ export class HomeComponent implements OnInit {
       mdStat = mdStat.replace('減少', '增加');
     } else if (this.reduceStrs.some((str: any) => mdStat.indexOf(str) > -1)) { //處理只有減少，字串有增加字樣
       mdStat = mdStat.replace('增加', '減少');
+    }
+
+    if (mdStat.indexOf('更多') > -1 && mdStat.indexOf('更少') > -1) {
+      //不動作
+    } else if (this.moreStrs.every((str: any) => mdStat.indexOf(str) === -1)) { //其餘皆做取代動作
+      mdStat = mdStat.replace('更少', '更多');
+    } else if (this.moreStrs.some((str: any) => mdStat.indexOf(str) > -1)) { //處理只有減少，字串有增加字樣
+      mdStat = mdStat.replace('更多', '更少');
     }
 
     if (mdStat.startsWith('擊殺時')) { //處理只有恢復，字串有失去字樣
@@ -1537,7 +1585,7 @@ export class HomeComponent implements OnInit {
     });
     //"id": "weapon", "label": "武器"
     result[result.findIndex((e: any) => e.id === "weapon")].entries.forEach((element: any) => {
-      const basetype = ["分裂鏈錘", "鈍斧", "木製棍棒", "硬木長矛", "闊劍", "雜響權杖", "凋零法杖", "粗製弓", "臨時十字弓", "纏繞細杖", "灰燼長杖", "分裂巨斧", "墮落巨棍棒", "鍛鐵巨劍"]
+      const basetype = ["分裂鏈錘", "鈍斧", "木製棍棒", "硬木長矛", "闊劍", "雜響權杖", "凋零法杖", "粗製弓", "臨時十字弓", "纏繞細杖", "灰燼長杖", "變形魔符", "分裂巨斧", "墮落巨棍棒", "鍛鐵巨劍"]
 
       if (basetype.includes(element.type) && !('flags' in element)) {
         weaponIndex += 1;
@@ -1612,19 +1660,25 @@ export class HomeComponent implements OnInit {
           element.weapon = "weapon.caster";
           this.basics.categorizedItems.push(element);
           break;
-        case 12: // 雙手斧起始點 { "type": "分裂巨斧", "text": "分裂巨斧" }
+        case 12: // 魔符起始點{ "type": "變形魔符", "text": "變形魔符" }
+          element.name = "魔符";
+          element.option = "weapon.talisman";
+          element.weapon = "weapon.twomelee";
+          this.basics.categorizedItems.push(element);
+          break;
+        case 13: // 雙手斧起始點 { "type": "分裂巨斧", "text": "分裂巨斧" }
           element.name = "雙手斧";
           element.option = "weapon.twoaxe";
           element.weapon = "weapon.twomelee";
           this.basics.categorizedItems.push(element);
           break;
-        case 13: // 雙手錘起始點 { "type": "墮落巨棍棒", "text": "墮落巨棍棒" }
+        case 14: // 雙手錘起始點 { "type": "墮落巨棍棒", "text": "墮落巨棍棒" }
           element.name = "雙手錘";
           element.option = "weapon.twomace";
           element.weapon = "weapon.twomelee";
           this.basics.categorizedItems.push(element);
           break;
-        case 14: // 雙手劍起始點 { "type": "鍛鐵巨劍", "text": "鍛鐵巨劍" }
+        case 15: // 雙手劍起始點 { "type": "鍛鐵巨劍", "text": "鍛鐵巨劍" }
           element.name = "雙手劍";
           element.option = "weapon.twosword";
           element.weapon = "weapon.twomelee";
@@ -1782,7 +1836,7 @@ export class HomeComponent implements OnInit {
 
       this.stats.enchant.push(text, element.id);
     })
-    //符文詞綴
+    //增幅詞綴
     result[result.findIndex((e: any) => e.id === "rune")].entries.forEach((element: any, index: any) => {
       let text = element.text;
       let count = (text.match(/\|/g) || []).length;

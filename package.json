@@ -1,12 +1,13 @@
 {
   "name": "poe2-trade-app",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "main": "main.js",
   "author": "Seraveegd",
   "description": "poe2-trade-app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Seraveegd/poe2-trade-app.git"
+    "url": "https://github.com/Seraveegd/poe2-trade-app.git",
+    "directory": "Seraveegd/poe2-trade-app"
   },
   "scripts": {
     "ng": "ng",

@@ -63,10 +63,14 @@ export class HomeComponent implements OnInit {
 
   //元素抗性偽屬性
   private pseudoElementalResistance: any = [
-    'explicit.stat_3372524247', //火焰
-    'explicit.stat_4220027924', //冰冷
-    'explicit.stat_1671376347', //閃電
-    'explicit.stat_2901986750' //全部
+    'implicit.stat_1671376347', //閃電(固定)
+    'implicit.stat_3372524247', //火焰(固定)
+    'implicit.stat_4220027924', //冰冷(固定)
+    'implicit.stat_2901986750', //全部(固定)
+    'explicit.stat_3372524247', //火焰(隨機)
+    'explicit.stat_4220027924', //冰冷(隨機)
+    'explicit.stat_1671376347', //閃電(隨機)
+    'explicit.stat_2901986750' //全部(隨機)
   ];
 
   //有減少的詞綴部分字串
@@ -979,7 +983,7 @@ export class HomeComponent implements OnInit {
     let resistances = 0;
     this.item.searchStats.forEach((e : any) => {
       if(this.pseudoElementalResistance.some((s: any) => s === e.id)){
-        if(e.id == 'explicit.stat_2901986750'){
+        if(e.id == 'explicit.stat_2901986750' || e.id == 'implicit.stat_2901986750'){
           resistances += (e.min*3);
         }else{
           resistances += e.min;

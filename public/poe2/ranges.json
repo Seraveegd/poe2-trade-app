@@ -72,6 +72,10 @@
             "crossbow": {
                 "min": 5.0,
                 "max": 33.0
+            },
+            "talisman": {
+                "min": 5.0,
+                "max": 33.0
             }
         },
         "explicit.stat_3372524247": {
@@ -108,6 +112,10 @@
                 "max": 45.0
             },
             "focus": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "buckler": {
                 "min": 6.0,
                 "max": 45.0
             }
@@ -148,6 +156,10 @@
             "focus": {
                 "min": 6.0,
                 "max": 45.0
+            },
+            "buckler": {
+                "min": 6.0,
+                "max": 45.0
             }
         },
         "explicit.stat_1671376347": {
@@ -184,6 +196,10 @@
                 "max": 45.0
             },
             "focus": {
+                "min": 6.0,
+                "max": 45.0
+            },
+            "buckler": {
                 "min": 6.0,
                 "max": 45.0
             }
@@ -224,6 +240,10 @@
             "focus": {
                 "min": 4.0,
                 "max": 27.0
+            },
+            "buckler": {
+                "min": 4.0,
+                "max": 27.0
             }
         },
         "explicit.stat_3299347043": {
@@ -258,6 +278,10 @@
             "shield": {
                 "min": 10.0,
                 "max": 189.0
+            },
+            "buckler": {
+                "min": 10.0,
+                "max": 189.0
             }
         },
         "explicit.stat_1050105434": {
@@ -285,10 +309,6 @@
                 "min": 10.0,
                 "max": 189.0
             },
-            "shield": {
-                "min": 10.0,
-                "max": 164.0
-            },
             "focus": {
                 "min": 10.0,
                 "max": 164.0
@@ -302,8 +322,8 @@
                 "max": 164.0
             },
             "staff": {
-                "min": 14.0,
-                "max": 230.0
+                "min": 20.0,
+                "max": 328.0
             }
         },
         "explicit.stat_809229260": {
@@ -328,18 +348,26 @@
             "shield": {
                 "min": 6.0,
                 "max": 304.0
+            },
+            "buckler": {
+                "min": 6.0,
+                "max": 304.0
             }
         },
         "explicit.stat_2881298780": {
             "belt": {
-                "min": 1.5,
-                "max": 185.5
+                "min": 2.0,
+                "max": 121.0
             },
             "chest": {
                 "min": 2.0,
                 "max": 185.5
             },
             "shield": {
+                "min": 2.0,
+                "max": 185.5
+            },
+            "buckler": {
                 "min": 2.0,
                 "max": 185.5
             }
@@ -484,6 +512,10 @@
             "claw": {
                 "min": 5.0,
                 "max": 33.0
+            },
+            "buckler": {
+                "min": 5.0,
+                "max": 33.0
             }
         },
         "explicit.stat_3484657501": {
@@ -614,6 +646,14 @@
             "claw": {
                 "min": -15.0,
                 "max": -35.0
+            },
+            "talisman": {
+                "min": -15.0,
+                "max": -35.0
+            },
+            "buckler": {
+                "min": -15.0,
+                "max": -35.0
             }
         },
         "explicit.stat_3032590688": {
@@ -720,6 +760,10 @@
             "claw": {
                 "min": 1.0,
                 "max": 5.0
+            },
+            "talisman": {
+                "min": 2.0,
+                "max": 7.0
             }
         },
         "explicit.stat_2557965901": {
@@ -810,6 +854,10 @@
             "claw": {
                 "min": 4.0,
                 "max": 84.0
+            },
+            "talisman": {
+                "min": 4.0,
+                "max": 84.0
             }
         },
         "explicit.stat_1368271171": {
@@ -878,6 +926,10 @@
                 "max": 45.0
             },
             "claw": {
+                "min": 2.0,
+                "max": 45.0
+            },
+            "talisman": {
                 "min": 2.0,
                 "max": 45.0
             }
@@ -954,6 +1006,10 @@
             "claw": {
                 "min": 11.0,
                 "max": 550.0
+            },
+            "talisman": {
+                "min": 11.0,
+                "max": 550.0
             }
         },
         "explicit.stat_3556824919": {
@@ -973,23 +1029,23 @@
         "explicit.stat_3917489142": {
             "gloves": {
                 "min": 6.0,
-                "max": 25.0
+                "max": 18.0
             },
             "boots": {
                 "min": 6.0,
-                "max": 25.0
+                "max": 18.0
             },
             "helmet": {
                 "min": 6.0,
-                "max": 25.0
+                "max": 19.0
             },
             "ring": {
                 "min": 6.0,
-                "max": 25.0
+                "max": 19.0
             },
             "amulet": {
                 "min": 6.0,
-                "max": 25.0
+                "max": 19.0
             }
         },
         "explicit.stat_3362812763": {
@@ -1002,7 +1058,7 @@
                 "max": 43.0
             },
             "chest": {
-                "min": 26.0,
+                "min": 14.0,
                 "max": 50.0
             },
             "helmet": {
@@ -1031,7 +1087,7 @@
                 "min": 11.0,
                 "max": 181.0
             },
-            "shield": {
+            "buckler": {
                 "min": 11.0,
                 "max": 232.0
             }
@@ -1053,7 +1109,7 @@
                 "min": 15.0,
                 "max": 100.0
             },
-            "shield": {
+            "buckler": {
                 "min": 15.0,
                 "max": 110.0
             }
@@ -1076,6 +1132,10 @@
                 "max": 23.0
             },
             "shield": {
+                "min": 8.0,
+                "max": 26.0
+            },
+            "buckler": {
                 "min": 8.0,
                 "max": 26.0
             }
@@ -1132,11 +1192,15 @@
             "warstaff": {
                 "min": 5.0,
                 "max": 33.0
+            },
+            "talisman": {
+                "min": 5.0,
+                "max": 33.0
             }
         },
         "explicit.stat_4052037485": {
             "gloves": {
-                "min": 25.0,
+                "min": 10.0,
                 "max": 60.0
             },
             "boots": {
@@ -1150,10 +1214,6 @@
             "helmet": {
                 "min": 10.0,
                 "max": 73.0
-            },
-            "shield": {
-                "min": 10.0,
-                "max": 90.0
             },
             "focus": {
                 "min": 10.0,
@@ -1180,10 +1240,6 @@
             "amulet": {
                 "min": 10.0,
                 "max": 50.0
-            },
-            "shield": {
-                "min": 15.0,
-                "max": 110.0
             },
             "focus": {
                 "min": 15.0,
@@ -1232,10 +1288,6 @@
             "helmet": {
                 "min": 15.0,
                 "max": 100.0
-            },
-            "shield": {
-                "min": 15.0,
-                "max": 110.0
             }
         },
         "explicit.stat_3321629045": {
@@ -1276,10 +1328,6 @@
             "helmet": {
                 "min": 15.0,
                 "max": 100.0
-            },
-            "shield": {
-                "min": 15.0,
-                "max": 110.0
             }
         },
         "explicit.stat_2250533757": {
@@ -1320,14 +1368,22 @@
                 "max": 50.0
             }
         },
-        "explicit.stat_3984865854": {
+        "explicit.stat_1692879867": {
             "chest": {
-                "min": 39.0,
-                "max": 103.0
-            },
-            "sceptre": {
-                "min": 30.0,
-                "max": 65.0
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_3301100256": {
+            "chest": {
+                "min": 36.0,
+                "max": 60.0
+            }
+        },
+        "explicit.stat_986397080": {
+            "chest": {
+                "min": 36.0,
+                "max": 60.0
             }
         },
         "explicit.stat_1782086450": {
@@ -1458,6 +1514,10 @@
             "claw": {
                 "min": 5.0,
                 "max": 15.0
+            },
+            "talisman": {
+                "min": 5.0,
+                "max": 15.0
             }
         },
         "explicit.stat_1379411836": {
@@ -1503,10 +1563,6 @@
                 "min": 5.0,
                 "max": 15.0
             },
-            "shield": {
-                "min": 10.0,
-                "max": 69.0
-            },
             "focus": {
                 "min": 10.0,
                 "max": 69.0
@@ -1537,10 +1593,6 @@
                 "min": 2.0,
                 "max": 4.0
             },
-            "shield": {
-                "min": 9.0,
-                "max": 32.0
-            },
             "focus": {
                 "min": 9.0,
                 "max": 32.0
@@ -1563,21 +1615,17 @@
                 "min": 5.0,
                 "max": 15.0
             },
-            "shield": {
-                "min": 25.0,
-                "max": 119.0
-            },
             "focus": {
                 "min": 25.0,
-                "max": 119.0
+                "max": 89.0
             },
             "wand": {
                 "min": 25.0,
                 "max": 119.0
             },
             "staff": {
-                "min": 35.0,
-                "max": 169.0
+                "min": 50.0,
+                "max": 238.0
             }
         },
         "explicit.stat_3291658075": {
@@ -1589,21 +1637,17 @@
                 "min": 5.0,
                 "max": 15.0
             },
-            "shield": {
-                "min": 25.0,
-                "max": 119.0
-            },
             "focus": {
                 "min": 25.0,
-                "max": 119.0
+                "max": 89.0
             },
             "wand": {
                 "min": 25.0,
                 "max": 119.0
             },
             "staff": {
-                "min": 35.0,
-                "max": 169.0
+                "min": 50.0,
+                "max": 238.0
             }
         },
         "explicit.stat_2231156303": {
@@ -1615,21 +1659,17 @@
                 "min": 5.0,
                 "max": 15.0
             },
-            "shield": {
-                "min": 25.0,
-                "max": 119.0
-            },
             "focus": {
                 "min": 25.0,
-                "max": 119.0
+                "max": 89.0
             },
             "wand": {
                 "min": 25.0,
                 "max": 119.0
             },
             "staff": {
-                "min": 35.0,
-                "max": 169.0
+                "min": 50.0,
+                "max": 238.0
             }
         },
         "explicit.stat_736967255": {
@@ -1641,21 +1681,17 @@
                 "min": 6.0,
                 "max": 12.0
             },
-            "shield": {
-                "min": 25.0,
-                "max": 119.0
-            },
             "focus": {
                 "min": 25.0,
-                "max": 119.0
+                "max": 89.0
             },
             "wand": {
                 "min": 25.0,
                 "max": 119.0
             },
             "staff": {
-                "min": 35.0,
-                "max": 169.0
+                "min": 50.0,
+                "max": 238.0
             }
         },
         "explicit.stat_983749596": {
@@ -1701,10 +1737,6 @@
                 "min": 1.0,
                 "max": 3.0
             },
-            "shield": {
-                "min": 1.0,
-                "max": 2.0
-            },
             "focus": {
                 "min": 1.0,
                 "max": 2.0
@@ -1715,7 +1747,7 @@
             },
             "staff": {
                 "min": 2.0,
-                "max": 6.0
+                "max": 5.0
             }
         },
         "explicit.stat_1202301673": {
@@ -1765,21 +1797,17 @@
                 "min": 5.0,
                 "max": 15.0
             },
-            "shield": {
-                "min": 25.0,
-                "max": 119.0
-            },
             "focus": {
                 "min": 25.0,
-                "max": 119.0
+                "max": 89.0
             },
             "wand": {
                 "min": 25.0,
                 "max": 119.0
             },
             "staff": {
-                "min": 35.0,
-                "max": 169.0
+                "min": 50.0,
+                "max": 238.0
             }
         },
         "explicit.stat_280731498": {
@@ -1860,6 +1888,12 @@
             "staff": {
                 "min": 51.0,
                 "max": 100.0
+            }
+        },
+        "explicit.stat_3791899485": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
             }
         },
         "explicit.stat_3377888098": {
@@ -1992,12 +2026,6 @@
                 "max": 20.0
             }
         },
-        "explicit.stat_3037553757": {
-            "jewel": {
-                "min": 5.0,
-                "max": 15.0
-            }
-        },
         "explicit.stat_4159248054": {
             "jewel": {
                 "min": 5.0,
@@ -2014,12 +2042,6 @@
             "jewel": {
                 "min": 10.0,
                 "max": 20.0
-            }
-        },
-        "explicit.stat_3233599707": {
-            "jewel": {
-                "min": 15.0,
-                "max": 25.0
             }
         },
         "explicit.stat_1869147066": {
@@ -2048,6 +2070,24 @@
             "sceptre": {
                 "min": 36.0,
                 "max": 80.0
+            }
+        },
+        "explicit.stat_918325986": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_2440073079": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_2518900926": {
+            "jewel": {
+                "min": 5.0,
+                "max": 15.0
             }
         },
         "explicit.stat_624954515": {
@@ -2374,10 +2414,22 @@
                 "max": -10.0
             }
         },
+        "explicit.stat_1165163804": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
         "explicit.stat_2456523742": {
             "jewel": {
                 "min": 10.0,
                 "max": 20.0
+            }
+        },
+        "explicit.stat_2696027455": {
+            "jewel": {
+                "min": 6.0,
+                "max": 16.0
             }
         },
         "explicit.stat_1405298142": {
@@ -2404,6 +2456,18 @@
                 "max": 25.0
             }
         },
+        "explicit.stat_3401186585": {
+            "jewel": {
+                "min": 10.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_1911237468": {
+            "jewel": {
+                "min": 15.0,
+                "max": 25.0
+            }
+        },
         "explicit.stat_234296660": {
             "jewel": {
                 "min": 10.0,
@@ -2420,12 +2484,6 @@
             "jewel": {
                 "min": 10.0,
                 "max": 20.0
-            }
-        },
-        "explicit.stat_315791320": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
             }
         },
         "explicit.stat_3485067555": {
@@ -2451,10 +2509,6 @@
                 "min": 10.0,
                 "max": 20.0
             },
-            "shield": {
-                "min": 10.0,
-                "max": 34.0
-            },
             "focus": {
                 "min": 10.0,
                 "max": 34.0
@@ -2470,8 +2524,8 @@
         },
         "explicit.stat_153777645": {
             "jewel": {
-                "min": 15.0,
-                "max": 25.0
+                "min": 8.0,
+                "max": 12.0
             }
         },
         "explicit.stat_1104825894": {
@@ -2548,12 +2602,6 @@
                 "max": 2.0
             }
         },
-        "explicit.stat_1718147982": {
-            "jewel": {
-                "min": 10.0,
-                "max": 20.0
-            }
-        },
         "explicit.stat_3091578504": {
             "jewel": {
                 "min": 2.0,
@@ -2607,10 +2655,6 @@
                 "min": 5.0,
                 "max": 15.0
             },
-            "shield": {
-                "min": 27.0,
-                "max": 59.0
-            },
             "focus": {
                 "min": 27.0,
                 "max": 59.0
@@ -2648,526 +2692,10 @@
                 "max": 10.0
             }
         },
-        "explicit.stat_280731498_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_2866361420_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1776411443_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_2637470878_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_2843214518_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_429143663_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_2720982137_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 4.0
-            }
-        },
-        "explicit.stat_1869147066_1": {
-            "jewel": {
-                "min": 8.0,
-                "max": 12.0
-            }
-        },
-        "explicit.stat_1459321413_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_3166958180_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_4147897060_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3556824919_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_2301718443_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 4.0
-            }
-        },
-        "explicit.stat_3141070085_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1569101201_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3962278098_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_2653955271_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_2968503605_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3377888098_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_565784293_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_2480498143_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_2112395885_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_44972811_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_1181419800_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_872504239_1": {
-            "jewel": {
-                "min": 6.0,
-                "max": 12.0
-            }
-        },
-        "explicit.stat_1002362373_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_3811191316_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_770672621_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_3119612865_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1310194496_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_101878827_1": {
-            "jewel": {
-                "min": 8.0,
-                "max": 12.0
-            }
-        },
-        "explicit.stat_3292710273_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_145497481_1": {
-            "jewel": {
-                "min": 8.0,
-                "max": 15.0
-            }
-        },
         "explicit.stat_1060572482_1": {
             "jewel": {
                 "min": 15.0,
                 "max": 25.0
-            }
-        },
-        "explicit.stat_239367161_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_680068163_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1315743832_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3851254963_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_686254215_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3374165039_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3037553757_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_4159248054_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_1594812856_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1316278494_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3233599707_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 4.0
-            }
-        },
-        "explicit.stat_624954515_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1772247089_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_1303248024_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_3544800472_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_2194114101_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_3714003708_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_681332047_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1585769763_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_169946467_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_4188894176_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3759735052_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_4081947835_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_3585532255_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_627767961_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1389754388_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_234296660_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1004011302_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_440490623_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_427684353_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3192728503_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_1135928777_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1852872083_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1829102168_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_1238227257_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_1062710370_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_2106365538_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_538241406_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_1836676211_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 5.0
-            }
-        },
-        "explicit.stat_3741323227_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_3003542304_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 7.0
-            }
-        },
-        "explicit.stat_1697951953_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_21071013_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 4.0
-            }
-        },
-        "explicit.stat_4009879772_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_821241191_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_2231156303_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_818778753_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_3590792340_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_2222186378_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_2839066308_1": {
-            "jewel": {
-                "min": 1.0,
-                "max": 2.0
-            }
-        },
-        "explicit.stat_1714971114_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_2594634307_1": {
-            "jewel": {
-                "min": 3.0,
-                "max": 4.0
-            }
-        },
-        "explicit.stat_712554801_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
             }
         },
         "explicit.stat_4234573345_1": {
@@ -3176,301 +2704,859 @@
                 "max": 25.0
             }
         },
-        "explicit.stat_2321178454_1": {
+        "explicit.stat_3391917254_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3858398337_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_4089835882_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_504915064_1": {
             "jewel": {
                 "min": 5.0,
                 "max": 10.0
             }
         },
-        "explicit.stat_3473929743_1": {
+        "explicit.stat_1426522529_1": {
             "jewel": {
-                "min": 5.0,
-                "max": 10.0
+                "min": 1.0,
+                "max": 2.0
             }
         },
-        "explicit.stat_2487305362_1": {
+        "explicit.stat_1505023559_1": {
             "jewel": {
                 "min": 3.0,
                 "max": 7.0
             }
         },
-        "explicit.stat_2011656677_1": {
+        "explicit.stat_3821543413_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1834658952_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_3222402650_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_3395186672_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_139889694_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1432756708_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_394473632_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_253641217_1": {
             "jewel": {
                 "min": 3.0,
                 "max": 7.0
             }
         },
-        "explicit.stat_1839076647_1": {
+        "explicit.stat_3113764475_1": {
             "jewel": {
-                "min": 1.0,
-                "max": 2.0
+                "min": 3.0,
+                "max": 5.0
             }
         },
-        "explicit.stat_3596695232_1": {
+        "explicit.stat_2976476845_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_3386297724_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_3759663284_1": {
+        "explicit.stat_3666476747_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_4045894391_1": {
+        "explicit.stat_1185341308_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_1852184471_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_1697447343_1": {
+        "explicit.stat_2392824305_1": {
+            "jewel": {
+                "min": 6.0,
+                "max": 12.0
+            }
+        },
+        "explicit.stat_1337740333_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2534359663_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_378796798_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_30438393_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1417267954_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2131720304_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_713216632_1": {
+            "jewel": {
+                "min": 8.0,
+                "max": 15.0
+            }
+        },
+        "explicit.stat_4173554949_1": {
             "jewel": {
                 "min": 5.0,
                 "max": 10.0
             }
         },
-        "explicit.stat_3283482523_1": {
+        "explicit.stat_484792219_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_1200678966_1": {
+        "explicit.stat_391602279_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1320662475_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_293638271_1": {
+        "explicit.stat_2108821127_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_3668351662_1": {
+        "explicit.stat_442393998_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_2527686725_1": {
+        "explicit.stat_1145481685_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2056107438_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1160637284_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1602294220_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2907381231_1": {
+            "jewel": {
+                "min": 8.0,
+                "max": 12.0
+            }
+        },
+        "explicit.stat_4142814612_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2690740379_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_4032352472_1": {
+            "jewel": {
+                "min": 8.0,
+                "max": 12.0
+            }
+        },
+        "explicit.stat_3579898587_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_266564538_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1590846356_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_533892981_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_412709880_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1321104829_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_3409275777_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3865605585_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_1352561456_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2822644689_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2912416697_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_147764878_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1285594161_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_945774314_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3641543553_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2334956771_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_3088348485_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2320654813_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_3752589831_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2149603090_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_4092130601_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_517664839_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3856744003_1": {
             "jewel": {
                 "min": 5.0,
                 "max": 7.0
             }
         },
-        "explicit.stat_924253255_1": {
+        "explicit.stat_715957346_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2272980012_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_2256120736_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_1323216174_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_1994296038_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3173882956_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2066964205_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 5.0
+            }
+        },
+        "explicit.stat_1773308808_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_4258720395_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_3065378291_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_980177976_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_942519401_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2768899959_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_868556494_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_3774951878_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_3171212276_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_3700202631_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_2202308025_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_4162678661_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 4.0
+            }
+        },
+        "explicit.stat_179541474_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1800303440_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_1944020877_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_462424929_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_221701169_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_455816363_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_1777421941_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_821948283_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_127081978_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_111835965_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_4180952808_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1039268420_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_3513818125_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1166140625_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 7.0
+            }
+        },
+        "explicit.stat_2580617872_1": {
             "jewel": {
                 "min": -2.0,
                 "max": -5.0
             }
         },
-        "explicit.stat_1165163804_1": {
+        "explicit.stat_1266413530_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_1405298142_1": {
+        "explicit.stat_138421180_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_2809428780_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_654207792_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_315791320_1": {
+        "explicit.stat_288364275_1": {
             "jewel": {
-                "min": 1.0,
+                "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_2891184298_1": {
+        "explicit.stat_2421151933_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1007380041_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1495814176_1": {
+            "jewel": {
+                "min": 8.0,
+                "max": 12.0
+            }
+        },
+        "explicit.stat_1494950893_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_2638756573_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_255840549_1": {
+            "jewel": {
+                "min": 2.0,
+                "max": 3.0
+            }
+        },
+        "explicit.stat_1022759479_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_736967255_1": {
+        "explicit.stat_1309799717_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_3485067555_1": {
+        "explicit.stat_61644361_1": {
             "jewel": {
                 "min": 6.0,
                 "max": 12.0
             }
         },
-        "explicit.stat_3291658075_1": {
+        "explicit.stat_2442527254_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_3417711605_1": {
+        "explicit.stat_1896066427_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_2118708619_1": {
+        "explicit.stat_1892122971_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_587431675_1": {
+        "explicit.stat_2077117738_1": {
             "jewel": {
                 "min": 3.0,
                 "max": 7.0
             }
         },
-        "explicit.stat_153777645_1": {
+        "explicit.stat_2359002191_1": {
             "jewel": {
-                "min": 6.0,
-                "max": 12.0
+                "min": 5.0,
+                "max": 10.0
             }
         },
-        "explicit.stat_3824372849_1": {
+        "explicit.stat_2466785537_1": {
+            "jewel": {
+                "min": 5.0,
+                "max": 10.0
+            }
+        },
+        "explicit.stat_3859848445_1": {
+            "jewel": {
+                "min": 3.0,
+                "max": 6.0
+            }
+        },
+        "explicit.stat_1087108135_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 4.0
             }
         },
-        "explicit.stat_4236566306_1": {
+        "explicit.stat_2849546516_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 4.0
             }
         },
-        "explicit.stat_2482852589_1": {
+        "explicit.stat_3665922113_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_1782086450_1": {
+        "explicit.stat_3394832998_1": {
             "jewel": {
                 "min": 5.0,
                 "max": 7.0
             }
         },
-        "explicit.stat_2339757871_1": {
+        "explicit.stat_1552666713_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_3174700878_1": {
+        "explicit.stat_3419203492_1": {
             "jewel": {
                 "min": 15.0,
                 "max": 25.0
             }
         },
-        "explicit.stat_473429811_1": {
+        "explicit.stat_1087531620_1": {
             "jewel": {
                 "min": 5.0,
                 "max": 10.0
             }
         },
-        "explicit.stat_3780644166_1": {
+        "explicit.stat_830345042_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 4.0
             }
         },
-        "explicit.stat_789117908_1": {
+        "explicit.stat_3256879910_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_1718147982_1": {
-            "jewel": {
-                "min": 2.0,
-                "max": 3.0
-            }
-        },
-        "explicit.stat_3091578504_1": {
+        "explicit.stat_3106718406_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_3837707023_1": {
+        "explicit.stat_1756380435_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_491450213_1": {
+        "explicit.stat_3628935286_1": {
             "jewel": {
                 "min": 5.0,
                 "max": 10.0
             }
         },
-        "explicit.stat_1854213750_1": {
+        "explicit.stat_593241812_1": {
             "jewel": {
                 "min": 6.0,
                 "max": 12.0
             }
         },
-        "explicit.stat_1589917703_1": {
+        "explicit.stat_2954360902_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_1423639565_1": {
+        "explicit.stat_3225608889_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_2957407601_1": {
+        "explicit.stat_2374711847_1": {
             "jewel": {
                 "min": 6.0,
                 "max": 12.0
             }
         },
-        "explicit.stat_3787460122_1": {
+        "explicit.stat_2107703111_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_737908626_1": {
+        "explicit.stat_2704905000_1": {
             "jewel": {
                 "min": 3.0,
                 "max": 7.0
             }
         },
-        "explicit.stat_274716455_1": {
-            "jewel": {
-                "min": 5.0,
-                "max": 10.0
-            }
-        },
-        "explicit.stat_2974417149_1": {
+        "explicit.stat_1137305356_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_416040624_1": {
+        "explicit.stat_1653682082_1": {
             "jewel": {
                 "min": 1.0,
                 "max": 2.0
             }
         },
-        "explicit.stat_3067892458_1": {
+        "explicit.stat_693237939_1": {
+            "jewel": {
+                "min": 1.0,
+                "max": 2.0
+            }
+        },
+        "explicit.stat_473917671_1": {
             "jewel": {
                 "min": 2.0,
                 "max": 3.0
             }
         },
-        "explicit.stat_3973629633_1": {
+        "explicit.stat_3936121440_1": {
             "jewel": {
                 "min": 3.0,
                 "max": 5.0
@@ -3478,6 +3564,10 @@
         },
         "explicit.stat_2481353198": {
             "shield": {
+                "min": 15.0,
+                "max": 30.0
+            },
+            "buckler": {
                 "min": 15.0,
                 "max": 30.0
             }
@@ -3492,10 +3582,18 @@
             "shield": {
                 "min": 1.0,
                 "max": 3.0
+            },
+            "buckler": {
+                "min": 1.0,
+                "max": 3.0
             }
         },
         "explicit.stat_3676141501": {
             "shield": {
+                "min": 1.0,
+                "max": 3.0
+            },
+            "buckler": {
                 "min": 1.0,
                 "max": 3.0
             }
@@ -3504,10 +3602,18 @@
             "shield": {
                 "min": 1.0,
                 "max": 3.0
+            },
+            "buckler": {
+                "min": 1.0,
+                "max": 3.0
             }
         },
         "explicit.stat_1301765461": {
             "shield": {
+                "min": 1.0,
+                "max": 3.0
+            },
+            "buckler": {
                 "min": 1.0,
                 "max": 3.0
             }
@@ -3516,30 +3622,24 @@
             "shield": {
                 "min": 1.0,
                 "max": 2.0
+            },
+            "buckler": {
+                "min": 1.0,
+                "max": 2.0
             }
         },
         "explicit.stat_2768835289": {
-            "shield": {
-                "min": 25.0,
-                "max": 119.0
-            },
             "focus": {
                 "min": 25.0,
-                "max": 119.0
+                "max": 89.0
             },
             "wand": {
                 "min": 25.0,
                 "max": 119.0
             },
             "staff": {
-                "min": 35.0,
-                "max": 169.0
-            }
-        },
-        "explicit.stat_3855016469": {
-            "shield": {
-                "min": 21.0,
-                "max": 54.0
+                "min": 50.0,
+                "max": 238.0
             }
         },
         "explicit.stat_1241625305": {
@@ -3608,12 +3708,6 @@
                 "max": 30.0
             }
         },
-        "explicit.stat_1811130680": {
-            "flask": {
-                "min": 61.0,
-                "max": 100.0
-            }
-        },
         "explicit.stat_3276224428": {
             "flask": {
                 "min": 51.0,
@@ -3650,7 +3744,7 @@
                 "max": 5.0
             },
             "staff": {
-                "min": 2.0,
+                "min": 1.0,
                 "max": 7.0
             }
         },
@@ -3660,7 +3754,7 @@
                 "max": 5.0
             },
             "staff": {
-                "min": 2.0,
+                "min": 1.0,
                 "max": 7.0
             }
         },
@@ -3670,7 +3764,7 @@
                 "max": 5.0
             },
             "staff": {
-                "min": 2.0,
+                "min": 1.0,
                 "max": 7.0
             }
         },
@@ -3680,7 +3774,7 @@
                 "max": 5.0
             },
             "staff": {
-                "min": 2.0,
+                "min": 1.0,
                 "max": 7.0
             }
         },
@@ -3690,7 +3784,7 @@
                 "max": 5.0
             },
             "staff": {
-                "min": 2.0,
+                "min": 1.0,
                 "max": 7.0
             }
         },
@@ -3700,8 +3794,8 @@
                 "max": 30.0
             },
             "staff": {
-                "min": 20.0,
-                "max": 45.0
+                "min": 26.0,
+                "max": 60.0
             }
         },
         "explicit.stat_2505884597": {
@@ -3710,8 +3804,8 @@
                 "max": 30.0
             },
             "staff": {
-                "min": 20.0,
-                "max": 45.0
+                "min": 26.0,
+                "max": 60.0
             }
         },
         "explicit.stat_3278136794": {
@@ -3720,8 +3814,8 @@
                 "max": 30.0
             },
             "staff": {
-                "min": 20.0,
-                "max": 45.0
+                "min": 26.0,
+                "max": 60.0
             }
         },
         "explicit.stat_1940865751": {
@@ -3772,6 +3866,10 @@
             "claw": {
                 "min": 2.5,
                 "max": 52.5
+            },
+            "talisman": {
+                "min": 3.5,
+                "max": 74.5
             }
         },
         "explicit.stat_709508406": {
@@ -3822,6 +3920,10 @@
             "claw": {
                 "min": 2.0,
                 "max": 127.5
+            },
+            "talisman": {
+                "min": 3.5,
+                "max": 196.0
             }
         },
         "explicit.stat_1037193709": {
@@ -3854,7 +3956,7 @@
                 "max": 156.5
             },
             "twoaxe": {
-                "min": 7.0,
+                "min": 3.0,
                 "max": 156.5
             },
             "twomace": {
@@ -3872,6 +3974,10 @@
             "claw": {
                 "min": 2.0,
                 "max": 102.0
+            },
+            "talisman": {
+                "min": 3.0,
+                "max": 156.5
             }
         },
         "explicit.stat_3336890334": {
@@ -3922,6 +4028,10 @@
             "claw": {
                 "min": 2.5,
                 "max": 123.0
+            },
+            "talisman": {
+                "min": 4.0,
+                "max": 188.5
             }
         },
         "explicit.stat_1509134228": {
@@ -3970,6 +4080,10 @@
                 "max": 179.0
             },
             "claw": {
+                "min": 40.0,
+                "max": 179.0
+            },
+            "talisman": {
                 "min": 40.0,
                 "max": 179.0
             }
@@ -4022,6 +4136,10 @@
             "claw": {
                 "min": 5.0,
                 "max": 9.9
+            },
+            "talisman": {
+                "min": 5.0,
+                "max": 9.9
             }
         },
         "explicit.stat_669069897": {
@@ -4070,6 +4188,10 @@
                 "max": 7.9
             },
             "claw": {
+                "min": 4.0,
+                "max": 8.9
+            },
+            "talisman": {
                 "min": 4.0,
                 "max": 8.9
             }
@@ -4122,6 +4244,10 @@
             "claw": {
                 "min": 2.0,
                 "max": 5.0
+            },
+            "talisman": {
+                "min": 2.0,
+                "max": 5.0
             }
         },
         "explicit.stat_210067635": {
@@ -4170,6 +4296,10 @@
                 "max": 19.0
             },
             "claw": {
+                "min": 5.0,
+                "max": 28.0
+            },
+            "talisman": {
                 "min": 5.0,
                 "max": 28.0
             }
@@ -4222,6 +4352,10 @@
             "claw": {
                 "min": 1.01,
                 "max": 5.0
+            },
+            "talisman": {
+                "min": 1.01,
+                "max": 5.0
             }
         },
         "explicit.stat_2694482655": {
@@ -4272,6 +4406,10 @@
             "claw": {
                 "min": 10.0,
                 "max": 25.0
+            },
+            "talisman": {
+                "min": 10.0,
+                "max": 25.0
             }
         },
         "explicit.stat_748522257": {
@@ -4314,6 +4452,10 @@
             "claw": {
                 "min": 11.0,
                 "max": 30.0
+            },
+            "talisman": {
+                "min": 11.0,
+                "max": 30.0
             }
         },
         "explicit.stat_791928121": {
@@ -4354,6 +4496,10 @@
                 "max": 80.0
             },
             "claw": {
+                "min": 21.0,
+                "max": 80.0
+            },
+            "talisman": {
                 "min": 21.0,
                 "max": 80.0
             }
@@ -4406,6 +4552,10 @@
             "claw": {
                 "min": 19.0,
                 "max": 100.0
+            },
+            "talisman": {
+                "min": 34.0,
+                "max": 139.0
             }
         },
         "explicit.stat_3850614073": {
@@ -4474,10 +4624,16 @@
                 "max": 39.0
             }
         },
-        "explicit.stat_3885405204": {
+        "explicit.stat_3984865854": {
+            "sceptre": {
+                "min": 30.0,
+                "max": 65.0
+            }
+        },
+        "explicit.stat_2463230181": {
             "bow": {
-                "min": 1.0,
-                "max": 2.0
+                "min": 25.0,
+                "max": 200.0
             }
         },
         "explicit.stat_1967051901": {
@@ -4532,12 +4688,6 @@
             "relic": {
                 "min": 20.0,
                 "max": 70.0
-            }
-        },
-        "sanctum.stat_3554921410": {
-            "relic": {
-                "min": -6.0,
-                "max": -15.0
             }
         },
         "sanctum.stat_1416455556": {

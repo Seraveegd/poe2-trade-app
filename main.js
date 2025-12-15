@@ -84,7 +84,7 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         makeInteractive();
 

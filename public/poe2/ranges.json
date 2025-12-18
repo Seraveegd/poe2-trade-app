@@ -954,60 +954,24 @@
                 "max": 16.0
             }
         },
-        "explicit.stat_691932474": {
+        "explicit.stat_803737631": {
             "gloves": {
                 "min": 11.0,
                 "max": 550.0
             },
-            "onesword": {
+            "helmet": {
                 "min": 11.0,
                 "max": 550.0
             },
-            "oneaxe": {
+            "ring": {
                 "min": 11.0,
-                "max": 550.0
+                "max": 450.0
             },
-            "onemace": {
+            "amulet": {
                 "min": 11.0,
-                "max": 550.0
+                "max": 450.0
             },
-            "spear": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "flail": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "bow": {
-                "min": 11.0,
-                "max": 650.0
-            },
-            "twosword": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "twoaxe": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "twomace": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "warstaff": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "crossbow": {
-                "min": 11.0,
-                "max": 650.0
-            },
-            "claw": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "talisman": {
+            "quiver": {
                 "min": 11.0,
                 "max": 550.0
             }
@@ -1412,24 +1376,6 @@
             "sceptre": {
                 "min": 1.0,
                 "max": 4.0
-            }
-        },
-        "explicit.stat_803737631": {
-            "helmet": {
-                "min": 11.0,
-                "max": 550.0
-            },
-            "ring": {
-                "min": 11.0,
-                "max": 450.0
-            },
-            "amulet": {
-                "min": 11.0,
-                "max": 450.0
-            },
-            "quiver": {
-                "min": 11.0,
-                "max": 550.0
             }
         },
         "explicit.stat_587431675": {
@@ -4302,6 +4248,60 @@
             "talisman": {
                 "min": 5.0,
                 "max": 28.0
+            }
+        },
+        "explicit.stat_691932474": {
+            "onesword": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "oneaxe": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "onemace": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "spear": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "flail": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "bow": {
+                "min": 11.0,
+                "max": 650.0
+            },
+            "twosword": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "twoaxe": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "twomace": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "warstaff": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "crossbow": {
+                "min": 11.0,
+                "max": 650.0
+            },
+            "claw": {
+                "min": 11.0,
+                "max": 550.0
+            },
+            "talisman": {
+                "min": 11.0,
+                "max": 550.0
             }
         },
         "explicit.stat_518292764": {

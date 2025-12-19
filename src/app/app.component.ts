@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -8,8 +8,9 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     RouterOutlet,
     RouterLink,
+    CommonModule,
     NgbTooltipModule
-],
+  ],
   providers: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

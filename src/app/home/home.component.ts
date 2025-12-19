@@ -70,13 +70,29 @@ export class HomeComponent implements OnInit {
     'explicit.stat_3372524247', //火焰(隨機)
     'explicit.stat_4220027924', //冰冷(隨機)
     'explicit.stat_1671376347', //閃電(隨機)
-    'explicit.stat_2901986750' //全部(隨機)
+    'explicit.stat_2901986750', //全部(隨機),
+    'fractured.stat_1671376347', //閃電(破裂)
+    'fractured.stat_3372524247', //火焰(破裂)
+    'fractured.stat_4220027924', //冰冷(破裂)
+    'fractured.stat_2901986750', //全部(破裂)
+    'rune.stat_1671376347', //閃電(符文)
+    'rune.stat_3372524247', //火焰(符文)
+    'rune.stat_4220027924', //冰冷(符文)
+    'rune.stat_2901986750', //全部(符文)
+    'desecrated.stat_3465022881', //閃電+混(褻瀆)
+    'desecrated.stat_378817135', //火焰+混(褻瀆)
+    'desecrated.stat_3393628375', //冰冷+混(褻瀆)
+    'desecrated.stat_1671376347', //閃電(褻瀆)
+    'desecrated.stat_3372524247', //火焰(褻瀆)
+    'desecrated.stat_4220027924', //冰冷(褻瀆)
+    'desecrated.stat_2901986750', //全部(褻瀆)
+    'sanctum.stat_3128852541' //全部(聖所)
   ];
 
   //有減少的詞綴部分字串
   private reduceStrs: any = [
     '充能使用',
-    '藥劑充能',
+    // '藥劑充能',
     '對你的擊中',
     '你身上的點燃持續時間',
     '你身上的冰緩持續時間',
@@ -88,7 +104,7 @@ export class HomeComponent implements OnInit {
     '冰緩效果',
     '點燃效果',
     '你身上的詛咒效果',
-    '減益效果緩速程度',
+    // '減益效果緩速程度',
     '技能保留的精魂',
     '不死召喚物',
     '每使用一次閃避翻滾',
@@ -298,7 +314,7 @@ export class HomeComponent implements OnInit {
       }, {
         label: "即刻購買",
         prop: 'securable'
-      },{
+      }, {
         label: "面對面交易(聯盟在線)",
         prop: 'onlineleague'
       }, {
@@ -920,6 +936,10 @@ export class HomeComponent implements OnInit {
               }
             }
           }
+          // 處理黏在一起的
+          if (randomMinValue == 0 && itemStatArray.length == 1 && (itemStatArray[0].match(/\d+/g))?.length > 0) {
+            randomMinValue = itemStatArray[0].match(/\d+/g)[0];
+          }
         }
         // }
 
@@ -981,16 +1001,16 @@ export class HomeComponent implements OnInit {
     });
     // 元素抗性偽屬性
     let resistances = 0;
-    this.item.searchStats.forEach((e : any) => {
-      if(this.pseudoElementalResistance.some((s: any) => s === e.id)){
-        if(e.id == 'explicit.stat_2901986750' || e.id == 'implicit.stat_2901986750'){
-          resistances += (e.min*3);
-        }else{
+    this.item.searchStats.forEach((e: any) => {
+      if (this.pseudoElementalResistance.some((s: any) => s === e.id)) {
+        if (e.id == 'explicit.stat_2901986750' || e.id == 'implicit.stat_2901986750' || e.id == 'fractured.stat_2901986750' || e.id == 'rune.stat_2901986750' || e.id == 'desecrated.stat_2901986750' || e.id == 'sanctum.stat_3128852541') {
+          resistances += (e.min * 3);
+        } else {
           resistances += e.min;
         }
       }
     });
-    if(resistances > 0){
+    if (resistances > 0) {
       this.item.searchStats.unshift({
         "id": "pseudo.pseudo_total_elemental_resistance",
         "text": '+#% 元素抗性',
@@ -1199,7 +1219,7 @@ export class HomeComponent implements OnInit {
     let perPos = stat.indexOf('%');
     let periodPos = stat.indexOf('.');
 
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1 || stat.indexOf('擴散傷害') > -1) { //固定數字
+    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1 || stat.indexOf('擴散傷害') > -1 || stat.indexOf('增益技能的精魂保留效率') > -1) { //固定數字
       mdStat = stat;
     } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限') || stat.indexOf('怪物的元素抗性') > -1) { //詞綴有+號
       mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
@@ -1942,10 +1962,11 @@ export class HomeComponent implements OnInit {
     if (this.item.type.indexOf('weapon') > -1 && (text.indexOf('攻擊速度') > -1 || text.indexOf('命中值') > -1) && text.length < 12) {//攻擊速度 (部分) || 命中值 (部分)
       text = text.replace('攻擊速度', '攻擊速度 (部分)');
       text = text.replace('命中值', '命中值 (部分)');
-    } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('最大能量護盾') > 0 || text.indexOf('閃避值') > 0 || text.indexOf('護甲值') > 0) && text.length < 12) { //最大能量護盾 (部分) || 閃避值 (部分) || 護甲值 (部分)
+    } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('最大能量護盾') > 0 || text.indexOf('閃避值') > 0 || text.indexOf('護甲值') > 0 || text.indexOf('格擋率') > 0) && text.length < 12) { //最大能量護盾 (部分) || 閃避值 (部分) || 護甲值 (部分) || 格擋率 (部分)
       text = text.replace('最大能量護盾', '最大能量護盾 (部分)');
       text = text.replace('閃避值', '閃避值 (部分)');
       text = text.replace('護甲值', '護甲值 (部分)');
+      text = text.replace('格擋率', '格擋率 (部分)');
     } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('護甲值增加') == 0 || text.indexOf('閃避值增加') == 0 || text.indexOf('格擋率增加') == 0)) { // 護甲值增加 (部分) || 閃避值增加 (部分) || 格擋率增加 (部分)
       text = text + " (部分)";
     }

@@ -412,7 +412,8 @@
                                                 <input type="range" class="form-range"
                                                     [min]="stat.rangeMin < 0 ? stat.rangeMax : stat.rangeMin"
                                                     [max]="stat.rangeMax < 0 ? stat.rangeMin : stat.rangeMax"
-                                                    [(ngModel)]="stat.min" style="border: none !important; width: 90%;" [step]="(stat.rangeMin % 1) != 0 ? 0.01 : 1">
+                                                    [(ngModel)]="stat.min" style="border: none !important; width: 90%;"
+                                                    [step]="(stat.rangeMin % 1) != 0 ? 0.01 : 1">
                                                 }
                                             </td>
                                             <td
@@ -459,7 +460,8 @@
 <h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;"></h6>
 } -->
 @if (searchResult.status !== '') {
-<h6 [innerHTML]="searchResult.status" style="padding-top: 10px;text-align: center;font-weight: bolder;cursor: pointer;">
+<h6 [innerHTML]="searchResult.status"
+    style="padding-top: 10px;text-align: center;font-weight: bolder;cursor: pointer;color: white">
 </h6>
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>

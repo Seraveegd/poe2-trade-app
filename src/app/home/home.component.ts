@@ -433,15 +433,13 @@ export class HomeComponent implements OnInit {
 
     //物品基底 - type
     let itemBasic = itemArray[start + 2] === "--------" ? itemArray[start + 1] : itemArray[start + 2];
-    if (Rarity == '中') {
-      itemBasic = (itemBasic.split(' '))[1];
-    }
 
     //物品檢查
     this.data.basics.categorizedItems.some((element: any) => {
       const i = itemBasic.indexOf(element.type);
+      let b = itemBasic.split(' ');
 
-      if (i > -1 && Rarity == '魔法' ? itemBasic.length === (i + element.type.length) : itemBasic === element.type) {
+      if (i > -1 && (b.length > 1 ? (b[0].length > i ?  b[0].length === element.type.length : b[1].length === element.type.length) : itemBasic.length === (i + element.type.length))) {
         console.log(itemBasic);
 
         itemBasic = element.type;
@@ -562,7 +560,7 @@ export class HomeComponent implements OnInit {
       this.searchOptions.itemSocket.min = this.getSocketNumber(item);
       this.searchOptions.itemSocket.max = this.getSocketNumber(item);
       //分析詞綴
-      if (Rarity !== '普通' || searchName.indexOf('碑牌') > -1 || searchName.indexOf('Tablet') > -1) {
+      if (Rarity !== '中' || searchName.indexOf('碑牌') > -1 || searchName.indexOf('Tablet') > -1) {
         this.itemStatsAnalysis(itemArray, 0);
       }
       //分析防禦
@@ -713,7 +711,7 @@ export class HomeComponent implements OnInit {
 
     // this.searchTrade();
 
-    if (Rarity !== '普通') {
+    if (Rarity !== '中') {
       this.itemStatsAnalysis(itemArray, 0);
     }
   }
@@ -768,6 +766,7 @@ export class HomeComponent implements OnInit {
           tempStat[tempStat.length - 1].category = "skill";
         } else if (text.indexOf('(implicit)') > -1) { // 固定屬性
           console.log("固定");
+          text = text.replaceAll(' (implicit)', '').trim(); // 碑牌多空格
           text = text.replaceAll('(implicit)', '').trim(); // 刪除(implicit)字串
           text = text.replace('Slots', 'Slot'); //插槽英文複數
           tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });

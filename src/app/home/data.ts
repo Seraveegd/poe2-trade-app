@@ -322,7 +322,7 @@ export class Data {
         });
         //"id": "maps", "label": "地圖"
         result[result.findIndex((e: any) => e.id === "map")].entries.forEach((element: any) => {
-            const basetype = ["探險日誌", "幻像異界", "地圖鑰匙（階級 1）", "遠古危機碎片", "意志的測試代幣", "巨靈之幣", "裂痕碑牌", "最後通牒雕刻", "怯懦之運"] // 地圖起始點 { "type": "探險日誌", "text": "探險日誌" }
+            const basetype = ["探險日誌", "幻像異界", "地圖鑰匙（階級 1）", "遠古危機碎片", "意志的測試代幣", "巨靈之幣", "深淵先行者碑牌", "最後通牒雕刻", "怯懦之運"] // 地圖起始點 { "type": "探險日誌", "text": "探險日誌" }
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 mapIndex += 1;
@@ -359,7 +359,7 @@ export class Data {
                     // this.basics.categorizedItems.push(element);
                     this.basics.map.option.push(element.type);
                     break;
-                case 7: // 碑牌日誌起始點 { "type": "裂痕碑牌", "text": "裂痕碑牌" }
+                case 7: // 碑牌日誌起始點 { "type": "深淵先行者碑牌", "text": "深淵先行者碑牌" }
                     element.name = "碑牌";
                     element.option = "map.tablet";
                     this.basics.categorizedItems.push(element);
@@ -371,8 +371,8 @@ export class Data {
                     this.basics.map.option.push(element.type);
                     break;
                 case 9: // 地圖碎片起始點 { "type": "怯懦之運", "text": "怯懦之運" }
-                    element.name = "地圖碎片";
-                    element.option = "map.fragment";
+                    // element.name = "地圖碎片";
+                    // element.option = "map.fragment";
                     this.basics.categorizedItems.push(element);
                     break;
             }

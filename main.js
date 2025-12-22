@@ -119,14 +119,6 @@ let store = null;
             }).show();
         });
 
-        // ipcMain.on('toggle-theme', (event, msg) => {
-        //     if (msg === 'dark') {
-        //         nativeTheme.themeSource = 'light';
-        //     } else {
-        //         nativeTheme.themeSource = 'dark';
-        //     }
-        // });
-
         nativeTheme.themeSource = 'dark';
 
         function makeInteractive() {

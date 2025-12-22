@@ -8,6 +8,18 @@
     margin-bottom: 4px;
     position: relative;
 
+    #hide {
+        position: fixed;
+        right: 16px;
+        top: 16px;
+        z-index: 999;
+        line-height: 32px;
+
+        button {
+            border: 1px solid rgba(97, 97, 97, 0.5);
+        }
+    }
+
     #nav {
         display: flex;
     }
@@ -36,12 +48,19 @@
             color: white;
         }
     }
+
+    #hide {
+        button {
+            background: rgba(56, 56, 56, 0.5);
+        }
+    }
 }
 
 @media (prefers-color-scheme: light) {
     #app {
         box-shadow: 1px 1px 5px rgba(255, 255, 255, 0.5);
-        background-color: #ccc;
+        background-color: #ffffff82;
+        border: 1px solid #cccccc7a;
 
         a {
             color: #0067ff;
@@ -53,6 +72,12 @@
             &:first-child {
                 border-right: 1px solid #c0c0c0 !important;
             }
+        }
+    }
+
+    #hide {
+        button {
+            background-color: #d2ddfdb8;
         }
     }
 }

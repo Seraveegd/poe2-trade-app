@@ -273,16 +273,16 @@
             </div>
             <!--詞綴搜尋-->
             @if(item.name !== ''){
-            <div style="text-align: center;">
+            <div id="itemName" style="text-align: center;">
                 <h5 [innerHTML]="item.name"
-                    style="text-align: center; cursor: pointer;padding-top: 6px;display: inline-block; color: white;"
+                    style="text-align: center; cursor: pointer;padding-top: 6px;display: inline-block"
                     (click)="ui.collapse.stats = !ui.collapse.stats"></h5>
             </div>
             }
             @if(item.searchStats.length > 0 || item.searchDefences.length){
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card" style="padding-bottom: 4px;">
+                    <div class="card-body" style="padding: 2px;">
                         <div class="row">
                             <div class="col">
                                 <table class="table" id="stats">
@@ -449,7 +449,9 @@
 
     </div>
 </div>
+@if (searchResult.status !== ''){
 <hr style="margin:3px 0;">
+}
 <!-- API發送錯誤 -->
 @if (app.apiErrorStr !== '' && app.isApiError){
 <ngb-alert [dismissible]="false" style="margin: 3px;">

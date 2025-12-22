@@ -39,18 +39,26 @@
     }
 }
 
+select {
+    cursor: pointer;
+}
+
 input[type=range]::-webkit-slider-thumb {
     background: #ccc;
 }
 
-.form-range::-webkit-slider-runnable-track { 
-    background-color: rgba(79, 76, 76, 0.877); 
-} 
+.form-range::-webkit-slider-runnable-track {
+    background-color: rgba(79, 76, 76, 0.877);
+}
 
 @media (prefers-color-scheme: dark) {
     #stats {
         border: 1px solid #525252;
         box-shadow: 0px 0px 30px rgb(0 0 0 / 50%);
+    }
+
+    #itemName {
+        color: white;
     }
 
     .card {
@@ -108,11 +116,30 @@ input[type=range]::-webkit-slider-thumb {
         box-shadow: 0 0 30px #c4c4c480;
     }
 
+    .card {
+        background-color: #ffffff82;
+        border: 1px solid #cccccc7a;
+
+        select,
+        input.form-control {
+            background: #ffffff82;
+            color: #131313;
+        }
+    }
+
+    #itemName {
+        color: #131313;
+    }
+
     table {
         tr {
             td {
                 font-weight: bold;
                 text-shadow: 1px 1px 2px #ddd2d2;
+
+                &:nth-child(3) {
+                    color: #313131;
+                }
             }
         }
     }
@@ -120,8 +147,8 @@ input[type=range]::-webkit-slider-thumb {
     input[type=range]::-webkit-slider-thumb {
         background: rgb(53, 51, 51)
     }
-    
-    .form-range::-webkit-slider-runnable-track { 
-        background-color: rgba(138, 137, 137, 0.8); 
+
+    .form-range::-webkit-slider-runnable-track {
+        background-color: #d2ddfdb8;
     }
 }

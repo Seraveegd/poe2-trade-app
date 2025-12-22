@@ -7,6 +7,21 @@
   <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    @media (prefers-color-scheme: dark) {
+      app-root {
+        background-color: #000000cc;
+        ;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      app-root {
+        background-color: #ffffffcc;
+        ;
+      }
+    }
+  </style>
 </head>
 
 <body style="margin: 0; padding: 0; background-color: transparent;z-index: 999;">
@@ -14,7 +29,7 @@
   </div>
   <div style="padding-top: 0vh; text-align: center;">
     <app-root
-      style="max-width: 600px; width: 100%; padding: 16px; border-radius: 8px; display: inline-block; background: rgba(0,0,0,0.8)"></app-root>
+      style="max-width: 600px; width: 100%; padding: 16px; border-radius: 8px; display: inline-block"></app-root>
   </div>
 </body>
 

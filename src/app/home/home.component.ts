@@ -502,12 +502,15 @@ export class HomeComponent implements OnInit {
 
     //物品基底 - type
     let itemBasic = itemArray[start + 2] === "--------" ? itemArray[start + 1] : itemArray[start + 2];
+    if(Rarity == '中'){
+      itemBasic = (itemBasic.split(' '))[1];
+    }
 
     //物品檢查
     this.basics.categorizedItems.some((element: any) => {
       const i = itemBasic.indexOf(element.type);
 
-      if (i > -1 && (itemBasic.length === (i + element.type.length) || i == 0)) {
+      if (i > -1 && Rarity == '魔法' ? itemBasic.length === (i + element.type.length) : itemBasic === element.type) {
         console.log(itemBasic);
 
         itemBasic = element.type;
@@ -732,7 +735,7 @@ export class HomeComponent implements OnInit {
     this.item.type = matchItem.option;
     // 判斷物品基底
     console.log(matchItem);
-    this.searchOptions.itemBasic.text = matchItem.text || matchItem.type;
+    this.searchOptions.itemBasic.text = matchItem.text ?? matchItem.type;
     // 判斷物品等級
     if (item.indexOf('物品等級: ') > -1) {
       let levelPos = item.substring(item.indexOf('物品等級: ') + 5);

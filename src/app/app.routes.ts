@@ -5,13 +5,7 @@ import { AboutComponent } from './about/about.component';
 export const routes: Routes = [
     {
         path: 'home',
-        component: HomeComponent,
-        // children: [
-        //     {
-        //         path: 'analyze',
-        //         component: AnalyzeComponent
-        //     }
-        // ]
+        component: HomeComponent
     },
     {
         path: 'about',

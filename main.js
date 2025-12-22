@@ -27,11 +27,13 @@ let store = null;
     const toggleMouseKey = 'CmdOrCtrl + J';
     const toggleShowKey = 'CmdOrCtrl + K';
 
+    //視窗模式
     function createWindow() {
         win = new BrowserWindow({
             width: 600,
             height: 800,
             icon: `dist/poe2-trade-app/browser/favicon.ico`,
+            backgroundColor: '#000000cc',
             webPreferences: {
                 defaultFontFamily: {
                     standard: "Microsoft YaHei"
@@ -51,7 +53,7 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         nativeTheme.themeSource = 'dark';
 
@@ -60,6 +62,7 @@ let store = null;
         });
     }
 
+    //覆蓋模式
     function createOverlayWindow() {
         win = new BrowserWindow({
             width: 600,
@@ -84,7 +87,7 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         makeInteractive();
 
@@ -116,13 +119,13 @@ let store = null;
             }).show();
         });
 
-        ipcMain.on('toggle-theme', (event, msg) => {
-            if (msg === 'dark') {
-                nativeTheme.themeSource = 'light';
-            } else {
-                nativeTheme.themeSource = 'dark';
-            }
-        });
+        // ipcMain.on('toggle-theme', (event, msg) => {
+        //     if (msg === 'dark') {
+        //         nativeTheme.themeSource = 'light';
+        //     } else {
+        //         nativeTheme.themeSource = 'dark';
+        //     }
+        // });
 
         nativeTheme.themeSource = 'dark';
 
@@ -219,29 +222,9 @@ let store = null;
                     }
                 }
             },
-            // {
-            //     label: 'AutoHotKey',
-            //     type: 'checkbox',
-            //     checked: autohotkey == 'true',
-            //     click: () => {
-            //         if(autohotkey == 'true'){
-            //             console.log('kill');
-            //             exec('TASKKILL /IM autohotkey.exe');
-
-            //             autohotkey = 'false';
-            //         }else{
-            //             exec(path.join(process.cwd(), '/resources/autohotkey.exe'));
-
-            //             autohotkey = 'true';
-            //         }
-
-            //         store.set('autohotkey', autohotkey);
-            //     }
-            // },
             {
                 label: '離開',
                 click: () => {
-                    exec('TASKKILL /IM autohotkey.exe');
                     app.quit();
                 }
             }
@@ -262,7 +245,6 @@ let store = null;
 
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
-            exec('TASKKILL /IM autohotkey.exe');
             app.quit();
         }
     })
@@ -271,8 +253,10 @@ let store = null;
     ipcMain.on('toggle-theme', (event, msg) => {
         if (msg === 'dark') {
             nativeTheme.themeSource = 'light';
+            win.setBackgroundColor('#ffffffcc');
         } else {
             nativeTheme.themeSource = 'dark';
+            win.setBackgroundColor('#000000cc');
         }
     });
 

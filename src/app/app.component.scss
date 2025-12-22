@@ -10,10 +10,12 @@
 
     #hide {
         position: fixed;
-        right: 16px;
-        top: 16px;
+        top: 34px;
         z-index: 999;
         line-height: 32px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin-left: 270px;
 
         button {
             border: 1px solid rgba(97, 97, 97, 0.5);

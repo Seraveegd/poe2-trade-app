@@ -61,6 +61,10 @@ input[type=range]::-webkit-slider-thumb {
         color: white;
     }
 
+    #result_status {
+        color: white;
+    }
+
     .card {
         background-color: rgb(32 29 29 / 70%);
         border: 1px solid rgb(204 204 204 / 30%);
@@ -128,6 +132,10 @@ input[type=range]::-webkit-slider-thumb {
     }
 
     #itemName {
+        color: #131313;
+    }
+
+    #result_status {
         color: #131313;
     }
 

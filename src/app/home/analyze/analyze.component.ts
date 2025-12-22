@@ -191,18 +191,19 @@ export class AnalyzeComponent implements OnInit, OnChanges {
         if (item.listing.price) {
           if (this.computed.has(item.listing.price.currency)) {
             if (!this.computed.get(item.listing.price.currency).has(item.listing.price.amount)) {
-              this.computed.get(item.listing.price.currency).set(item.listing.price.amount, 1);
+              this.computed.get(item.listing.price.currency).set(item.listing.price.amount, [1, 0]);
             } else {
-              this.computed.get(item.listing.price.currency).set(item.listing.price.amount, this.computed.get(item.listing.price.currency).get(item.listing.price.amount) + 1);
+              this.computed.get(item.listing.price.currency).set(item.listing.price.amount, [this.computed.get(item.listing.price.currency).get(item.listing.price.amount)[0] + 1, this.computed.get(item.listing.price.currency).get(item.listing.price.amount)[1]]);
             }
           } else {
             this.computed.set(item.listing.price.currency, new Map([
-              [item.listing.price.amount, 1]
+              [item.listing.price.amount, [1, 0]]
             ]));
           }
         }
 
         if (item.item.corrupted) {
+          this.computed.get(item.listing.price.currency).set(item.listing.price.amount, [this.computed.get(item.listing.price.currency).get(item.listing.price.amount)[0], this.computed.get(item.listing.price.currency).get(item.listing.price.amount)[1] + 1]);
           this.corruptedCount += 1;
         }
 

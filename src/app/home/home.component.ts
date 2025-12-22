@@ -1100,6 +1100,7 @@ export class HomeComponent implements OnInit {
         this.isGemSocketSearch();
         break;
       case 'unique':
+        this.ui.collapse.stats = true;
         this.isItemSocketSearch();
         this.isRaritySearch();
         break;

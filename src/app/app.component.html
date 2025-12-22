@@ -1,5 +1,7 @@
 <div id="app">
+  @if(mode === 'overlay') {
   <div id="hide" placement="bottom" ngbTooltip="隱藏"><button (click)="isDisplay('blur')">—</button></div>
+  }
   <div id="nav" style="display: flex; justify-content: center; clear: both; position: relative;">
     <a routerLink="/home" style="border-right: 1px solid #6b6262">首頁</a>
     <a routerLink="/about">關於我</a>

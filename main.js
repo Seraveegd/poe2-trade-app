@@ -53,7 +53,7 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        win.webContents.openDevTools({ mode: 'detach', activate: false });
+        // win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         nativeTheme.themeSource = 'dark';
 
@@ -87,7 +87,7 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        win.webContents.openDevTools({ mode: 'detach', activate: false });
+        // win.webContents.openDevTools({ mode: 'detach', activate: false });
 
         makeInteractive();
 
@@ -222,7 +222,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.9');
+        tray.setToolTip('POE2 查價工具 v0.7.10');
         tray.setContextMenu(contextMenu);
 
         setTimeout(
@@ -245,10 +245,14 @@ let store = null;
     ipcMain.on('toggle-theme', (event, msg) => {
         if (msg === 'dark') {
             nativeTheme.themeSource = 'light';
-            win.setBackgroundColor('#ffffffcc');
+            if (store.get('mode') == 'window') {
+                win.setBackgroundColor('#ffffffcc');
+            }
         } else {
             nativeTheme.themeSource = 'dark';
-            win.setBackgroundColor('#000000cc');
+            if (store.get('mode') == 'window') {
+                win.setBackgroundColor('#000000cc');
+            }
         }
     });
 
@@ -274,6 +278,11 @@ let store = null;
     //更新本地詞綴資料
     ipcMain.on('update-local-stats', (event, msg) => {
         fs.writeFileSync(path.join(process.cwd(), '/resources/stats.json'), JSON.stringify(msg));
+    });
+
+    //取得運作模式
+    ipcMain.on('get-mode', (event, msg) => {
+        event.sender.send('reply-mode', store.get('mode'));
     });
 
 })();

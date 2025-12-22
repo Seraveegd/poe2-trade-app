@@ -19,10 +19,16 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 export class AppComponent implements OnInit {
 
   public colorScheme = 'dark';
+  public mode: any;
 
   constructor() { }
 
   ngOnInit(): void {
+    (<any>window).ipcRenderer.on('reply-mode', (event: any, arg: any) => {
+            this.mode = arg;
+        });
+    (<any>window).ipcRenderer.send('get-mode');
+
     const localStorageColorScheme = localStorage.getItem('prefers-color');
     // Check if any prefers-color-scheme is stored in localStorage
     if (localStorageColorScheme) {

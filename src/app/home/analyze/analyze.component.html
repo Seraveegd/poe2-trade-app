@@ -39,7 +39,7 @@
                             [ngbTooltip]="currencysList.get(currencys[0]).text" style="cursor: pointer;"> / {{
                         currency[1][0] }}筆
                         @if (currency[1][1] > 0) {
-                            ({{currency[1][1]}}筆已汙染)
+                            (<b style="color: rgba(255, 0, 0, 0.5)">{{currency[1][1]}}</b>筆已汙染)
                         }
                     </td>
                 </tr>

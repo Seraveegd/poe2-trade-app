@@ -1453,6 +1453,8 @@ export class HomeComponent implements OnInit {
       text = text.replace('格擋率', '格擋率 (部分)');
     } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('護甲值增加') == 0 || text.indexOf('閃避值增加') == 0 || text.indexOf('格擋率增加') == 0)) { // 護甲值增加 (部分) || 閃避值增加 (部分) || 格擋率增加 (部分)
       text = text + " (部分)";
+    } else if (this.item.type.indexOf('flask') > -1 && text.indexOf('持續時間') > -1){
+      text = text + (this.item.basic.indexOf('護符') > -1 ? "（護符）" : "（藥劑）");
     }
 
     return text;

@@ -32,6 +32,7 @@
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
+    "clipboard-event": "^1.6.0",
     "electron-log": "^5.4.3",
     "electron-overlay-window": "^3.3.0",
     "electron-squirrel-startup": "^1.0.1",

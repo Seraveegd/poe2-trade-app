@@ -52,8 +52,10 @@ let store = null;
 
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
-        // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        if (!app.isPackaged) {
+            // Open the DevTools.
+            win.webContents.openDevTools({ mode: 'detach', activate: false });
+        }
 
         nativeTheme.themeSource = 'dark';
 
@@ -87,7 +89,9 @@ let store = null;
         win.loadURL(path.join(__dirname, `dist/poe2-trade-app/browser/index.html`));
 
         // Open the DevTools.
-        // win.webContents.openDevTools({ mode: 'detach', activate: false });
+        if (!app.isPackaged) {
+            win.webContents.openDevTools({ mode: 'detach', activate: false });
+        }
 
         makeInteractive();
 

@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification, clipboard } = require('electron');
+const clipboardListener = require('clipboard-event');
 const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window');
 const path = require('path');
 const fs = require('fs');
@@ -128,45 +129,62 @@ let store = null;
         function makeInteractive() {
             let isInteractable = false;
 
-            function toggleOverlayState() {
-                if (isInteractable) {
-                    isInteractable = false;
-                    OverlayController.focusTarget();
-                } else {
-                    isInteractable = true;
-                    OverlayController.activateOverlay();
+            // --- 核心狀態控制函數 (封裝重複邏輯) ---
+            const setInteractionState = (interactable, shouldNotify = true) => {
+                if (win.isDestroyed()) return;
+
+                isInteractable = interactable;
+
+                interactable ? OverlayController.activateOverlay() : OverlayController.focusTarget();
+
+                if (shouldNotify) {
+                    win.webContents.send('visibility-change', interactable);
                 }
-            }
+            };
 
-            win.on('blur', () => {
-                console.log('blur');
-                isInteractable = false;
-                OverlayController.focusTarget();
+            const onBlur = () => setInteractionState(false);
+            const onAnalyzeItem = () => {
+                console.log('[IPC] Analyze item triggered');
 
-                win.webContents.send('visibility-change', false);
-            })
+                if (!win || win.isDestroyed()) return;
 
-            ipcMain.on('analyze-item', (msg) => {
-                console.log('analyze-item');
-
-                isInteractable = true;
-                OverlayController.activateOverlay();
-
-                win.webContents.send('visibility-change', true);
-            });
-
-            ipcMain.on('blur', (msg) => {
-                win.blur();
-            });
-
-            globalShortcut.register(toggleMouseKey, toggleOverlayState);
-
-            globalShortcut.register(toggleShowKey, () => {
-                win.webContents.send('visibility-change');
+                // 強制將視窗置頂並顯示，防止視窗被縮小或擋住
+                win.showInactive(); // 顯示但不奪取焦點
+                win.setAlwaysOnTop(true, 'screen-saver'); // 使用 screen-saver 等級確保最高層級
 
                 isInteractable = true;
                 OverlayController.activateOverlay();
-            })
+
+                // 確保在視窗準備好後再發送
+                if (win.webContents.isLoading()) {
+                    win.webContents.once('did-finish-load', () => {
+                        win.webContents.send('visibility-change', true);
+                    });
+                } else {
+                    win.webContents.send('visibility-change', true);
+                }
+            };
+            const onManualBlur = () => !win.isDestroyed() && win.blur();
+            const onToggle = () => setInteractionState(!isInteractable);
+            const onForceShow = () => setInteractionState(true);
+
+            // --- 註冊監聽 (先清除舊監聽，防止重複註冊導致記憶體洩漏) ---
+            win.on('blur', onBlur);
+            ipcMain.on('analyze-item', onAnalyzeItem);
+            ipcMain.on('blur', onManualBlur);
+
+            // --- 全域快捷鍵 ---
+            globalShortcut.register(toggleMouseKey, onToggle);
+            globalShortcut.register(toggleShowKey, onForceShow);
+
+            // 清理邏輯：避免記憶體洩漏與重複監聽
+            win.on('closed', () => {
+                win.off('blur', onBlur);
+                ipcMain.removeListener('analyze-item', onAnalyzeItem);
+                ipcMain.removeListener('blur', onManualBlur);
+                globalShortcut.unregister(toggleMouseKey);
+                globalShortcut.unregister(toggleShowKey);
+            });
         }
     }
 
@@ -226,7 +244,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.11');
+        tray.setToolTip('POE2 查價工具 v0.7.12');
         tray.setContextMenu(contextMenu);
 
         setTimeout(
@@ -234,12 +252,27 @@ let store = null;
             process.platform === 'linux' ? 1000 : 0 // https://github.com/electron/electron/issues/16809
         )
 
+        // 1. 啟動剪貼簿監聽
+        clipboardListener.startListening();
+
+        // 2. 監聽變動事件
+        clipboardListener.on('change', () => {
+            const text = clipboard.readText(); // 取得當前剪貼簿文字
+
+            // 3. 傳送給 Angular 渲染行程
+            if (win) {
+                win.webContents.send('clipboard-update', text);
+            }
+        });
+
         app.on('activate', () => {
             if (BrowserWindow.getAllWindows().length === 0) createWindow()
         })
     })
 
     app.on('window-all-closed', () => {
+        clipboardListener.stopListening(); // 程式關閉時停止監聽
+
         if (process.platform !== 'darwin') {
             app.quit();
         }

@@ -11,6 +11,24 @@
     color-scheme: light dark;
 }
 
+
+html,
+body {
+    /* 預設隱藏，避免閃爍 */
+    background-color: transparent !important;
+}
+
+/* 強制定義顯示類別 */
+.force-show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.force-hide {
+    display: none !important;
+}
+
 @media (prefers-color-scheme: dark) {
     body {
         background: #333;
@@ -24,3 +42,6 @@
         color: black;
     }
 }
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

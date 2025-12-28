@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, inject, effect } from '@angular/core';
+import { NgbCollapseModule, NgbTooltipModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../app.service';
-import { interval, map } from 'rxjs';
 import { AnalyzeComponent } from "./analyze/analyze.component";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Clipboard, Shell } from 'electron';
-import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { Shell } from 'electron';
+import { ClipboardService } from './clipboard.service';
 
 import { Data } from './data';
 
@@ -26,7 +24,7 @@ import { Data } from './data';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  private clipboard!: Clipboard;
+  public clipboard = inject(ClipboardService);
   private shell!: Shell;
 
   public isCollapsed: boolean = false;
@@ -351,7 +349,6 @@ export class HomeComponent implements OnInit {
   constructor(private poe_service: AppService) {
     if ((<any>window).require) {
       try {
-        this.clipboard = (<any>window).require('electron').clipboard;
         this.shell = (<any>window).require('electron').shell;
       } catch (e) {
         throw e;
@@ -367,23 +364,16 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    this.clipboard.writeText('');
-
     //初始化資料
     this.data = new Data();
 
-    const getCopyText = interval(1000).pipe(map(() => this.clipboard.readText()));
+    effect(() => {
+      const current = this.clipboard.currentText(); // 讀取 Signal
 
-    getCopyText.subscribe((text: any) => {
-      if (this.app.preCopyText !== text) {
-        this.app.onReady = false;
-      }
+      if (current && current !== this.app.preCopyText) {
+        this.app.preCopyText = current;
 
-      if (text.indexOf('稀有度: ') > -1 && !this.app.onReady) { // POE 內的文字必定有稀有度
-        this.app.preCopyText = text;
-        this.app.onReady = true;
-        (<any>window).ipcRenderer.send('analyze-item');
-        this.analyze(text);
+        this.onClipboardChanged(current);
       }
     });
   }
@@ -398,15 +388,7 @@ export class HomeComponent implements OnInit {
     let item = text;
 
     if (this.app.isCounting) {
-      // this.cleanCopyText()
-      this.clipboard.writeText('');
       return;
-      // this.$message({
-      //   duration: 2000,
-      //   type: 'error',
-      //   message: `請等待限制間隔倒數完畢後再次按下 Ctrl+C`
-      // });
-      // return
     }
 
     this.resetSearchData();
@@ -439,7 +421,7 @@ export class HomeComponent implements OnInit {
       const i = itemBasic.indexOf(element.type);
       let b = itemBasic.split(' ');
 
-      if (i > -1 && (b.length > 1 ? (b[0].length > i ?  b[0].length === element.type.length : b[1].length === element.type.length) : itemBasic.length === (i + element.type.length))) {
+      if (i > -1 && (b.length > 1 ? (b[0].length > i ? b[0].length === element.type.length : b[1].length === element.type.length) : itemBasic.length === (i + element.type.length))) {
         console.log(itemBasic);
 
         itemBasic = element.type;
@@ -1453,7 +1435,7 @@ export class HomeComponent implements OnInit {
       text = text.replace('格擋率', '格擋率 (部分)');
     } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('護甲值增加') == 0 || text.indexOf('閃避值增加') == 0 || text.indexOf('格擋率增加') == 0)) { // 護甲值增加 (部分) || 閃避值增加 (部分) || 格擋率增加 (部分)
       text = text + " (部分)";
-    } else if (this.item.type.indexOf('flask') > -1 && text.indexOf('持續時間') > -1){
+    } else if (this.item.type.indexOf('flask') > -1 && text.indexOf('持續時間') > -1) {
       text = text + (this.item.basic.indexOf('護符') > -1 ? "（護符）" : "（藥劑）");
     }
 
@@ -1512,6 +1494,13 @@ export class HomeComponent implements OnInit {
       return socPos.substring(0, socPosEnd).trim().split(" ").length;
     } else {
       return 0;
+    }
+  }
+
+  private onClipboardChanged(content: string) {
+    if (content.indexOf('稀有度: ') > -1) {
+      (<any>window).ipcRenderer.send('analyze-item');
+      this.analyze(content);
     }
   }
 }

@@ -290,6 +290,7 @@
                                         <tr>
                                             <th scope="col" style="width: 50px;">查詢</th>
                                             <th scope="col" style="width: 55px;">種類</th>
+                                            <th scope="col" style="width: 10px;">T</th>
                                             <th scope="col">詞綴內容</th>
                                             <th scope="col" style="width: 70px;">最小值</th>
                                             <th scope="col" style="width: 70px;">最大值</th>
@@ -317,6 +318,7 @@
                                                 {{
                                                 defence.type }}
                                             </td>
+                                            <td></td>
                                             <td (click)="defence.isSearch = !defence.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
                                                 [ngStyle]="{'background': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
@@ -358,6 +360,7 @@
                                             <td
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'font-weight': 'bolder', 'color': typeColors.get('插槽')}">
                                                 插槽</td>
+                                            <td></td>
                                             <td (click)="searchOptions.itemSocket.isSearch = !searchOptions.itemSocket.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
@@ -403,6 +406,11 @@
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': typeColors.get(stat.type), 'font-weight': 'bolder'}">
                                                 {{
                                                 stat.type }}
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': stat.level < 3 ? '#dda42e' : '#aaa', 'font-weight': 'bolder'}">
+                                                {{ stat.level != null ? "T" : "" }}{{
+                                                stat.level }}
                                             </td>
                                             <td (click)="stat.isSearch = !stat.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"

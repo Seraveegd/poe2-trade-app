@@ -26,18 +26,22 @@ export class Data {
         }
     };
     //詞綴資料
-    public stats: any = {
-        implicit: [], // 固定屬性
-        explicit: [], // 隨機屬性
-        wrap: [], //拆行詞綴
-        enchant: [], // 附魔詞綴
-        rune: [], // 增幅詞綴
-        skill: [], //技能詞綴
+    public stats: Record<string, Map<string, string[]>> = {
+        implicit: new Map(),
+        explicit: new Map(),
+        enchant: new Map(),
+        rune: new Map(),
+        skill: new Map(),
+        sanctum: new Map(),
+        desecrated: new Map(),
+        fractured: new Map()
+    };
+    public wrap: string[] = []; //拆行詞綴
+    public statsArray: any = {
         allocates: [], // 項鍊塗油配置附魔詞綴
-        sanctum: [], //聖所詞綴
-        desecrated: [], //褻瀆詞綴
-        fractured: [] //破裂詞綴
     }
+
+    public isReady = false;
 
     constructor() {
         this.loadData();
@@ -77,6 +81,7 @@ export class Data {
 
         this.dealWithitemsData();
         this.dealWithstatsData();
+        this.isReady = true;
     }
 
     //物品格式化
@@ -199,14 +204,14 @@ export class Data {
         });
         //"id": "jewel", "label": "珠寶"
         result[result.findIndex((e: any) => e.id === "jewel")].entries.forEach((element: any) => {
-            const basetype = ["翠綠碧雲"];
+            const basetype = ["綠寶石"];
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 jewelIndex += 1;
             }
 
             switch (jewelIndex) {
-                case 1: // 珠寶起始點 { "type": "翠綠碧雲", "text": "翠綠碧雲" }
+                case 1: // 珠寶起始點 { "type": "綠寶石", "text": "綠寶石" }
                     element.name = "珠寶";
                     element.option = "jewel";
                     this.basics.categorizedItems.push(element);
@@ -322,7 +327,7 @@ export class Data {
         });
         //"id": "maps", "label": "地圖"
         result[result.findIndex((e: any) => e.id === "map")].entries.forEach((element: any) => {
-            const basetype = ["探險日誌", "幻像異界", "地圖鑰匙（階級 1）", "遠古危機碎片", "意志的測試代幣", "巨靈之幣", "深淵先行者碑牌", "最後通牒雕刻", "怯懦之運"] // 地圖起始點 { "type": "探險日誌", "text": "探險日誌" }
+            const basetype = ["探險日誌", "幻像異界", "換界石（階級 1）", "遠古危機碎片", "意志的測試代幣", "巨靈之幣", "深淵碑牌", "最後通牒雕刻", "怯懦之運"] // 地圖起始點 { "type": "探險日誌", "text": "探險日誌" }
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 mapIndex += 1;
@@ -339,7 +344,7 @@ export class Data {
                     element.option = "map";
                     this.basics.categorizedItems.push(element);
                     break;
-                case 3: // 地圖起始點 { "type": "地圖鑰匙（階級 1）", "text": "地圖鑰匙（階級 1）" }
+                case 3: // 地圖起始點 { "type": "換界石（階級 1）", "text": "換界石（階級 1）" }
                     this.basics.map.option.push(element.type);
                     break;
                 case 4: // 地圖碎片起始點 { "type": "遠古危機碎片", "text": "遠古危機碎片" }
@@ -359,7 +364,7 @@ export class Data {
                     // this.basics.categorizedItems.push(element);
                     this.basics.map.option.push(element.type);
                     break;
-                case 7: // 碑牌日誌起始點 { "type": "深淵先行者碑牌", "text": "深淵先行者碑牌" }
+                case 7: // 碑牌日誌起始點 { "type": "深淵碑牌", "text": "深淵碑牌" }
                     element.name = "碑牌";
                     element.option = "map.tablet";
                     this.basics.categorizedItems.push(element);
@@ -418,112 +423,27 @@ export class Data {
     //詞綴格式化
     dealWithstatsData() {
         let result = this.datas.stats.result;
-        //隨機屬性
-        result[result.findIndex((e: any) => e.id === "explicit")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            let count = (text.match(/\|/g) || []).length;
-            //處理說明字串
-            if (count > 0) {
-                text = this.replaceIllustrate(text, count);
-            }
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
 
-            this.stats.explicit.push(text, element.id);
-        })
-        //固定屬性
-        result[result.findIndex((e: any) => e.id === "implicit")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            let count = (text.match(/\|/g) || []).length;
-            //處理說明字串
-            if (count > 0) {
-                text = this.replaceIllustrate(text, count);
-            }
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
+        const categoryIds = ["explicit", "implicit", "enchant", "rune", "sanctum", "skill", "desecrated", "fractured"];
 
-            this.stats.implicit.push(text, element.id)
-        })
-        //附魔詞綴
-        result[result.findIndex((e: any) => e.id === "enchant")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            // if (element.id === "enchant.stat_2954116742") { // 項鍊塗油配置附魔詞綴
-            //   element.option.options.forEach((element, index) => {
-            //     this.allocatesStats.push(element.text, (element.id).toString())
-            //   })
-            // }
-            let count = (text.match(/\|/g) || []).length;
-            //處理說明字串
-            if (count > 0) {
-                text = this.replaceIllustrate(text, count);
-            }
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
+        categoryIds.forEach(catId => {
+            const categoryData = result.find((e: any) => e.id === catId);
+            if (!categoryData) return;
 
-            this.stats.enchant.push(text, element.id);
-        })
-        //增幅詞綴
-        result[result.findIndex((e: any) => e.id === "rune")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            let count = (text.match(/\|/g) || []).length;
-            //處理說明字串
-            if (count > 0) {
-                text = this.replaceIllustrate(text, count);
-            }
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
+            categoryData.entries.forEach((element: any) => {
+                let text = element.text;
+                let count = (text.match(/\|/g) || []).length;
+                if (count > 0) text = this.replaceIllustrate(text, count);
 
-            this.stats.rune.push(text, element.id);
-        })
-        //聖域
-        result[result.findIndex((e: any) => e.id === "sanctum")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            let count = (text.match(/\|/g) || []).length;
-            //處理說明字串
-            if (count > 0) {
-                text = this.replaceIllustrate(text, count);
-            }
+                if (text.includes('\n')) this.wrap.push(text);
 
-            this.stats.sanctum.push(text, element.id);
-        })
-        //技能詞綴
-        result[result.findIndex((e: any) => e.id === "skill")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
-
-            this.stats.skill.push(text, element.id);
-        })
-        //褻瀆詞綴
-        result[result.findIndex((e: any) => e.id === "desecrated")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
-
-            this.stats.desecrated.push(text, element.id);
-        })
-        //破裂詞綴
-        result[result.findIndex((e: any) => e.id === "fractured")].entries.forEach((element: any, index: any) => {
-            let text = element.text;
-            //處理折行詞綴
-            if (text.includes('\n')) {
-                this.stats.wrap.push(text);
-            }
-
-            this.stats.fractured.push(text, element.id);
-        })
+                const map = this.stats[catId];
+                if (!map.has(text)) {
+                    map.set(text, []);
+                }
+                map.get(text)!.push(element.id);
+            });
+        });
 
         //清除資料
         this.datas.stats = [];

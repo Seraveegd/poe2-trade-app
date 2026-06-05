@@ -1,14 +1,30 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+const path = require('path');
 
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: __dirname + '/public/favicon',
+    icon: path.join(__dirname, 'public', 'favicon'),
     extraResource: [
-      __dirname + '/resources/items.json',
-      __dirname + '/resources/stats.json',
-    ]
+      path.join(__dirname, 'resources', 'items.json'),
+      path.join(__dirname, 'resources', 'stats.json'),
+    ],
+    ignore: [
+      /^\/src($|\/)/,
+      /^\/angular\.json$/,
+      /^\/\.git($|\/)/,
+      /^\/\.vscode($|\/)/,
+      /^\/out($|\/)/,           // 排除輸出的打包目錄
+      /^\/resources($|\/)/,     // 重要：已透過 extraResource 處理，需從 ASAR 排除以避免重複
+      /^\/public($|\/)/,        // 排除原始圖示素材
+      /node_modules\/.*\/README\.md/,
+      /node_modules\/.*\/CHANGELOG\.md/,
+      /node_modules\/.*\/test($|\/)/,
+      /node_modules\/.*\/docs($|\/)/,
+      /(.eslintrc|tsconfig\.json|package-lock\.json|yarn\.lock)$/,
+      /\.map$/,                 // 排除 Source Maps 檔案
+    ],
   },
   rebuildConfig: {},
   makers: [

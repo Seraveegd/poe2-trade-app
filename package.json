@@ -1,6 +1,6 @@
 {
   "name": "poe2-trade-app",
-  "version": "0.7.12",
+  "version": "0.8.1",
   "main": "main.js",
   "author": "Seraveegd",
   "description": "poe2-trade-app",
@@ -21,6 +21,15 @@
   },
   "private": true,
   "dependencies": {
+    "clipboard-event": "^1.6.0",
+    "electron-log": "^5.4.3",
+    "electron-overlay-window": "^3.3.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.1",
+    "tslib": "^2.3.0",
+    "update-electron-app": "^3.1.1"
+  },
+  "devDependencies": {
     "@angular/animations": "^20.3.15",
     "@angular/common": "^20.3.15",
     "@angular/compiler": "^20.3.15",
@@ -33,17 +42,8 @@
     "@ng-bootstrap/ng-bootstrap": "^19.0.1",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
-    "clipboard-event": "^1.6.0",
-    "electron-log": "^5.4.3",
-    "electron-overlay-window": "^3.3.0",
-    "electron-squirrel-startup": "^1.0.1",
-    "electron-store": "^10.0.1",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "update-electron-app": "^3.1.1",
-    "zone.js": "~0.15.0"
-  },
-  "devDependencies": {
+    "zone.js": "~0.15.0",
     "@angular/build": "^20.3.13",
     "@angular/cli": "^20.3.13",
     "@angular/compiler-cli": "^20.3.15",

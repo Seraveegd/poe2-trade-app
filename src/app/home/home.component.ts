@@ -44,6 +44,16 @@ export class HomeComponent implements OnInit {
     ['偽屬性', '#545454']
   ]);
 
+  //詞綴種類
+  public statTypes = [
+    ['implicit', '固定'],
+    ['rune', '增幅'],
+    ['enchant', '附魔'],
+    ['desecrated', '褻瀆'],
+    ['fractured', '破裂'],
+    ['sanctum', '聖所']
+  ];
+
   private defenceTypes: any = new Map([
     ['能量護盾', 'es'],
     ['護甲值', 'ar'],
@@ -370,9 +380,7 @@ export class HomeComponent implements OnInit {
     effect(() => {
       const current = this.clipboard.currentText(); // 讀取 Signal
 
-      if (current && current !== this.app.preCopyText) {
-        this.app.preCopyText = current;
-
+      if (current) {
         this.onClipboardChanged(current);
       }
     });
@@ -388,6 +396,11 @@ export class HomeComponent implements OnInit {
     let item = text;
 
     if (this.app.isCounting) {
+      return;
+    }
+
+    if (!this.data.isReady) {
+      this.app.apiErrorStr = '資料庫正在從官方伺服器加載，請稍候...';
       return;
     }
 
@@ -709,12 +722,16 @@ export class HomeComponent implements OnInit {
 
     let tempStat: any = [];
     let itemDisplayStats: any = []; // 該物品顯示的詞綴陣列
+    let itemDisplayLevel: any = []; // 該物品顯示的詞綴等級陣列
     let itemStatStart = 0;// 物品隨機詞綴初始位置
     let itemStatEnd = itemArray.length - 1; // 物品隨機詞綴結束位置 //之後可能需要修改
 
     //尋找結束行
     itemArray.forEach((element: any, index: any) => {
-      let isEndPoint = index > 0 ? itemArray[index - 1].indexOf("賦予技能") > -1 || itemArray[index - 1].indexOf("(enchant)") > -1 || itemArray[index - 1].indexOf("(implicit)") > -1 || itemArray[index - 1].indexOf("(scourge)") > -1 || itemArray[index - 1].indexOf("(rune)") > -1 : false;
+      let is = 1;
+      is = index > 1 && itemArray[index - 2].at(-1) === "}" ? 2 : is;
+
+      let isEndPoint = index > 0 ? itemArray[index - is].indexOf("賦予技能") > -1 || itemArray[index - is].indexOf("(enchant)") > -1 || itemArray[index - is].indexOf("(implicit)") > -1 || itemArray[index - is].indexOf("(scourge)") > -1 || itemArray[index - is].indexOf("(rune)") > -1 || itemArray[index - is].indexOf("固定詞綴") > -1 || itemArray[index - is].indexOf("汙染附魔") > -1 : false;
 
       if (element.indexOf('物品等級:') > -1) {
         itemStatStart = index + 2;
@@ -734,71 +751,84 @@ export class HomeComponent implements OnInit {
     console.log(this.item.type);
 
     for (let index = itemStatStart; index < itemStatEnd; index++) {
-      if (itemArray[index] !== "--------" && itemArray[index]) {
-        let text = itemArray[index];
-        itemDisplayStats.push(text);
+      if (itemArray[index] !== "--------" && itemArray[index].at(-1) !== "}" && itemArray[index]) {
+        let text = itemArray[index].at(0) !== "{" ? itemArray[index - 1] + "\n" + itemArray[index] : itemArray[index];
 
         let count = (text.match(/\|/g) || []).length;
+        if (count > 0) { text = this.replaceIllustrate(text, count) }
+
+        let tl = this.replaceLevelRange(text); //取代0.5新增字樣
+
+        itemDisplayStats.push(tl[0]);
+        itemDisplayLevel.push(tl[1]);
+
+        text = tl[0];
+
         if (text.indexOf('賦予技能') > -1) { // 技能屬性
           console.log("技能");
           let tempA = text.split(' ');
           text = "賦予技能: 等級 # " + tempA[tempA.length - 1];
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'skill') });
+          tempStat.push({ text: this.getStat(text, 'skill') });
           tempStat[tempStat.length - 1].type = "技能";
           tempStat[tempStat.length - 1].category = "skill";
-        } else if (text.indexOf('(implicit)') > -1) { // 固定屬性
+        } else if (text.indexOf('(implicit)') > -1 || text.indexOf('固定詞綴') > -1) { // 固定屬性
           console.log("固定");
           text = text.replaceAll(' (implicit)', '').trim(); // 碑牌多空格
           text = text.replaceAll('(implicit)', '').trim(); // 刪除(implicit)字串
           text = text.replace('Slots', 'Slot'); //插槽英文複數
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'implicit') });
+          tempStat.push({ text: this.getStat(text, 'implicit') });
           tempStat[tempStat.length - 1].type = "固定";
           tempStat[tempStat.length - 1].category = "implicit";
         } else if (text.indexOf('(rune)') > -1) { //增幅屬性
           console.log("增幅");
+          text = text.replaceAll(' (rune)', '').trim(); // 刪除(rune)字串
           text = text.replaceAll('(rune)', '').trim(); // 刪除(rune)字串
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'rune') });
+          tempStat.push({ text: this.getStat(text, 'rune') });
           tempStat[tempStat.length - 1].type = "增幅";
           tempStat[tempStat.length - 1].category = "rune";
         } else if (text.indexOf('(enchant)') > -1) { // 附魔
           console.log("附魔");
           text = text.replaceAll('(enchant)', '').trim(); // 刪除(enchant)字串
           text = this.replacePart(text);
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'enchant') });
+          tempStat.push({ text: this.getStat(text, 'enchant') });
           tempStat[tempStat.length - 1].type = "附魔";
           tempStat[tempStat.length - 1].category = "enchant";
         } else if (text.indexOf('(desecrated)') > -1) { //褻瀆
           console.log("褻瀆");
           text = text.replaceAll('(desecrated)', '').trim(); // 刪除(desecrated)字串
           text = this.replacePart(text);
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'desecrated') });
+          tempStat.push({ text: this.getStat(text, 'desecrated') });
           tempStat[tempStat.length - 1].type = "褻瀆";
           tempStat[tempStat.length - 1].category = "desecrated";
+          tempStat[tempStat.length - 1].level = tl[1];
         } else if (text.indexOf('(fractured)') > -1) { //破裂
           console.log("破裂");
           text = text.replaceAll('(fractured)', '').trim(); // 刪除(fractured)字串
           text = this.replacePart(text);
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'fractured') });
+          tempStat.push({ text: this.getStat(text, 'fractured') });
           tempStat[tempStat.length - 1].type = "破裂";
           tempStat[tempStat.length - 1].category = "fractured";
+          tempStat[tempStat.length - 1].level = tl[1];
         } else if (this.item.type.indexOf('sanctum') > -1) { //聖所詞綴
           console.log("聖所");
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'sanctum') });
+          tempStat.push({ text: this.getStat(text, 'sanctum') });
           tempStat[tempStat.length - 1].type = "聖所";
           tempStat[tempStat.length - 1].category = "sanctum";
+          tempStat[tempStat.length - 1].level = tl[1];
         } else if (rarityFlag) { //傳奇裝詞綴
           console.log("傳奇");
           text = this.replacePart(text);
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
+          tempStat.push({ text: this.getStat(text, 'explicit') });
           tempStat[tempStat.length - 1].type = "傳奇";
           tempStat[tempStat.length - 1].category = "explicit";
         } else { // 隨機屬性
           console.log("隨機");
           text = text.replace('Slots', 'Slot'); //插槽英文複數
           text = this.replacePart(text);
-          tempStat.push({ text: this.getStat(count > 0 ? this.replaceIllustrate(text, count) : text, 'explicit') });
+          tempStat.push({ text: this.getStat(text, 'explicit') });
           tempStat[tempStat.length - 1].type = "隨機";
           tempStat[tempStat.length - 1].category = "explicit";
+          tempStat[tempStat.length - 1].level = tl[1];
         }
       }
     }
@@ -886,6 +916,7 @@ export class HomeComponent implements OnInit {
 
         this.item.searchStats.push({
           "id": statID,
+          "level": element.level,
           "text": apiStatText,
           "option": optionValue,
           "min": randomMinValue,
@@ -903,6 +934,7 @@ export class HomeComponent implements OnInit {
         } else {
           this.item.searchStats.push({
             "id": "",
+            "level": element.level,
             "text": itemDisplayStats[idx],
             "option": "",
             "min": '',
@@ -1157,81 +1189,60 @@ export class HomeComponent implements OnInit {
 
     console.log(mdStat);
 
-    if (mdStat.indexOf('增加') > -1 && mdStat.indexOf('減少') > -1) {
-      //不動作
-    } else if (this.reduceStrs.every((str: any) => mdStat.indexOf(str) === -1) || (mdStat.indexOf('對你的擊中') > -1 && mdStat.indexOf('暴擊率') > -1)) { //其餘皆做取代動作
-      mdStat = mdStat.replace('減少', '增加');
-    } else if (this.reduceStrs.some((str: any) => mdStat.indexOf(str) > -1)) { //處理只有減少，字串有增加字樣
-      mdStat = mdStat.replace('增加', '減少');
-    }
-
-    if (mdStat.indexOf('更多') > -1 && mdStat.indexOf('更少') > -1) {
-      //不動作
-    } else if (this.moreStrs.every((str: any) => mdStat.indexOf(str) === -1)) { //其餘皆做取代動作
-      mdStat = mdStat.replace('更少', '更多');
-    } else if (this.moreStrs.some((str: any) => mdStat.indexOf(str) > -1)) { //處理只有減少，字串有增加字樣
-      mdStat = mdStat.replace('更多', '更少');
-    }
-
-    if (mdStat.startsWith('擊殺時')) { //處理只有恢復，字串有失去字樣
-      mdStat = mdStat.replace('失去', '恢復');
-    }
-
-    let findStat = stat;
-    let findIdx = 0;
-    let findResult = this.data.stats[type].some((e: any, idx: any, arr: any) => {
-      if (idx % 2 === 0) {
-        const result = e === mdStat;
-
-        if (result) {
-          console.log(this.data.stats[type][idx + 1]);
-
-          //修正傳奇護符欄位與擊殺時恢復 #% 魔力
-          if ((this.data.stats[type][idx + 1] == 'explicit.stat_1416292992' || this.data.stats[type][idx + 1] == 'explicit.stat_1604736568') && this.item.category == 'unique') {
-            return false;
-          }
-          //修正擊中時有 #% 機率造成流血
-          if ((this.data.stats[type][idx + 1] == 'explicit.stat_2174054121' || this.data.stats[type][idx + 1] == 'explicit.stat_1519615863' && this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲') || this.data.stats[type][idx + 1] == 'explicit.stat_2174054121' || this.data.stats[type][idx + 1] == 'explicit.stat_3423694372' && this.item.category === 'unique' && this.item.basic === '教徒巨錘') {
-            return false;
-          }
-          // 精魂增加 #%
-          if ((this.data.stats[type][idx + 1] == 'explicit.stat_3984865854' && this.item.type.indexOf('ring') > -1) || (this.data.stats[type][idx + 1] == 'explicit.stat_1416406066' && this.item.type.indexOf('ring') === -1)) {
-            return false;
-          }
-          // # 精魂
-          if (this.data.stats[type][idx + 1] == 'explicit.stat_3981240776' && this.item.category === 'unique' && this.item.basic === '貪婪長杖') {
-            return false;
-          }
-          // 擊中時造成目眩
-          if ((this.data.stats[type][idx + 1] == 'explicit.stat_3146310524' && this.item.type.indexOf('weapon') > -1) || (this.data.stats[type][idx + 1] == 'explicit.stat_2933846633' && this.item.type.indexOf('weapon') === -1)) {
-            return false;
-          }
-          // 你自己使用的重擊技能有 #% 機率造成餘震
-          if (this.data.stats[type][idx + 1] == 'explicit.stat_1157523820' && this.item.category === 'unique' && this.item.basic === '橡木巨錘') {
-            return false;
-          }
-
-          findStat = e;
-          findIdx = idx;
-        }
-
-        return result;
-      } else {
-        return false;
+    // 1. 正規化：處理增加/減少、更多/更少等字串
+    if (!(mdStat.includes('增加') && mdStat.includes('減少'))) {
+      if (this.reduceStrs.some((str: any) => mdStat.includes(str))) {
+        mdStat = mdStat.replace('增加', '減少');
+      } else if (!(mdStat.includes('對你的擊中') && mdStat.includes('暴擊率'))) {
+        mdStat = mdStat.replace('減少', '增加');
       }
-    });
+    }
 
-    console.log(mdStat, findStat);
+    if (!(mdStat.includes('更多') && mdStat.includes('更少'))) {
+      if (this.moreStrs.some((str: any) => mdStat.includes(str))) {
+        mdStat = mdStat.replace('更多', '更少');
+      } else {
+        mdStat = mdStat.replace('更少', '更多');
+      }
+    }
 
-    if (!findResult) console.error("未找到詞綴：" + stat);
+    if (mdStat.startsWith('擊殺時')) mdStat = mdStat.replace('失去', '恢復');
 
-    return findResult ? {
-      id: this.data.stats[type][findIdx + 1],
-      stat: this.data.stats[type][findIdx]
-    } : {
-      id: '',
-      stat: findStat + "(未找到詞綴)"
-    };
+    // 2. 從 Map 進行 O(1) 查詢
+    const categoryMap = this.data.stats[type] as Map<string, string[]>;
+    const possibleIds = categoryMap.get(mdStat);
+
+    if (!possibleIds || possibleIds.length === 0) {
+      console.error("未找到詞綴：" + stat);
+      return { id: '', stat: mdStat + "(未找到詞綴)" };
+    }
+
+    // 3. 衝突處理：如果一個文字對應多個 ID，套用過濾規則
+    let finalId = possibleIds[0];
+    if (possibleIds.length > 1) {
+      const filteredId = possibleIds.find(id => {
+        // 傳奇護符/擊殺恢復魔力修正
+        if (this.item.category === 'unique' && (id === 'explicit.stat_1416292992' || id === 'explicit.stat_1604736568')) return false;
+        // 擊中流血修正
+        if (this.item.category === 'unique' && this.item.basic === '鎖鍊鎖甲' && id === 'explicit.stat_1519615863') return false;
+        if (this.item.category === 'unique' && this.item.basic === '教徒巨錘' && id === 'explicit.stat_3423694372') return false;
+        // 精魂百分比修正 (戒指 vs 其他)
+        if (id === 'explicit.stat_3984865854' && !this.item.type.includes('ring')) return false;
+        if (id === 'explicit.stat_1416406066' && this.item.type.includes('ring')) return false;
+        // 貪婪長杖精魂修正
+        if (this.item.category === 'unique' && this.item.basic === '貪婪長杖' && id === 'explicit.stat_3981240776') return false;
+        // 擊中目眩修正 (武器 vs 其他)
+        if (id === 'explicit.stat_3146310524' && !this.item.type.includes('weapon')) return false;
+        if (id === 'explicit.stat_2933846633' && this.item.type.includes('weapon')) return false;
+        // 橡木巨錘餘震修正
+        if (this.item.category === 'unique' && this.item.basic === '橡木巨錘' && id === 'explicit.stat_1157523820') return false;
+
+        return true;
+      });
+      if (filteredId) finalId = filteredId;
+    }
+
+    return { id: finalId, stat: mdStat };
   }
 
   //是否針對物品等級搜尋
@@ -1403,6 +1414,47 @@ export class HomeComponent implements OnInit {
     this.searchTrade();
   }
 
+  //取代0.5新增字樣
+  replaceLevelRange(text: any){
+    let lv = -1;
+    //取代{}字樣
+    let po = text.indexOf("\n");
+
+    if (text.indexOf("固定詞綴") > -1){
+      text += "(implicit)";
+    }
+    if (text.indexOf("已褻瀆") > -1){
+      text += "(desecrated)";
+    }
+    if (text.indexOf("已破裂") > -1){
+      text += "(fractured)";
+    }
+    if (text.indexOf("汙染附魔") > -1){
+      text += "(enchant)";
+    }
+
+    if(text.indexOf("階層") > -1){
+      let pol = text.indexOf("階層");
+      lv = text.substring(pol + 3, pol + 4);
+    }
+
+    text = text.substring(po + 1);
+
+    let c = (text.match(/\(/g) || []).length;
+    for (let i = 0; i < c; i++) {
+      let poS = text.indexOf("(");
+      let poE = text.indexOf(")");
+
+      if (poE > poS) {
+        let fullText = text.substring(poS, poE + 1);
+
+        text = this.statTypes.some((e: any) => { return fullText.indexOf(e[0]) > -1 }) ? text : text.replace(fullText, "");
+      }
+    }
+
+    return [text, lv];
+  }
+
   //取代說明字樣
   replaceIllustrate(text: any, count: any) {
     for (let i = 0; i < count; i++) {
@@ -1498,7 +1550,9 @@ export class HomeComponent implements OnInit {
   }
 
   private onClipboardChanged(content: string) {
-    if (content.indexOf('稀有度: ') > -1) {
+    // 只有內容包含稀有度，且與上一次「成功分析的物品」不同時才觸發
+    if (content.indexOf('稀有度: ') > -1 && content !== this.app.preCopyText) {
+      this.app.preCopyText = content; // 僅在此處更新，確保只追蹤物品
       (<any>window).ipcRenderer.send('analyze-item');
       this.analyze(content);
     }

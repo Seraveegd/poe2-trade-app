@@ -6,13 +6,20 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
 
-app.disableHardwareAcceleration();
+// 除非遇到特定的黑屏問題，否則建議移除此行以提升效能
+app.disableHardwareAcceleration(); 
 
 let store = null;
 
 (async () => {
     const Store = (await import('electron-store')).default;
     store = new Store();
+
+    const getResourcePath = (filename) => {
+        return app.isPackaged
+            ? path.join(process.resourcesPath, filename)
+            : path.join(__dirname, 'resources', filename);
+    };
 
     if (typeof store.get('mode') == 'undefined') {
         store.set('mode', 'overlay');
@@ -42,7 +49,8 @@ let store = null;
                 defaultFontSize: 14,
                 preload: path.join(__dirname, 'preload.js'),
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                backgroundThrottling: false // 關鍵：防止背景執行時被降速
             },
             autoHideMenuBar: true
         });
@@ -78,7 +86,8 @@ let store = null;
                 defaultFontSize: 14,
                 preload: path.join(__dirname, 'preload.js'),
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                backgroundThrottling: false // 關鍵：防止背景執行時被降速
             },
             ...OVERLAY_WINDOW_OPTS
         });
@@ -104,6 +113,8 @@ let store = null;
 
         OverlayController.events.on('attach', () => {
             console.log('OC: attach');
+            // 檢測到遊戲視窗，開始監聽剪貼簿
+            clipboardListener.startListening();
 
             new Notification({
                 title: 'POE2 查價通知',
@@ -115,6 +126,8 @@ let store = null;
 
         OverlayController.events.on('detach', () => {
             console.log('OC: detach');
+            // 遊戲視窗消失，停止監聽剪貼簿以節省資源
+            clipboardListener.stopListening();
 
             new Notification({
                 title: 'POE2 查價通知',
@@ -129,51 +142,49 @@ let store = null;
         function makeInteractive() {
             let isInteractable = false;
 
-            // --- 核心狀態控制函數 (封裝重複邏輯) ---
             const setInteractionState = (interactable, shouldNotify = true) => {
-                if (win.isDestroyed()) return;
+                if (!win || win.isDestroyed()) return;
 
                 isInteractable = interactable;
 
-                interactable ? OverlayController.activateOverlay() : OverlayController.focusTarget();
+                if (interactable) {
+                    // 處理視窗可能被縮小或埋在後面的情況
+                    if (win.isMinimized()) win.restore();
+                    
+                    // 確保視窗在最上層並啟用互動
+                    win.showInactive(); 
+                    win.setAlwaysOnTop(true, 'screen-saver');
+                    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+                    win.moveTop(); // 強制移動到最前方
+                    OverlayController.activateOverlay();
+                } else {
+                    OverlayController.focusTarget();
+                }
 
                 if (shouldNotify) {
-                    win.webContents.send('visibility-change', interactable);
+                    const sendVisibility = () => win.webContents.send('visibility-change', interactable);
+                    // 確保在視窗內容載入完成後才發送狀態訊息
+                    if (win.webContents.isLoading()) {
+                        win.webContents.once('did-finish-load', sendVisibility);
+                    } else {
+                        sendVisibility();
+                    }
                 }
             };
 
             const onBlur = () => setInteractionState(false);
             const onAnalyzeItem = () => {
                 console.log('[IPC] Analyze item triggered');
-
-                if (!win || win.isDestroyed()) return;
-
-                // 強制將視窗置頂並顯示，防止視窗被縮小或擋住
-                win.showInactive(); // 顯示但不奪取焦點
-                win.setAlwaysOnTop(true, 'screen-saver'); // 使用 screen-saver 等級確保最高層級
-
-                isInteractable = true;
-                OverlayController.activateOverlay();
-
-                // 確保在視窗準備好後再發送
-                if (win.webContents.isLoading()) {
-                    win.webContents.once('did-finish-load', () => {
-                        win.webContents.send('visibility-change', true);
-                    });
-                } else {
-                    win.webContents.send('visibility-change', true);
-                }
+                setInteractionState(true);
             };
-            const onManualBlur = () => !win.isDestroyed() && win.blur();
+            const onManualBlur = () => setInteractionState(false);
             const onToggle = () => setInteractionState(!isInteractable);
             const onForceShow = () => setInteractionState(true);
 
-            // --- 註冊監聽 (先清除舊監聽，防止重複註冊導致記憶體洩漏) ---
             win.on('blur', onBlur);
             ipcMain.on('analyze-item', onAnalyzeItem);
             ipcMain.on('blur', onManualBlur);
 
-            // --- 全域快捷鍵 ---
             globalShortcut.register(toggleMouseKey, onToggle);
             globalShortcut.register(toggleShowKey, onForceShow);
 
@@ -244,7 +255,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.7.12');
+        tray.setToolTip('POE2 查價工具 v0.8.1');
         tray.setContextMenu(contextMenu);
 
         setTimeout(
@@ -252,12 +263,18 @@ let store = null;
             process.platform === 'linux' ? 1000 : 0 // https://github.com/electron/electron/issues/16809
         )
 
-        // 1. 啟動剪貼簿監聽
-        clipboardListener.startListening();
+        // 視窗模式下直接啟動監聽，覆蓋模式(Overlay)則由 OverlayController 控制
+        if (mode === 'window') {
+            clipboardListener.startListening();
+        }
 
+        let lastText = '';
         // 2. 監聽變動事件
         clipboardListener.on('change', () => {
             const text = clipboard.readText(); // 取得當前剪貼簿文字
+            
+            if (!text || text === lastText) return;
+            lastText = text;
 
             // 3. 傳送給 Angular 渲染行程
             if (win) {
@@ -295,26 +312,26 @@ let store = null;
 
     //取得本地物品資料
     ipcMain.on('get-local-items', (event, msg) => {
-        items = fs.readFileSync(path.join(process.cwd(), '/resources/items.json'), 'utf-8');
+        const items = fs.readFileSync(getResourcePath('items.json'), 'utf-8');
 
         event.sender.send('reply-local-items', JSON.parse(items));
     });
 
     //取得本地詞綴資料
     ipcMain.on('get-local-stats', (event, msg) => {
-        stats = fs.readFileSync(path.join(process.cwd(), '/resources/stats.json'), 'utf-8');
+        const stats = fs.readFileSync(getResourcePath('stats.json'), 'utf-8');
 
         event.sender.send('reply-local-stats', JSON.parse(stats));
     });
 
     //更新本地物品資料
     ipcMain.on('update-local-items', (event, msg) => {
-        fs.writeFileSync(path.join(process.cwd(), '/resources/items.json'), JSON.stringify(msg));
+        fs.writeFileSync(getResourcePath('items.json'), JSON.stringify(msg));
     });
 
     //更新本地詞綴資料
     ipcMain.on('update-local-stats', (event, msg) => {
-        fs.writeFileSync(path.join(process.cwd(), '/resources/stats.json'), JSON.stringify(msg));
+        fs.writeFileSync(getResourcePath('stats.json'), JSON.stringify(msg));
     });
 
     //取得運作模式

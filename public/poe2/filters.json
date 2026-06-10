@@ -108,7 +108,7 @@
                             },
                             {
                                 "id": "weapon.talisman",
-                                "text": "魔符聯盟（標準）"
+                                "text": "魔符"
                             },
                             {
                                 "id": "weapon.ranged",
@@ -402,6 +402,12 @@
                 {
                     "id": "es",
                     "text": "能量護盾",
+                    "tip": "包含基礎值、區域詞綴和最大品質",
+                    "minMax": true
+                },
+                {
+                    "id": "ward",
+                    "text": "Runic Ward",
                     "tip": "包含基礎值、區域詞綴和最大品質",
                     "minMax": true
                 },
@@ -702,6 +708,26 @@
                 {
                     "id": "desecrated",
                     "text": "褻瀆",
+                    "option": {
+                        "options": [
+                            {
+                                "id": null,
+                                "text": "任何"
+                            },
+                            {
+                                "id": "true",
+                                "text": "是"
+                            },
+                            {
+                                "id": "false",
+                                "text": "否"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "crafted",
+                    "text": "已工藝",
                     "option": {
                         "options": [
                             {

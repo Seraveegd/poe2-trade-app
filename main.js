@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification, clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification, clipboard, powerSaveBlocker } = require('electron');
 const clipboardListener = require('clipboard-event');
 const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window');
 const path = require('path');
@@ -8,6 +8,10 @@ const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
 
 // 除非遇到特定的黑屏問題，否則建議移除此行以提升效能
 app.disableHardwareAcceleration(); 
+// 強制關閉背景節流相關限制
+app.commandLine.appendSwitch('disable-background-timer-throttling');
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 
 let store = null;
 
@@ -34,6 +38,21 @@ let store = null;
 
     const toggleMouseKey = 'CmdOrCtrl + J';
     const toggleShowKey = 'CmdOrCtrl + K';
+
+    if (!app.isPackaged) {
+        // 監控記憶體洩漏：每 30 秒輸出一次行程資訊
+        setInterval(() => {
+            const metrics = app.getAppMetrics();
+            console.log('--- Memory Usage Report ---');
+            metrics.forEach(metric => {
+                console.log(`Process [${metric.type}] (PID: ${metric.pid}): ${(metric.memory.workingSetSize / 1024).toFixed(2)} MB`);
+            });
+            console.log('---------------------------');
+        }, 30000);
+    }
+
+    // 阻止系統進入低功耗睡眠狀態，確保分析邏輯反應即時
+    powerSaveBlocker.start('prevent-app-suspension');
 
     //視窗模式
     function createWindow() {

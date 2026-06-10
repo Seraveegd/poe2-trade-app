@@ -27,14 +27,14 @@ export class Data {
     };
     //詞綴資料
     public stats: Record<string, Map<string, string[]>> = {
-        implicit: new Map(),
-        explicit: new Map(),
-        enchant: new Map(),
-        rune: new Map(),
-        skill: new Map(),
-        sanctum: new Map(),
-        desecrated: new Map(),
-        fractured: new Map()
+        implicit: new Map(), // 固定屬性
+        explicit: new Map(), // 隨機屬性
+        enchant: new Map(), // 附魔詞綴
+        rune: new Map(), // 增幅詞綴
+        skill: new Map(), //技能詞綴
+        sanctum: new Map(), //聖所詞綴
+        desecrated: new Map(), //褻瀆詞綴
+        fractured: new Map() //破裂詞綴
     };
     public wrap: string[] = []; //拆行詞綴
     public statsArray: any = {
@@ -59,7 +59,7 @@ export class Data {
 
         const allItems = this.poe_service.getOfficialItemData();
         const allStats = this.poe_service.getOfficialStatesData();
-        const allStatsRanges = this.poe_service.getStatsRangesData();
+        // const allStatsRanges = this.poe_service.getStatsRangesData();
 
         this.datas.items = await lastValueFrom(allItems).catch((error: HttpErrorResponse) => {
             console.log("error: ", error);
@@ -71,7 +71,7 @@ export class Data {
             loadlocal = true;
             (<any>window).ipcRenderer.send('get-local-stats');
         });
-        this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges: any) => ranges.ranges);
+        // this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges: any) => ranges.ranges);
 
         //更新本地資料
         if (!loadlocal) {

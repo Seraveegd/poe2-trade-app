@@ -409,20 +409,19 @@
                                             </td>
                                             <td
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': stat.level < 3 ? '#dda42e' : '#aaa', 'font-weight': 'bolder'}">
-                                                {{ stat.level != null ? "T" : "" }}{{
-                                                stat.level }}
+                                                {{ stat.level > -1 ? "T" + stat.level : "" }}
                                             </td>
                                             <td (click)="stat.isSearch = !stat.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': (stat.id=='') ? 'red' : null}">
                                                 <div>{{ stat.text }}</div>
-                                                @if (stat.rangeMin != null && item.category !== 'unique'){
+                                                <!-- @if (stat.rangeMin != null && item.category !== 'unique'){
                                                 <input type="range" class="form-range"
                                                     [min]="stat.rangeMin < 0 ? stat.rangeMax : stat.rangeMin"
                                                     [max]="stat.rangeMax < 0 ? stat.rangeMin : stat.rangeMax"
                                                     [(ngModel)]="stat.min" style="border: none !important; width: 90%;"
                                                     [step]="(stat.rangeMin % 1) != 0 ? 0.01 : 1">
-                                                }
+                                                } -->
                                             </td>
                                             <td
                                                 [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">

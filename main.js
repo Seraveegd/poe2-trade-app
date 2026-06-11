@@ -6,12 +6,19 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
 
-// 除非遇到特定的黑屏問題，否則建議移除此行以提升效能
+// 開啟硬體加速以提升渲染效能與動畫流暢度
 app.disableHardwareAcceleration(); 
-// 強制關閉背景節流相關限制
+
+// 軟體渲染模式下的效能優化標籤
 app.commandLine.appendSwitch('disable-background-timer-throttling');
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
+app.commandLine.appendSwitch('disable-gpu-compositing'); // 徹底禁用 GPU 合成
+app.commandLine.appendSwitch('disable-software-rasterizer'); // 禁用軟體柵格化以減少不必要的計算
+app.commandLine.appendSwitch('ignore-gpu-blocklist'); // 忽略顯卡黑名單
+
+// 徹底禁用全域功能表，防止在無邊框視窗中出現任何形式的選單列或佔位空間
+Menu.setApplicationMenu(null);
 
 let store = null;
 
@@ -95,9 +102,14 @@ let store = null;
     //覆蓋模式
     function createOverlayWindow() {
         win = new BrowserWindow({
+            ...OVERLAY_WINDOW_OPTS, // 建議將套件預設值放在前面
             width: 600,
             height: 800,
             icon: `dist/poe2-trade-app/browser/favicon.ico`,
+            frame: false, // 強制禁用系統邊框與標題列
+            autoHideMenuBar: true, // 自動隱藏功能表列
+            backgroundColor: '#00000000', // 確保背景完全透明
+            transparent: true,
             webPreferences: {
                 defaultFontFamily: {
                     standard: "Microsoft YaHei"
@@ -108,10 +120,11 @@ let store = null;
                 contextIsolation: false,
                 backgroundThrottling: false // 關鍵：防止背景執行時被降速
             },
-            ...OVERLAY_WINDOW_OPTS
         });
 
         win.once('ready-to-show', () => {
+            win.setMenu(null); // 徹底移除功能表列，防止佔用頂部空間
+            win.setMenuBarVisibility(false);
             win.show();
         });
 
@@ -176,8 +189,13 @@ let store = null;
                     win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
                     win.moveTop(); // 強制移動到最前方
                     OverlayController.activateOverlay();
+                    // 恢復接收滑鼠事件
+                    win.setIgnoreMouseEvents(false);
                 } else {
                     OverlayController.focusTarget();
+                    // 當隱藏或不需互動時，徹底忽略滑鼠。
+                    // 移除 { forward: true } 以解決硬體加速下透明區域仍攔截點擊的問題。
+                    win.setIgnoreMouseEvents(true);
                 }
 
                 if (shouldNotify) {
@@ -274,7 +292,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.8.1');
+        tray.setToolTip('POE2 查價工具 v0.8.2');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

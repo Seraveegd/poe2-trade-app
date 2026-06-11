@@ -69,8 +69,12 @@ export class AppComponent implements OnInit {
    * 根據傳入狀態更新 UI
    */
   updateVisibility(state: VisibilityState) {
-    // 1. 解析目標狀態
-    const targetShow = typeof state === 'undefined' ? !this.isVisible : !!state;
+    // 1. 修正邏輯：明確判斷 'blur' 為隱藏狀態
+    // 舊邏輯 !!state 會把字串 'blur' 轉為 true，導致失去焦點時無法隱藏
+    const targetShow = state === 'blur' ? false : (typeof state === 'undefined' ? !this.isVisible : !!state);
+
+    // 1. 增加防抖與狀態檢查，避免無限循環呼叫
+    if (this.isVisible === targetShow && typeof state !== 'undefined') return;
 
     // 2. 即使狀態相同也強制執行一次（解決 DOM 被意外修改的問題）
     this.isVisible = targetShow;
@@ -78,21 +82,24 @@ export class AppComponent implements OnInit {
     // 3. 使用 setTimeout(0) 確保在微任務後執行，避免 Angular 生命周期衝突
     setTimeout(() => {
       const body = document.body;
-      const displayValue = targetShow ? 'block' : 'none';
 
-      // 核心：除了設定 Style，我們額外加上一個 class 作為保險
       if (targetShow) {
         body.style.setProperty('display', 'block', 'important');
         body.style.setProperty('visibility', 'visible', 'important');
         body.style.setProperty('opacity', '1', 'important');
+        body.style.setProperty('pointer-events', 'auto', 'important');
       } else {
+        // 在軟體渲染模式下，display: none 是最節省 CPU 的做法
         body.style.setProperty('display', 'none', 'important');
+        body.style.setProperty('pointer-events', 'none', 'important');
+        body.style.setProperty('visibility', 'hidden', 'important');
+        body.style.setProperty('opacity', '0', 'important');
       }
 
-      console.log(`[強制渲染] 指令: ${state}, 結果: ${displayValue}`);
-
-      // 觸發一次 window 的 resize 事件，強制 Chromium 重新渲染畫面
-      window.dispatchEvent(new Event('resize'));
+      // 3. 關鍵：如果 UI 隱藏了，主動通知 Main Process 徹底忽略滑鼠事件
+      if (!targetShow) {
+        (window as any).ipcRenderer.send('blur');
+      }
     }, 0);
   }
 }

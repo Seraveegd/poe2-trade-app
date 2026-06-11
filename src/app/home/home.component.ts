@@ -1535,7 +1535,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.item.type.indexOf('weapon') > -1 && (text.indexOf('攻擊速度') > -1 || text.indexOf('命中值') > -1) && text.length < 12) {//攻擊速度 (部分) || 命中值 (部分)
       text = text.replace('攻擊速度', '攻擊速度 (部分)');
       text = text.replace('命中值', '命中值 (部分)');
-    } else if (this.item.type.indexOf('armour') > -1 && (text.indexOf('最大能量護盾') > 0 || text.indexOf('閃避值') > 0 || text.indexOf('護甲值') > 0 || text.indexOf('格擋率') > 0) && text.length < 12) { //最大能量護盾 (部分) || 閃避值 (部分) || 護甲值 (部分) || 格擋率 (部分)
+    } else if (this.item.type.indexOf('armour') > -1 && text.indexOf('和') === -1 && (text.indexOf('最大能量護盾') > 0 || text.indexOf('閃避值') > 0 || text.indexOf('護甲值') > 0 || text.indexOf('格擋率') > 0) && text.length < 12) { //最大能量護盾 (部分) || 閃避值 (部分) || 護甲值 (部分) || 格擋率 (部分)
       text = text.replace('最大能量護盾', '最大能量護盾 (部分)');
       text = text.replace('閃避值', '閃避值 (部分)');
       text = text.replace('護甲值', '護甲值 (部分)');

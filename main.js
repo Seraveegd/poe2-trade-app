@@ -14,13 +14,13 @@ app.commandLine.appendSwitch('disable-background-timer-throttling');
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 app.commandLine.appendSwitch('disable-gpu-compositing'); // 徹底禁用 GPU 合成
-app.commandLine.appendSwitch('disable-software-rasterizer'); // 禁用軟體柵格化以減少不必要的計算
 app.commandLine.appendSwitch('ignore-gpu-blocklist'); // 忽略顯卡黑名單
 
 // 徹底禁用全域功能表，防止在無邊框視窗中出現任何形式的選單列或佔位空間
 Menu.setApplicationMenu(null);
 
 let store = null;
+let lastText = ''; // 移至外部作用域以利重置
 
 (async () => {
     const Store = (await import('electron-store')).default;
@@ -57,6 +57,17 @@ let store = null;
             console.log('---------------------------');
         }, 30000);
     }
+
+    // 監測主行程事件循環阻塞
+    let lastTick = Date.now();
+    setInterval(() => {
+        const currentTick = Date.now();
+        const delta = currentTick - lastTick - 1000; // 理想狀態下差值應接近 0
+        if (delta > 100) {
+            console.warn(`[Warning] 主行程事件循環阻塞！延遲了 ${delta}ms`);
+        }
+        lastTick = currentTick;
+    }, 1000);
 
     // 阻止系統進入低功耗睡眠狀態，確保分析邏輯反應即時
     powerSaveBlocker.start('prevent-app-suspension');
@@ -173,6 +184,7 @@ let store = null;
 
         function makeInteractive() {
             let isInteractable = false;
+            let lastShowTime = 0; // 紀錄視窗顯示的時間戳
 
             const setInteractionState = (interactable, shouldNotify = true) => {
                 if (!win || win.isDestroyed()) return;
@@ -180,15 +192,10 @@ let store = null;
                 isInteractable = interactable;
 
                 if (interactable) {
-                    // 處理視窗可能被縮小或埋在後面的情況
-                    if (win.isMinimized()) win.restore();
-                    
-                    // 確保視窗在最上層並啟用互動
-                    win.showInactive(); 
-                    win.setAlwaysOnTop(true, 'screen-saver');
-                    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-                    win.moveTop(); // 強制移動到最前方
+                    // 軟體渲染模式下，避免頻繁調用 win.show/restore
+                    // 直接利用 OverlayController 提升層級
                     OverlayController.activateOverlay();
+                    
                     // 恢復接收滑鼠事件
                     win.setIgnoreMouseEvents(false);
                 } else {
@@ -199,7 +206,11 @@ let store = null;
                 }
 
                 if (shouldNotify) {
-                    const sendVisibility = () => win.webContents.send('visibility-change', interactable);
+                    const sendVisibility = () => {
+                        if (win && !win.isDestroyed()) {
+                            win.webContents.send('visibility-change', interactable);
+                        }
+                    };
                     // 確保在視窗內容載入完成後才發送狀態訊息
                     if (win.webContents.isLoading()) {
                         win.webContents.once('did-finish-load', sendVisibility);
@@ -209,18 +220,35 @@ let store = null;
                 }
             };
 
-            const onBlur = () => setInteractionState(false);
-            const onAnalyzeItem = () => {
-                console.log('[IPC] Analyze item triggered');
+            const onBlur = () => {
+                // 軟體渲染模式下，焦點競爭非常嚴重
+                // 如果顯示不到 800ms 就失去焦點，通常是系統搶奪，我們忽略它
+                const now = Date.now();
+                if (now - lastShowTime < 800) {
+                    console.log('[Main] Focus fight detected, keeping window alive');
+                    return;
+                }
+                
+                console.log('[Main] Valid blur, hiding window');
+                lastText = '';
+                setInteractionState(false);
+            };
+            const onShowOverlay = () => {
+                console.log('[IPC] Show overlay triggered by worker');
+                lastShowTime = Date.now(); // 標記顯示時間
                 setInteractionState(true);
             };
-            const onManualBlur = () => setInteractionState(false);
-            const onToggle = () => setInteractionState(!isInteractable);
-            const onForceShow = () => setInteractionState(true);
+            const onToggle = () => {
+                if (!isInteractable) lastShowTime = Date.now();
+                setInteractionState(!isInteractable);
+            };
+            const onForceShow = () => {
+                lastShowTime = Date.now();
+                setInteractionState(true);
+            };
 
             win.on('blur', onBlur);
-            ipcMain.on('analyze-item', onAnalyzeItem);
-            ipcMain.on('blur', onManualBlur);
+            ipcMain.on('show-overlay', onShowOverlay);
 
             globalShortcut.register(toggleMouseKey, onToggle);
             globalShortcut.register(toggleShowKey, onForceShow);
@@ -228,8 +256,7 @@ let store = null;
             // 清理邏輯：避免記憶體洩漏與重複監聽
             win.on('closed', () => {
                 win.off('blur', onBlur);
-                ipcMain.removeListener('analyze-item', onAnalyzeItem);
-                ipcMain.removeListener('blur', onManualBlur);
+                ipcMain.removeListener('show-overlay', onShowOverlay);
                 globalShortcut.unregister(toggleMouseKey);
                 globalShortcut.unregister(toggleShowKey);
             });
@@ -292,7 +319,7 @@ let store = null;
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.8.2');
+        tray.setToolTip('POE2 查價工具 v0.8.3');
         tray.setContextMenu(contextMenu);
 
         setTimeout(
@@ -305,7 +332,6 @@ let store = null;
             clipboardListener.startListening();
         }
 
-        let lastText = '';
         // 2. 監聽變動事件
         clipboardListener.on('change', () => {
             const text = clipboard.readText(); // 取得當前剪貼簿文字

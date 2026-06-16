@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification, clipboard, powerSaveBlocker } = require('electron');
+const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, nativeImage, Tray, Menu, Notification, clipboard, powerSaveBlocker, session } = require('electron');
 const clipboardListener = require('clipboard-event');
 const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window');
 const path = require('path');
@@ -267,6 +267,65 @@ let lastText = ''; // 移至外部作用域以利重置
         //自動檢查更新
         updateElectronApp();
 
+        // 初始化時從 store 讀取並設定 Cookie
+        const savedSessionId = store.get('poesessid');
+        if (savedSessionId) {
+            const cookie = {
+                url: 'https://pathofexile.tw',
+                name: 'POESESSID',
+                value: savedSessionId,
+                domain: '.pathofexile.tw',
+                secure: true,
+                httpOnly: true,
+                sameSite: 'no_restriction', // 必須設定為 None 才能在跨網域請求中發送
+                expirationDate: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30)
+            };
+            session.defaultSession.cookies.set(cookie).catch(err => console.error(err));
+        }
+
+        // 回傳已儲存的 POESESSID 給前端
+        ipcMain.on('get-poesessid', (event) => {
+            event.sender.send('reply-poesessid', store.get('poesessid') || '');
+        });
+
+        // 設定全域請求過濾器：注入 User-Agent 並確保 Cookie 傳送
+        const filter = {
+            urls: ['https://pathofexile.tw/*', 'https://*.pathofexile.tw/*']
+        };
+
+        session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+            // 官方要求自定義工具必須提供辨識用的 User-Agent (名稱/版本/聯絡方式)
+            details.requestHeaders['User-Agent'] = 'POE2TradeApp/0.8.3 (Contact: your@email.com)';
+
+            // 模擬官方網站的環境。在 file:// 下 Origin 會是 null，這會觸發 403
+            details.requestHeaders['Origin'] = 'https://pathofexile.tw';
+            details.requestHeaders['Referer'] = 'https://pathofexile.tw/';
+            details.requestHeaders['Host'] = 'pathofexile.tw';
+            details.requestHeaders['X-Requested-With'] = 'XMLHttpRequest';
+
+            // 確保請求會帶上 Cookie
+            callback({ requestHeaders: details.requestHeaders });
+        });
+
+        // 處理設定 POESESSID 的請求
+        ipcMain.on('set-poesessid', (event, poesessid) => {
+            const cookie = {
+                url: 'https://pathofexile.tw',
+                name: 'POESESSID',
+                value: poesessid,
+                domain: '.pathofexile.tw',
+                secure: true,
+                httpOnly: true,
+                sameSite: 'no_restriction', // 確保使用者輸入新的 ID 時也能正確寫入 SameSite 屬性
+                expirationDate: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30)
+            };
+            
+            store.set('poesessid', poesessid); // 儲存至本地設定檔
+            session.defaultSession.cookies.set(cookie).then(() => {
+                console.log('POESESSID set successfully');
+            }).catch(err => console.error(err));
+        });
+
         const icon = nativeImage.createFromPath(path.join(__dirname, 'dist/poe2-trade-app/browser/favicon.ico'));
         tray = new Tray(icon);
 
@@ -400,6 +459,69 @@ let lastText = ''; // 移至外部作用域以利重置
     //取得運作模式
     ipcMain.on('get-mode', (event, msg) => {
         event.sender.send('reply-mode', store.get('mode'));
+    });
+
+    // 取得所有已儲存的自訂搜尋檔案
+    ipcMain.on('get-custom-searches', (event) => {
+        const customSearchPath = path.join(app.getPath('userData'), 'custom_searches');
+        
+        // 確保目錄存在
+        if (!fs.existsSync(customSearchPath)) {
+            fs.mkdirSync(customSearchPath, { recursive: true });
+        }
+
+        const files = fs.readdirSync(customSearchPath);
+        const savedData = files
+            .filter(file => file.endsWith('.json'))
+            .map(file => {
+                const content = fs.readFileSync(path.join(customSearchPath, file), 'utf-8');
+                return JSON.parse(content);
+            });
+
+        event.sender.send('reply-custom-searches', savedData);
+    });
+
+    // 儲存新的自訂搜尋到 JSON 檔案
+    ipcMain.on('save-custom-search', (event, saveData) => {
+        const customSearchPath = path.join(app.getPath('userData'), 'custom_searches');
+        if (!fs.existsSync(customSearchPath)) {
+            fs.mkdirSync(customSearchPath, { recursive: true });
+        }
+
+        let fileName = saveData.name;
+
+        // 如果不是覆蓋模式，才需要檢查檔名重複並自動編號
+        if (!saveData.overwrite) {
+            let counter = 1;
+            while (fs.existsSync(path.join(customSearchPath, `${fileName}.json`))) {
+                fileName = `${saveData.name} (${counter})`;
+                counter++;
+            }
+        }
+
+        saveData.name = fileName; // 同步更新物件內的名稱，確保載入後顯示與檔名一致
+        const filePath = path.join(customSearchPath, `${fileName}.json`);
+        fs.writeFileSync(filePath, JSON.stringify(saveData, null, 2));
+    });
+
+    // 刪除自訂搜尋檔案
+    ipcMain.on('delete-custom-search', (event, name) => {
+        const filePath = path.join(app.getPath('userData'), 'custom_searches', `${name}.json`);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+    });
+
+    // 重新命名自訂搜尋檔案
+    ipcMain.on('rename-custom-search', (event, arg) => {
+        const customSearchPath = path.join(app.getPath('userData'), 'custom_searches');
+        const oldPath = path.join(customSearchPath, `${arg.oldName}.json`);
+        const newPath = path.join(customSearchPath, `${arg.newName}.json`);
+
+        if (fs.existsSync(oldPath)) {
+            fs.writeFileSync(newPath, JSON.stringify(arg.data, null, 2));
+            fs.unlinkSync(oldPath);
+        }
     });
 
 })();

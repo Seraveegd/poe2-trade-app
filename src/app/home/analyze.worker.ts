@@ -548,24 +548,14 @@ function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, 
 }
 
 function indentifyStatType(stat: string, lv: any = -1, rarityFlag: any, tempStat: any[], item: any, statsData: any, config: any) {
-    // let category = "explicit", type = "隨機";
-    // if (stat.indexOf('賦予技能') > -1) { category = "skill"; type = "技能"; }
-    // else if (stat.indexOf('(implicit)') > -1) { category = "implicit"; type = "固定"; stat = stat.replace('(implicit)', '').trim(); }
-    // else if (stat.indexOf('(rune)') > -1) { category = "rune"; type = "增幅"; stat = stat.replace('(rune)', '').trim(); }
-    // else if (stat.indexOf('(enchant)') > -1) { category = "enchant"; type = "附魔"; stat = stat.replace('(enchant)', '').trim(); }
-    // else if (stat.indexOf('(fractured)') > -1) { category = "fractured"; type = "破裂"; stat = stat.replace('(fractured)', '').trim(); }
-    // else if (stat.indexOf('(desecrated)') > -1) { category = "desecrated"; type = "褻瀆"; stat = stat.replace('(desecrated)', '').trim(); }
-
-    // const mdStat = stat.replace(/[+-]?\d+(\.\d+)?/g, "#");
-    // const id = statsData[category]?.[mdStat]?.[0] || "";
-    // tempStat.push({ text: { id, stat: mdStat }, type, category, level: lv });
-    // return tempStat;
-
     if (stat.indexOf('賦予技能') > -1) { // 技能屬性
         console.log("技能");
         let tempA = stat.split(' ');
         stat = "賦予技能: 等級 # " + tempA[tempA.length - 1];
         tempStat.push({ text: getStat(statsData, item, stat, 'skill'), type: "技能", category: "skill" });
+    } else if (stat.indexOf('已工藝') > -1) {
+        console.log("工藝");
+        tempStat.push({ text: getStat(statsData, item, stat, 'crafted'), type: "工藝", category: "crafted" });
     } else if (stat.indexOf('(implicit)') > -1 || stat.indexOf('固定詞綴') > -1) { // 固定屬性
         console.log("固定");
         stat = stat.replaceAll(' (implicit)', '').trim(); // 碑牌多空格

@@ -1,6 +1,6 @@
 export type VisibilityState = boolean | 'blur' | undefined;
 
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,10 +13,9 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
   ],
   providers: [],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-
 
 export class AppComponent implements OnInit {
   private isVisible = false; // 追蹤目前狀態
@@ -24,7 +23,7 @@ export class AppComponent implements OnInit {
   public colorScheme = 'dark';
   public mode: any;
 
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     (<any>window).ipcRenderer.on('reply-mode', (event: any, arg: any) => {
@@ -60,8 +59,11 @@ export class AppComponent implements OnInit {
 
     if (!ipc) return;
 
-    ipc.on('visibility-change', (_e: any, state: VisibilityState) => {
-      this.ngZone.run(() => this.updateVisibility(state));
+    // 在 Zone 之外監聽 IPC，避免不必要的變更偵測
+    this.ngZone.runOutsideAngular(() => {
+      ipc.on('visibility-change', (_e: any, state: VisibilityState) => {
+        this.updateVisibility(state);
+      });
     });
   }
 
@@ -76,17 +78,20 @@ export class AppComponent implements OnInit {
     // 即使 isVisible 相同也強制套用 CSS，解決渲染狀態偏移
     this.isVisible = targetShow;
 
-    // 在軟體渲染模式下，直接操作 style 比 requestAnimationFrame 更能即時反應
-    const body = document.body;
-
-    if (targetShow) {
-      body.style.setProperty('visibility', 'visible', 'important');
-      body.style.setProperty('opacity', '1', 'important');
-      body.style.setProperty('pointer-events', 'auto', 'important');
-    } else {
-      body.style.setProperty('visibility', 'hidden', 'important');
-      body.style.setProperty('opacity', '0', 'important');
-      body.style.setProperty('pointer-events', 'none', 'important');
-    }
+    // 使用 requestAnimationFrame 確保在下一幀渲染前完成樣式變更
+    window.requestAnimationFrame(() => {
+      const body = document.body;
+      if (targetShow) {
+        body.style.setProperty('visibility', 'visible', 'important');
+        body.style.setProperty('opacity', '1', 'important');
+        body.style.setProperty('pointer-events', 'auto', 'important');
+      } else {
+        body.style.setProperty('visibility', 'hidden', 'important');
+        body.style.setProperty('opacity', '0', 'important');
+        body.style.setProperty('pointer-events', 'none', 'important');
+      }
+      // 手動觸發檢查
+      this.cdr.detectChanges();
+    });
   }
 }

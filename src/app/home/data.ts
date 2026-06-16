@@ -27,14 +27,28 @@ export class Data {
     };
     //詞綴資料
     public stats: Record<string, Map<string, string[]>> = {
-        implicit: new Map(), // 固定屬性
+        pseudo: new Map(), // 偽屬性
         explicit: new Map(), // 隨機屬性
+        implicit: new Map(), // 固定屬性 
+        fractured: new Map(), //破裂詞綴 
+        crafted: new Map(), //工藝詞綴      
         enchant: new Map(), // 附魔詞綴
         rune: new Map(), // 增幅詞綴
-        skill: new Map(), //技能詞綴
-        sanctum: new Map(), //聖所詞綴
         desecrated: new Map(), //褻瀆詞綴
-        fractured: new Map() //破裂詞綴
+        sanctum: new Map(), //聖所詞綴
+        skill: new Map() //技能詞綴
+    };
+    public statsById: Record<string, Map<string, string>> = {
+        pseudo: new Map(),
+        explicit: new Map(),
+        implicit: new Map(),
+        fractured: new Map(),
+        crafted: new Map(),
+        enchant: new Map(),
+        rune: new Map(),
+        desecrated: new Map(),
+        sanctum: new Map(),
+        skill: new Map()
     };
     public wrap: string[] = []; //拆行詞綴
     public statsArray: any = {
@@ -381,12 +395,6 @@ export class Data {
                     this.basics.categorizedItems.push(element);
                     break;
             }
-
-            // if (element.type.type.indexOf("探險日誌") > -1 || element.type.type.indexOf("地圖")) {
-            //   this.basics.map.option.push(element.type);
-            // } else {
-            //   this.basics.categorizedItems.push(element);
-            // }
         });
         //"id": "gems", "label": "技能寶石"
         result[result.findIndex((e: any) => e.id === "gem")].entries.forEach((element: any) => {
@@ -424,7 +432,7 @@ export class Data {
     dealWithstatsData() {
         let result = this.datas.stats.result;
 
-        const categoryIds = ["explicit", "implicit", "enchant", "rune", "sanctum", "skill", "desecrated", "fractured"];
+        const categoryIds = ["pseudo", "explicit", "implicit", "fractured", "crafted", "enchant", "rune", "desecrated", "sanctum", "skill"];
 
         categoryIds.forEach(catId => {
             const categoryData = result.find((e: any) => e.id === catId);
@@ -442,6 +450,7 @@ export class Data {
                     map.set(text, []);
                 }
                 map.get(text)!.push(element.id);
+                this.statsById[catId].set(element.id, text);
             });
         });
 

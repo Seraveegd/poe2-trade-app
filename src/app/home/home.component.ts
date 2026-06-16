@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, effect, OnDestroy, NgZone } from '@angular/core';
-import { NgbCollapseModule, NgbTooltipModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, inject, effect, OnDestroy, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { NgbCollapseModule, NgbTooltipModule, NgbAlertModule, NgbTypeaheadModule, NgbTypeahead, NgbDropdownModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppService } from '../app.service';
 import { AnalyzeComponent } from "./analyze/analyze.component";
 import { FormsModule } from '@angular/forms';
@@ -7,12 +7,14 @@ import { CommonModule } from '@angular/common';
 import { Shell } from 'electron';
 import { ClipboardService } from './clipboard.service';
 
-import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { Data } from './data';
 
 @Component({
   selector: 'app-home',
   imports: [
+    NgbTypeaheadModule,
+    NgbDropdownModule,
     NgbCollapseModule,
     NgbTooltipModule,
     NgbAlertModule,
@@ -22,10 +24,58 @@ import { Data } from './data';
   ],
   providers: [AppService],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  states: any = [];
+  itemBasics: any = [];
+  public savedSearches: any[] = [];
+  public selectedSavedSearchIndex: any = null;
+  public currentLoadedName: string | null = null;
+
+  public isPoeSessionVisible: boolean = false;
+  public poeSessionStatus: 'valid' | 'invalid' | 'checking' | null = null;
+  public poeSessionId: string = '';
+  public tempRenameValue: string = '';
+  customStat: any;
+  private sessionCheckSubject = new Subject<string>();
+
+  @ViewChild('instance') instance!: NgbTypeahead;
+  @ViewChild('instance2') instance2!: NgbTypeahead;
+
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+
+  focus2$ = new Subject<string>();
+  click2$ = new Subject<string>();
+
+  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => this.instance && !this.instance.isPopupOpen()));
+    const inputFocus$ = this.focus$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term) =>
+        (term === '' ? this.states.slice(0, 10) : this.states.filter((v: any) => v.toLowerCase().indexOf(term.toLowerCase()) > -1)),
+      ),
+    );
+  };
+
+  search2: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click2$.pipe(filter(() => this.instance2 && !this.instance2.isPopupOpen()));
+    const inputFocus$ = this.focus2$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term) =>
+        (term === '' ? this.itemBasics.slice(0, 10) : this.itemBasics.filter((v: any) => v.toLowerCase().indexOf(term.toLowerCase()) > -1)),
+      ),
+    );
+  };
+
   public clipboard = inject(ClipboardService);
+  private modalService = inject(NgbModal);
   private shell!: Shell;
   private subscriptions = new Subscription();
 
@@ -43,18 +93,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     ['聖所', '#A1422E'],
     ['褻瀆', '#68A80B'],
     ['破裂', '#8E7F54'],
-    ['偽屬性', '#545454']
+    ['偽屬性', '#545454'],
+    ['工藝', '#0260BD']
   ]);
 
-  // //詞綴種類
-  // public statTypes = [
-  //   ['implicit', '固定'],
-  //   ['rune', '增幅'],
-  //   ['enchant', '附魔'],
-  //   ['desecrated', '褻瀆'],
-  //   ['fractured', '破裂'],
-  //   ['sanctum', '聖所']
-  // ];
+  private categoryLabels: any = {
+    pseudo: '偽屬性',
+    explicit: '隨機',
+    implicit: '固定',
+    fractured: '破裂',
+    crafted: '工藝',
+    enchant: '附魔',
+    rune: '增幅',
+    desecrated: '褻瀆',
+    sanctum: '聖所',
+    skill: '技能'
+  };
 
   private defenceTypes: any = new Map([
     ['能量護盾', 'es'],
@@ -81,6 +135,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     isCounting: false,
     isApiError: false,
     apiErrorStr: '',
+    isSaveSuccess: false,
+    saveSuccessStr: '',
     // issueText: '',
     countTime: 0,
     preCopyText: ''
@@ -89,6 +145,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //介面開關
   public ui: any = {
     collapse: {
+      custom: true,
       item: true,
       map: true,
       gem: true,
@@ -196,10 +253,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     },
     itemCategory: { // 物品分類
       option: [],
-      chosenObj: {
-        label: "任何",
-        prop: ''
-      },
+      chosenObj: '',
       isSearch: false
     },
     priceSetting: { // 搜尋設定->價格設定
@@ -307,7 +361,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private workerInitialized = false;
   private statsSnapshot: any = null;
 
-  constructor(private poe_service: AppService, private ngZone: NgZone) {
+  constructor(private poe_service: AppService, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
     if ((<any>window).require) {
       try {
         this.shell = (<any>window).require('electron').shell;
@@ -327,6 +381,39 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     //初始化資料
     this.data = new Data();
+    // 監控資料是否準備完成，準備完成後填充 Typeahead 資料
+    const checkDataReady = setInterval(() => {
+      if (this.data.isReady) {
+        this.populateStates();
+        this.updateCategoryOptions();
+        clearInterval(checkDataReady);
+      }
+    }, 1000);
+
+    // 取得已儲存的搜尋清單 (從主程序讀取檔案)
+    (<any>window).ipcRenderer.on('reply-custom-searches', (event: any, arg: any) => {
+      this.savedSearches = arg || [];
+      this.cdr.markForCheck();
+    });
+    (<any>window).ipcRenderer.send('get-custom-searches');
+
+    // 取得已儲存的 POESESSID
+    (<any>window).ipcRenderer.on('reply-poesessid', (event: any, arg: any) => {
+      this.poeSessionId = arg || '';
+      if (this.poeSessionId) {
+        this.poeSessionStatus = 'checking';
+        this.validatePoeSession();
+      }
+      this.cdr.markForCheck();
+    });
+    (<any>window).ipcRenderer.send('get-poesessid');
+
+    // 處理 SessionID 自動檢查的訂閱
+    this.subscriptions.add(
+      this.sessionCheckSubject.pipe(debounceTime(800), distinctUntilChanged()).subscribe(id => {
+        this.validatePoeSession();
+      })
+    );
 
     effect(() => {
       const current = this.clipboard.currentText(); // 讀取 Signal
@@ -343,15 +430,89 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     // 監聽視窗狀態，隱藏時清空快取
-    (<any>window).ipcRenderer.on('visibility-change', (e: any, state: any) => {
-      this.ngZone.run(() => {
+    this.ngZone.runOutsideAngular(() => {
+      (<any>window).ipcRenderer.on('visibility-change', (e: any, state: any) => {
         if (state === 'blur' || state === false) {
-          this.app.preCopyText = '';
-          // 關鍵：強制重置 Signal 內容，確保下次複製相同物品時能觸發 effect
-          this.clipboard.currentText.set('');
+          this.ngZone.run(() => {
+            this.app.preCopyText = '';
+            this.clipboard.currentText.set('');
+            this.cdr.markForCheck();
+          });
         }
       });
     });
+  }
+
+  //填充詞綴供選取
+  private populateStates() {
+    const allStates: string[] = [];
+    Object.entries(this.data.stats).forEach(([category, map]) => {
+      const label = this.categoryLabels[category] || category;
+      (map as Map<string, string[]>).forEach((_ids, text) => {
+        allStates.push(`${label}-${text}`);
+      });
+    });
+    this.states = allStates;
+    this.cdr.markForCheck();
+  }
+
+  // 取得 Typeahead 顯示用的標籤 (例如: 固定)
+  getStatLabel(result: string): string {
+    return result.split('-')[0];
+  }
+
+  // 取得 Typeahead 顯示用的詞綴內容 (例如: 生命最大值)
+  getStatName(result: string): string {
+    return result.substring(result.indexOf('-') + 1);
+  }
+
+  // 取得對應的顏色
+  getStatColor(result: string): string {
+    const label = this.getStatLabel(result);
+    return this.typeColors.get(label) || '#fff';
+  }
+
+  /**
+   * 當使用者從 Typeahead 選擇一個詞綴時觸發
+   * 將格式如 "固定-生命最大值" 的字串轉換回官方 ID 並加入搜尋清單
+   */
+  handleTypeaheadSelect(event: any) {
+    event.preventDefault(); // 阻止 NgbTypeahead 預設將值填入輸入框的行為
+    const selection = event.item;
+    const separatorIndex = selection.indexOf('-');
+    if (separatorIndex === -1) return;
+
+    const label = selection.substring(0, separatorIndex);
+    const statText = selection.substring(separatorIndex + 1);
+
+    // 根據顯示標籤反向查詢類別 Key (例如 "固定" -> "implicit")
+    const categoryKey = Object.keys(this.categoryLabels).find(key => this.categoryLabels[key] === label);
+
+    if (categoryKey && this.data.stats[categoryKey]) {
+      const ids = this.data.stats[categoryKey].get(statText);
+      if (ids && ids.length > 0) {
+        const newStat = {
+          id: ids[0],
+          text: statText,
+          option: "",
+          min: "",
+          max: "",
+          isValue: false,
+          isSearch: true,
+          type: label,
+          level: -1 // 自定義詞綴設定為 -1 以區別於分析出的階層
+        };
+
+        // 檢查是否已存在相同 ID 的詞綴，避免重複加入
+        if (!this.item.searchStats.some((s: any) => s.id === newStat.id)) {
+          this.item.searchStats = [...this.item.searchStats, newStat];
+        }
+      }
+    }
+
+    this.ui.collapse.stats = false; // 關鍵：選擇後強制展開詞綴列表介面
+    this.customStat = ''; // 選擇完畢後清空輸入框內容
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {
@@ -405,26 +566,29 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private handleWorkerResponse(data: any) {
+    if (!data) {
+      console.error('[Worker] Received undefined data');
+      this.app.isCounting = false;
+      return;
+    }
+
+    console.log('[Worker] Data received:', data);
+
     this.ngZone.run(() => {
-      if (!data) {
-        console.error('[Worker] Received undefined data');
-        this.app.isCounting = false;
-        return;
-      }
-
-      console.log('[Worker] Data received:', data);
-
       const { item, filters, searchOptions, ui, basicsUpdate } = data;
       this.item = item;
       this.filters.searchJson = filters.searchJson;
       this.searchOptions = searchOptions;
       this.ui = ui;
-      
+
       // 僅更新 basics 中變動的部分（例如寶石選擇），避免覆蓋整個大物件
       if (basicsUpdate) {
         this.data.basics.gem.chosenG = basicsUpdate.gem.chosenG;
         this.data.basics.gem.isSearch = basicsUpdate.gem.isSearch;
       }
+
+      // 通知 Angular 進行變更檢查
+      this.cdr.markForCheck();
 
       // 關鍵：Worker 處理完畢且 Angular 資料綁定後，才通知主程序顯示視窗
       (<any>window).ipcRenderer.send('show-overlay');
@@ -442,15 +606,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //重置搜尋資料
   resetSearchData() {
+    this.ui.collapse.custom = true;
     this.ui.collapse.item = true;
     this.ui.collapse.gem = true;
     this.ui.collapse.map = true;
 
+    this.selectedSavedSearchIndex = null;
+    this.isPoeSessionVisible = false;
+    this.currentLoadedName = null;
     this.item.name = '';
     this.item.category = '';
+    this.item.copyText = '';
     this.item.supported = true;
 
     this.searchResult.fetchID.length = 0;
+    this.searchResult.searchTotal = 0;
+    this.searchResult.resultLength = 0;
 
     this.searchOptions.raritySet.isSearch = false;
 
@@ -495,45 +666,101 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.item.searchDefences = [];
 
     this.app.apiErrorStr = '';
+    this.app.preCopyText = '';
+
+    this.cdr.markForCheck();
   }
 
   //建立搜尋資料
   searchTrade() {
+    this.prepareSearchJson();
+
     this.app.isCounting = true;
     this.app.apiErrorStr = '';
     this.item.supported = true;
 
+    this.searchResult.fetchQueryID = '';
+    this.searchResult.searchTotal = 0;
+    this.subscriptions.add(this.poe_service.get_trade(this.searchOptions.leagues.chosenL, this.filters.searchJson).subscribe((res: any) => {
+      if (res && !res.error) {
+        // 關鍵：使用解構賦值建立新物件參考，確保 AnalyzeComponent 的 ngOnChanges 能被觸發
+        this.searchResult = {
+          ...this.searchResult,
+          resultLength: res.result.length,
+          searchTotal: res.total,
+          status: ` 共 ${res.total} 筆符合 ${this.ui.collapse.price && res.total !== res.result.length ? '- 報價已摺疊' : ''}`,
+          fetchQueryID: res.id,
+          fetchID: res.result
+        };
+
+        if (res.total === 0) {
+          this.app.isCounting = false;
+        }
+
+        this.app.isApiError = false;
+        this.cdr.markForCheck();
+      } else {
+        this.searchResult.status = res.error.message;
+        // this.startCountdown(60);
+        this.app.isApiError = true;
+        this.app.isCounting = false;
+
+        this.resetSearchData();
+      }
+    }, (error: any) => {
+      this.resetSearchData();
+      this.app.isApiError = true;
+      this.app.isCounting = false;
+      this.app.apiErrorStr = error.error.error.message;
+      console.log(error);
+    }));
+
+    return;
+  }
+
+  /**
+   * 根據目前的 UI 狀態構建完整的搜尋 JSON 物件
+   */
+  private prepareSearchJson() {
+    if ((this.searchOptions.itemLevel.isSearch || this.searchOptions.itemBasic.isSearch) && this.item.category === '') {
+      this.item.category = 'item';
+    }
+
+    // 每次搜尋前重置動態過濾區塊，確保搜尋條件與目前的 UI 顯示完全同步
+    this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
+    if (this.filters.searchJson.query.filters.equipment_filters) {
+      this.filters.searchJson.query.filters.equipment_filters.filters = {};
+    }
+
     let searchCount = 0;
 
-    if (this.filters.searchJson.query.stats[0].filters.length === 0) {
-      this.item.searchStats.forEach((element: any, index: any, array: any) => {
-        if (element.id !== '') {
-          let value = {};
-          let min = element.min;
-          let max = element.max;
+    this.item.searchStats.forEach((element: any) => {
+      if (element.id !== '') {
+        let value = {};
+        let min = element.min;
+        let max = element.max;
 
-          if (!isNaN(min) && min != '') {
-            Object.assign(value, { min: min });
-          }
-
-          if (!isNaN(max) && max != '') {
-            Object.assign(value, { max: max });
-          }
-
-          if (element.option) {
-            Object.assign(value, { option: element.option });
-          }
-
-          if (element.isSearch) searchCount++;
-
-          this.filters.searchJson.query.stats[0].filters.push({
-            "id": element.id,
-            "disabled": !element.isSearch,
-            "value": value
-          })
+        if (!isNaN(min) && min != '') {
+          Object.assign(value, { min: Number(min) });
         }
-      })
-    }
+
+        if (!isNaN(max) && max != '') {
+          Object.assign(value, { max: Number(max) });
+        }
+
+        if (element.option) {
+          Object.assign(value, { option: element.option });
+        }
+
+        if (element.isSearch) searchCount++;
+
+        this.filters.searchJson.query.stats[0].filters.push({
+          "id": element.id,
+          "disabled": !element.isSearch,
+          "value": value
+        })
+      }
+    })
 
     if (this.filters.searchJson.query.filters.equipment_filters.filters) {
       this.item.searchDefences.forEach((element: any) => {
@@ -552,7 +779,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.corruptedSet();
     switch (this.item.category) {
       case 'item':
-        this.ui.collapse.stats = true;
+        if (this.item.name !== '') {
+          this.ui.collapse.stats = true;
+        }
         this.isRaritySearch();
         this.isItemBasicSearch();
         this.isItemCategorySearch();
@@ -583,40 +812,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         break;
     }
 
-    this.searchResult.fetchQueryID = '';
-    this.searchResult.searchTotal = 0;
-    this.subscriptions.add(this.poe_service.get_trade(this.searchOptions.leagues.chosenL, this.filters.searchJson).subscribe((res: any) => {
-      if (res && !res.error) {
-        this.searchResult.resultLength = res.result.length;
-        this.searchResult.searchTotal = res.total; // 總共搜到幾項物品
-
-        this.searchResult.status = ` 共 ${this.searchResult.searchTotal} 筆符合 ${this.ui.collapse.price && this.searchResult.searchTotal !== this.searchResult.resultLength ? '- 報價已摺疊' : ''}`;
-        this.searchResult.fetchQueryID = res.id;
-        this.searchResult.fetchID = res.result;
-
-        if (res.total === 0) {
-          this.app.isCounting = false;
-        }
-
-        this.app.isApiError = false;
-      } else {
-        this.searchResult.status = res.error.message;
-        // this.startCountdown(60);
-        this.app.isApiError = true;
-        this.app.isCounting = false;
-
-        this.resetSearchData();
-      }
-    }, (error: any) => {
-      this.resetSearchData();
-      this.app.isApiError = true;
-      this.app.isCounting = false;
-      this.app.apiErrorStr = error.error.error.message;
-      console.log(error);
-    }));
-
-    return;
+    console.log(this.filters.searchJson);
   }
+
 
   //是否針對物品等級搜尋
   isItemLevelSearch() {
@@ -634,15 +832,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   //是否針對稀有度搜尋
   isRaritySearch() {
     if (!this.searchOptions.raritySet.isSearch) {
-      if (this.item.category !== 'currency' && this.item.category !== 'gem') {
-        this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
+      // if (this.item.category !== 'currency' && this.item.category !== 'gem' && this.item.category !== '') {
+      //   this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
+      // } else {
+      delete this.filters.searchJson.query.filters.type_filters.filters.rarity;
+      // }
+    } else if (this.searchOptions.raritySet.isSearch) {
+      if (this.searchOptions.raritySet.chosenObj !== '') {
+        this.filters.searchJson.query.filters.type_filters.filters.rarity = { // 增加稀有度 filter
+          option: this.searchOptions.raritySet.chosenObj
+        };
       } else {
         delete this.filters.searchJson.query.filters.type_filters.filters.rarity;
       }
-    } else if (this.searchOptions.raritySet.isSearch) {
-      this.filters.searchJson.query.filters.type_filters.filters.rarity = { // 增加稀有度 filter
-        option: this.searchOptions.raritySet.chosenObj
-      };
     }
   }
 
@@ -694,7 +896,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //是否針對物品插槽搜尋
   isItemSocketSearch() {
     if (!this.searchOptions.itemSocket.isSearch && Object.keys(this.filters.searchJson.query.filters.equipment_filters.filters).includes("rune_sockets")) {
-      delete this.filters.searchJson.query.filters.equipment_filters.filters.rune_sockets; // 刪除技能品質 filter
+      delete this.filters.searchJson.query.filters.equipment_filters.filters.rune_sockets; // 刪除插槽 filter
     } else if (this.searchOptions.itemSocket.isSearch) {
       this.filters.searchJson.query.filters.equipment_filters.filters.rune_sockets = {
         min: this.searchOptions.itemSocket.min ? this.searchOptions.itemSocket.min : null,
@@ -716,12 +918,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //是否針對物品基底搜尋
   isItemBasicSearch() {
-    if (!this.searchOptions.itemBasic.isSearch && Object.keys(this.filters.searchJson.query).includes("type")) {
-      delete this.filters.searchJson.query.type // 刪除物品基底 filter
-    } else if (this.searchOptions.itemBasic.isSearch) {
-      Object.assign(this.filters.searchJson.query, { // 增加物品基底 filter
-        type: this.searchOptions.itemBasic.text
-      });
+    if (this.searchOptions.itemBasic.isSearch && this.searchOptions.itemBasic.text) {
+      this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+    } else {
+      delete this.filters.searchJson.query.type;
     }
   }
 
@@ -815,10 +1015,282 @@ export class HomeComponent implements OnInit, OnDestroy {
   private onClipboardChanged(content: string) {
     if (content.indexOf('稀有度: ') > -1) {
       this.app.preCopyText = content;
-      
+
       setTimeout(() => {
         this.analyze(content);
       }, 50);
     }
+  }
+
+  /**
+   * 移除特定索引的防禦屬性
+   */
+  removeDefence(index: number) {
+    this.item.searchDefences.splice(index, 1);
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * 移除插槽過濾（重置數值與搜尋開關）
+   */
+  removeSocket() {
+    this.searchOptions.itemSocket.min = 0;
+    this.searchOptions.itemSocket.isSearch = false;
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * 移除特定索引的詞綴
+   */
+  removeStat(index: number) {
+    this.item.searchStats.splice(index, 1);
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * 當 SESSIONID 變更時同步至主程序
+   */
+  onSessionIdChange() {
+    this.poeSessionStatus = 'checking';
+    (<any>window).ipcRenderer.send('set-poesessid', this.poeSessionId);
+    this.sessionCheckSubject.next(this.poeSessionId);
+  }
+
+  /**
+   * 驗證 Session 有效性
+   */
+  validatePoeSession() {
+    if (!this.poeSessionId) {
+      this.poeSessionStatus = null;
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.poe_service.validateSession().subscribe({
+      next: () => {
+        this.poeSessionStatus = 'valid';
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.poeSessionStatus = 'invalid';
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  /**
+   * 當自定義分類變更時，同步更新 item.category 以確保正確的搜尋邏輯與介面顯示
+   */
+  onCategoryChange() {
+    if (this.searchOptions.itemCategory.chosenObj && this.searchOptions.itemCategory.chosenObj.startsWith('map')) {
+      this.item.category = 'map';
+    } else {
+      this.item.category = 'item';
+    }
+    this.cdr.markForCheck();
+  }
+
+  //顯示自定義搜尋介面
+  showCustomArea() {
+    //隱藏其他介面
+    this.resetSearchData();
+
+    // 使用深拷貝避免污染原始樣板物件
+    this.filters.searchJson = JSON.parse(JSON.stringify(this.filters.searchJson_Def));
+
+    this.searchOptions.raritySet.isSearch = false;
+
+    this.updateCategoryOptions();
+    this.searchOptions.itemCategory.chosenObj = '';
+    this.searchOptions.itemCategory.isSearch = false;
+
+    this.ui.collapse.custom = false;
+    this.ui.collapse.item = false;
+  }
+
+  /**
+   * 根據指定白名單過濾物品分類，並確保 prop 值不重複
+   */
+  private updateCategoryOptions() {
+    const allowedPrefixes = ['accessory', 'armour', 'flask', 'jewel', 'weapon', 'map', 'sanctum'];
+    const uniqueOptions = new Map<string, { label: string, prop: string }>();
+    const basicsSet = new Set<string>();
+
+    this.data.basics.categorizedItems.forEach((item: any) => {
+      // 填充物品名稱到基底清單供 Typeahead 選取
+      if (item.type) basicsSet.add(item.type);
+
+      const root = item.option?.split('.')[0];
+      if (allowedPrefixes.includes(root) && !uniqueOptions.has(item.option)) {
+        uniqueOptions.set(item.option, { label: item.name, prop: item.option });
+      }
+    });
+
+    this.itemBasics = Array.from(basicsSet);
+    this.searchOptions.itemCategory.option = [
+      { label: '任何', prop: '' },
+      ...Array.from(uniqueOptions.values())
+    ];
+  }
+
+  //儲存自訂搜尋設定
+  clickToSaveCustomSearch() {
+    // 1. 同步目前的 UI 狀態到 searchJson
+    this.prepareSearchJson();
+
+    let saveName = '';
+    let isOverwrite = false;
+
+    if (this.currentLoadedName) {
+      saveName = this.currentLoadedName;
+      isOverwrite = true;
+    } else {
+      // 自動命名邏輯 (Custom1, Custom2...)
+      const nextIndex = this.savedSearches.length + 1;
+      saveName = `Custom${nextIndex}`;
+    }
+
+    const saveData = {
+      name: saveName,
+      overwrite: isOverwrite,
+      content: JSON.parse(JSON.stringify(this.filters.searchJson)),
+      item: JSON.parse(JSON.stringify(this.item)),
+      searchOptions: JSON.parse(JSON.stringify(this.searchOptions))
+    };
+
+    // 3. 透過 IPC 傳送至主程序儲存為 JSON 檔案
+    (<any>window).ipcRenderer.send('save-custom-search', saveData);
+
+    // 4. 更新本地清單
+    if (isOverwrite) {
+      const idx = this.savedSearches.findIndex(s => s.name === saveName);
+      if (idx !== -1) this.savedSearches[idx] = saveData;
+      this.showToast(`已成功覆蓋設定：${saveName}`);
+    } else {
+      this.savedSearches.push(saveData);
+      this.showToast(`已成功儲存設定：${saveName}`);
+    }
+
+    this.cdr.markForCheck();
+  }
+
+  //顯示提示
+  private showToast(msg: string) {
+    this.app.saveSuccessStr = msg;
+    this.app.isSaveSuccess = true;
+    this.cdr.markForCheck();
+    // 3 秒後自動隱藏提示文字
+    setTimeout(() => {
+      this.app.isSaveSuccess = false;
+      this.app.saveSuccessStr = '';
+      this.cdr.markForCheck();
+    }, 3000);
+  }
+
+  /**
+   * 載入選定的自訂搜尋
+   */
+  loadSavedSearch(index: any) {
+    if (index === undefined || index === null) return;
+
+    this.selectedSavedSearchIndex = index;
+    const saved = this.savedSearches[index];
+    if (saved) {
+      this.currentLoadedName = saved.name;
+      // 還原搜尋用的 JSON 結構
+      if (saved.content) this.filters.searchJson = JSON.parse(JSON.stringify(saved.content));
+
+      // 還原 UI 繫結的物品資料 (名稱、基底、詞綴清單等)
+      if (saved.item) this.item = JSON.parse(JSON.stringify(saved.item));
+
+      // 還原搜尋選項 (等級、插槽、稀有度、分類勾選狀態等)
+      if (saved.searchOptions) this.searchOptions = JSON.parse(JSON.stringify(saved.searchOptions));
+
+      // 自動展開相關介面以顯示讀取後的內容
+      this.ui.collapse.custom = false;
+      this.ui.collapse.item = false;
+      if (this.item.searchStats.length > 0 || this.item.searchDefences.length > 0) {
+        this.ui.collapse.stats = false;
+      }
+
+      this.cdr.markForCheck();
+    }
+  }
+
+  /**
+   * 重新命名自訂搜尋
+   */
+  clickToRename(content: any, index: number, event: Event) {
+    event.stopPropagation(); // 防止觸發下拉選單的點擊載入
+    const saved = this.savedSearches[index];
+    this.tempRenameValue = saved.name;
+
+    this.modalService.open(content, { centered: true }).result.then((result) => {
+      if (result === 'ok' && this.tempRenameValue && this.tempRenameValue !== saved.name) {
+        const oldName = saved.name;
+        const newName = this.tempRenameValue;
+        saved.name = newName;
+        if (this.currentLoadedName === oldName) this.currentLoadedName = newName;
+
+        (<any>window).ipcRenderer.send('rename-custom-search', { oldName, newName, data: saved });
+        this.showToast(`已重新命名為：${newName}`);
+        this.cdr.markForCheck();
+      }
+    }, () => { });
+  }
+
+  /**
+   * 刪除自訂搜尋
+   */
+  clickToDelete(content: any, index: number, event: Event) {
+    event.stopPropagation(); // 防止觸發載入
+    const saved = this.savedSearches[index];
+
+    this.modalService.open(content, { centered: true }).result.then((result) => {
+      if (result === 'ok') {
+        (<any>window).ipcRenderer.send('delete-custom-search', saved.name);
+        this.savedSearches.splice(index, 1);
+        if (this.currentLoadedName === saved.name) {
+          this.resetSearchData();
+        }
+        this.showToast(`已刪除設定：${saved.name}`);
+        this.cdr.markForCheck();
+      }
+    }, () => { });
+  }
+
+  statsFilter(statsFilter: any) {
+    const statTypes = ["enchant", "skill", "implicit", "rune", "fractured", "explicit", "crafted", "desecrated"];
+
+    statTypes.forEach(type => {
+      if (statsFilter.hashs[type]) {
+        statsFilter.hashs[type].forEach((hash: any) => {
+          const statId = hash[0];
+          const statText = this.data.statsById[type].get(statId);
+
+          // 檢查是否已存在於目前的搜尋列表中，避免重複加入
+          const exists = this.item.searchStats.some((s: any) => s.id === statId);
+
+          if (statText && !exists) {
+            // 使用 push 並在最後觸發 cdr
+            this.item.searchStats = [...this.item.searchStats, {
+              id: statId,
+              text: statText,
+              option: "",
+              min: "",
+              max: "",
+              isValue: false,
+              isSearch: true,
+              type: statsFilter.rarity === 'Unique' ? "傳奇" : this.categoryLabels[type],
+              level: -1 // 自定義詞綴設定為 -1 以區別於分析出的階層
+            }];
+          }
+        })
+      }
+    });
+    
+    this.ui.collapse.stats = false; // 關鍵：選擇後強制展開詞綴列表介面
+    this.customStat = ''; // 選擇完畢後清空輸入框內容
+    this.cdr.markForCheck();
   }
 }

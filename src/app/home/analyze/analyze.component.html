@@ -1,10 +1,10 @@
 @if (searchResult.fetchQueryID !== '') {
+@if (isAnalyze) {
 <div id="fetchResult" style="padding-top: 10px;">
     <div style="text-align: center;margin-bottom: 10px;">
         <img [src]="itemImage" style="max-height:100px;" />
     </div>
     <div style="text-align: center;">
-        <!-- <loading loader="bars" :active.sync="isLoading" :is-full-page="false"></loading> -->
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -19,53 +19,221 @@
                         <br>群組內過濾：{{ searchResult.extraFilterStr }}
                         <br>剩餘{{ extraFilterCount }}筆
                         }
-                        <!-- <span v-if="corruptedCount && corruptedCount === fetchResultPrice.length"
-                            style="color: lightpink;">{{ corruptedCount }} 筆皆汙染</span> -->
-                        <!-- <b-button v-else-if="corruptedCount" @click="$emit('exclude')" size="sm"
-                            :variant="corruptedCount > 5 ? 'outline-danger' : 'outline-warning'">排除 {{ corruptedCount }}
-                            筆已汙染</b-button> -->
-                        <!-- <div v-if="corruptedCount" style="padding: 1px 0px;"></div> -->
-                        <!-- <b-button v-if="fetchResultPrice.length <= 40 && searchResult.fetchID.length >= 4 && calResultLength"
-                            @click="priceAnalysis(8)" :disabled="isCounting" size="sm" variant="outline-primary">再多搜 {{
-                            calResultLength >= 40 ? 40 : calResultLength }} 筆價格</b-button> -->
                     </th>
                 </tr>
             </thead>
             <tbody>
                 @for (currencys of computed; track $index) {
-                @for (currency of currencys[1]; track $index;) {
+                @for (currency of currencys[1]; track $index) {
                 <tr>
                     <td>報價：{{ currency[0] }} x <img [src]="currencysList.get(currencys[0]).image" placement="top"
                             [ngbTooltip]="currencysList.get(currencys[0]).text" style="cursor: pointer;"> / {{
                         currency[1][0] }}筆
                         @if (currency[1][1] > 0) {
-                            (<b style="color: rgba(255, 0, 0, 0.5)">{{currency[1][1]}}</b>筆已汙染)
+                        (<b style="color: rgba(255, 0, 0, 0.5)">{{currency[1][1]}}</b>筆已汙染)
                         }
                     </td>
                 </tr>
                 }
                 }
-                <!-- <tr v-for="(item, index) in collectionCurrency" :key="index">
-                    <td @mouseover="handleHover(index)"
-                        :style="`opacity: ${hoveredIndex == index ? 1 : parseFloat(item.accountName.length / item.count)}; color: ${maxValuableIndex == index && parseFloat(item.accountName.length / item.count) > 0.85 ? 'darkred;' : ''}`">
-                        報價：{{ item.amount }} x
-                        <b-img :src="item.image" :alt="item.text" width=30 height=30></b-img>
-                        / <b>{{ item.count }}</b>筆
-                        <span v-if="isPriceCollapse === false">（<b>{{ item.accountName.length }}</b>人標）</span>
-                        <b-icon-x-square v-show="hoveredIndex == index && $store.state.POESESSID"
-                            @click="addToBlackList(item.accountName)" v-b-tooltip.hover.right.v-secondary
-                            :title="`將這 ${item.accountName.length} 人加入黑名單`" style="cursor: pointer;"></b-icon-x-square>
-                    </td>
-                </tr> -->
             </tbody>
-            <!-- <tfoot v-show="$store.state.POESESSID">
-                <tr>
-                    <th>
-                        <button>重新整理</button>
-                    </th>
-                </tr>
-            </tfoot> -->
         </table>
     </div>
 </div>
+} @else {
+<div id="fetchCustomResult" style="padding-top: 10px;">
+    <div style="text-align: center;">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">
+                        前 {{ fetchResult.length }} 筆物品
+                        @if (searchResult.extraFilterStr !== ''){
+                        <br>群組內過濾：{{ searchResult.extraFilterStr }}
+                        <br>剩餘{{ extraFilterCount }}筆
+                        }
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (result of fetchResult; track $index) {
+                <tr>
+                    <td>
+                        <div style="display: flex;">
+                            <div class="itemImage">
+                                <img [src]="result.item.icon" style="max-height:100px;" />
+                                <button class="searchBy" (click)="filterByProperty(result.item.extended.hashes, result.item.rarity)" [ngbTooltip]="'依物品屬性過濾'"></button>
+                            </div>
+                            <div class="itemDetail">
+                                <div [style]="{'color': getRarityColor(result.item.rarity, result.item.isRelic)}">{{ result.item.typeLine }}
+                                </div>
+                                @for( property of result.item.properties; track $index){
+                                <div>{{ replaceIllustrate(property.name) }}
+                                    @if (property.values.length > 0) {
+                                    : <span style="color: #8888ff">{{ replaceIllustrate(property.values[0][0]) }}</span>
+                                    @if (!property.name.includes('品質') && !property.name.includes('精魂') &&
+                                    !property.name.includes('傷害') && !property.name.includes('暴擊') &&
+                                    !property.name.includes('每秒')){
+                                    (最高品質: <span style="color: #8888ff">{{
+                                        result.item.extended[defenceTypes.get(replaceIllustrate(property.name))]
+                                        }}</span>)
+                                    }
+                                    }
+                                </div>
+                                }
+                                @if (result.item.extended.dps){
+                                <div>每秒造成傷害 最高品質: <span style="color: #8888ff">{{ result.item.extended.dps }}</span>
+                                </div>
+                                @if (result.item.extended.pdps){
+                                <div>物理傷害 最高品質: <span style="color: #8888ff">{{ result.item.extended.pdps }}</span>
+                                </div>
+                                }
+                                @if (result.item.extended.edps){
+                                <div>元素傷害: <span style="color: #8888ff">{{ result.item.extended.edps }}</span></div>
+                                }
+                                }
+                                <hr>
+                                <div><span>物品等級: </span><span style="color: #fff">{{ result.item.ilvl }}</span></div>
+                                @if (result.item.requirements){
+                                <div>
+                                    需求:
+                                    @for ( require of result.item.requirements; track $index){
+                                    @if (require.name === '等級'){
+                                    <span>{{require.name}} </span><span style="color: #fff">{{ require.type }}</span>
+                                    } @else {
+                                    , <span style="color: #fff">{{ require.type }} </span><span>{{
+                                        replaceIllustrate(require.name)
+                                        }}</span>
+                                    }
+                                    }
+                                </div>
+                                }
+                                <hr>
+                                <!-- 附魔-->
+                                @if (result.item.enchantMods && result.item.enchantMods.length > 0) {
+                                <div class="enchant">
+                                    @for (enchantMod of result.item.enchantMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.enchant[$index][0] }}">{{ replaceIllustrate(enchantMod) }}</div>
+                                    }
+                                </div>
+                                }
+                                <!-- 技能 -->
+                                @if (result.item.grantedSkills && result.item.grantedSkills.length > 0) {
+                                <div class="skill">
+                                    @for (grantedSkill of result.item.grantedSkills; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.skill[$index][0] }}">
+                                        <img [src]="grantedSkill.icon" style="height: 1.4em;" /> {{ grantedSkill.name
+                                        }}: {{ grantedSkill.values[0][0] }}
+                                    </div>
+                                    }
+                                </div>
+                                }
+                                <!-- 固定 -->
+                                @if (result.item.implicitMods && result.item.implicitMods.length > 0) {
+                                <div class="implicit">
+                                    @for (implicitMod of result.item.implicitMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.implicit[$index][0] }}">{{ replaceIllustrate(implicitMod) }}</div>
+                                    }
+                                </div>
+                                }
+                                <!-- 符文 -->
+                                @if (result.item.runeMods && result.item.runeMods.length > 0) {
+                                <div class="rune">
+                                    @for (runeMod of result.item.runeMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.rune[$index][0] }}">{{ replaceIllustrate(runeMod) }}</div>
+                                    }
+                                </div>
+                                }
+                                @if (result.item.enchantMods || result.item.grantedSkills || result.item.implicitMods ||
+                                result.item.runeMods) {
+                                <hr>
+                                }
+                                <!-- 破裂 -->
+                                @if (result.item.fracturedMods && result.item.fracturedMods.length >0) {
+                                <div class="explicit">
+                                    @for (fracturedMod of result.item.fracturedMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.fractured[$index][0] }}">{{ replaceIllustrate(fracturedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.fractured?.[$index]?.[1],
+                                            result.item.extended?.mods?.fractured)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.fractured?.[$index]?.[1],
+                                            result.item.extended?.mods?.fractured)"></span></div>
+                                    }
+                                </div>
+                                }
+                                <!-- 隨機 -->
+                                @if (result.item.explicitMods && result.item.explicitMods.length > 0) {
+                                <div class="explicit">
+                                    @for (explicitMod of result.item.explicitMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.explicit[$index][0] }}">{{ replaceIllustrate(explicitMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit?.[$index]?.[1],
+                                            result.item.extended?.mods?.explicit)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.explicit?.[$index]?.[1],
+                                            result.item.extended?.mods?.explicit)"></span></div>
+                                    }
+                                </div>
+                                }
+                                <!-- 工藝 -->
+                                @if (result.item.craftedMods && result.item.craftedMods.length >0) {
+                                <div class="crafted">
+                                    @for (craftedMod of result.item.craftedMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.crafted[$index][0] }}">{{ replaceIllustrate(craftedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.crafted?.[$index]?.[1],
+                                            result.item.extended?.mods?.crafted)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.crafted?.[$index]?.[1],
+                                            result.item.extended?.mods?.crafted)">
+                                        </span></div>
+                                    }
+                                </div>
+                                }
+                                <!-- 褻瀆 -->
+                                @if (result.item.desecratedMods && result.item.desecratedMods.length > 0) {
+                                <div class="desecrated">
+                                    @for (desecratedMod of result.item.desecratedMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.desecrated[$index][0] }}">{{ replaceIllustrate(desecratedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.desecrated?.[$index]?.[1],
+                                            result.item.extended?.mods?.desecrated)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.desecrated?.[$index]?.[1],
+                                            result.item.extended?.mods?.desecrated)"></span></div>
+                                    }
+                                </div>
+                                }
+                                @if (result.item.fracturedMods || result.item.explicitMods || result.item.craftedMods ||
+                                result.item.desecratedMods) {
+                                <hr>
+                                }
+                                @let tradeToken = result.listing.hideout_token || result.listing.whisper_token;
+                                @let isHideout = !!result.listing.hideout_token;
+                                <div style="margin-top: 2px;">報價: {{ result.listing.price.amount }}<span
+                                        style="color: #a38d6d;"> &#215; </span><img
+                                        [src]="currencysList.get(result.listing.price.currency).image" placement="top"
+                                        [ngbTooltip]="currencysList.get(result.listing.price.currency).text"
+                                        style="cursor: pointer;width:22px;height:22px;"> <span style="color: #a38d6d;">
+                                        手續費: <span class="gold-icon"></span> {{
+                                        result.listing.fee }} 帳號: {{ result.listing.account.name }} </span>
+                                    @if (isSessionValid) {
+                                    <span class="trade"
+                                        [style.color]="processingTokens.has(tradeToken) ? '#666' : (successTokens.has(tradeToken) ? '#28a745' : null)"
+                                        [style.cursor]="(processingTokens.has(tradeToken) || successTokens.has(tradeToken)) ? 'not-allowed' : 'pointer'"
+                                        [style.pointer-events]="(processingTokens.has(tradeToken) || successTokens.has(tradeToken)) ? 'none' : 'auto'"
+                                        (click)="goToHideout(tradeToken)">
+                                        @if (processingTokens.has(tradeToken)) { 請求中... }
+                                        @else if (successTokens.has(tradeToken)) { 已傳送 }
+                                        @else { {{ isHideout ? '前往藏身處' : '私訊' }} }
+                                    </span>
+                                    }
+                                    @if (failedTokens.has(tradeToken)) {
+                                    <span class="ms-1" style="color: #dc3545;" ngbTooltip="請求失敗，請檢查 SESSIONID 是否過期"
+                                        placement="top">
+                                        ❌
+                                    </span>
+                                    }
+                                    @if (errorMessages.has(tradeToken)) {
+                                    <ngb-alert type="danger" class="mt-1 d-block" (closed)="closeAlert(tradeToken)">
+                                        {{ errorMessages.get(tradeToken) }}
+                                    </ngb-alert>
+                                    }
+                                </div>
+                            </div>
+                            <div style="width:56px"></div>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+}
 }

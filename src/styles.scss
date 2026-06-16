@@ -29,10 +29,84 @@ body {
     display: none !important;
 }
 
+.pr {
+    color: #ec7676 !important;
+}
+
+.su {
+    color: #7aaff1 !important;
+}
+
 @media (prefers-color-scheme: dark) {
     body {
         background: #333;
         color: white;
+    }
+
+    /* 讓 NgbTypeahead 下拉選單背景對應深色主題 */
+    .dropdown-menu {
+        background-color: #1a1a1acc !important;
+        /* 使用與 App 相近的深色並帶有透明度 */
+        backdrop-filter: blur(8px);
+        /* 加入毛玻璃效果提升質感 */
+        border: 1px solid #444;
+        /* 稍微亮一點的邊框 */
+    }
+
+    .dropdown-item {
+        color: #efefef !important;
+        /* 選項文字顏色 */
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item:focus,
+    .dropdown-item.active {
+        background-color: #333 !important;
+        /* 滑鼠移過時的背景色 */
+    }
+
+    /* Modal 深色主題樣式 */
+    .modal-content {
+        background-color: #292828 !important;
+        color: #e5e4e4 !important;
+        border: 1px solid #444;
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: #626262 !important;
+    }
+
+    /* 讓關閉按鈕在深色模式下自動變白 */
+    .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    /* Modal 內的輸入框樣式 */
+    .modal-body .form-control {
+        background-color: #1a1a1a;
+        color: #efefef;
+        border: 1px solid #626262;
+
+        &:focus {
+            background-color: #1a1a1a !important;
+            color: #fff;
+        }
+    }
+
+    /* Modal 內的浮動標籤文字顏色修正 */
+    .modal-body .form-floating label {
+        color: #fff !important;
+    }
+
+    /* Modal 內的浮動標籤背景修正 */
+    .modal-body .form-floating label::after {
+        background-color: #1a1a1a !important;
+    }
+
+    .modal-body .form-control:focus~label::after,
+    .modal-body .form-control:not(:placeholder-shown)~label::after {
+        background-color: #1a1a1a !important;
     }
 }
 
@@ -41,6 +115,40 @@ body {
         background: #ddd;
         color: black;
     }
+
+    /* 讓 NgbTypeahead 下拉選單背景對應淺色主題 */
+    .dropdown-menu {
+        background-color: #ffffffcc !important;
+        /* 半透明白色背景 */
+        backdrop-filter: blur(8px);
+        /* 毛玻璃效果 */
+        border: 1px solid #ccc;
+        /* 淺灰色邊框 */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* 增加陰影提升層次感 */
+    }
+
+    .dropdown-item {
+        color: #333 !important;
+        /* 深灰色文字 */
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item:focus,
+    .dropdown-item.active {
+        background-color: #f8f9fa !important;
+        /* 淺灰色懸停背景 */
+    }
+}
+
+/* 讓 ngb-highlight 搜尋關鍵字高亮顯示為黃色 */
+.ngb-highlight {
+    background-color: #ffc107 !important;
+    /* 鮮豔黃色背景 */
+    color: #000 !important;
+    /* 黑色文字以維持對比度 */
+    padding: 0 2px;
+    border-radius: 2px;
 }
 
 /* Importing Bootstrap SCSS file. */

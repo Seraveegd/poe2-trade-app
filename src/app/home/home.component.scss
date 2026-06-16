@@ -71,11 +71,17 @@ input[type=range]::-webkit-slider-thumb {
 
         .form-floating {
             label {
-                color: #e5e4e4;
+                color: #e5e4e4 !important;
             }
 
             label::after {
-                background: none;
+                background-color: #292828 !important;
+                border-radius: 5px;
+            }
+
+            form-control:focus~label::after,
+            .form-control:not(:placeholder-shown)~label::after {
+                background-color: #292828 !important;
             }
         }
 
@@ -88,10 +94,15 @@ input[type=range]::-webkit-slider-thumb {
             &:disabled {
                 background-color: #5b5b5b;
             }
+
+            &:focus {
+                background-color: #292828 !important;
+                color: #fff;
+            }
         }
 
         label {
-            color: #e5e4e4;
+            color: #e5e4e4 !important;
         }
 
         table {

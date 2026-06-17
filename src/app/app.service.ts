@@ -23,8 +23,8 @@ export class AppService {
     return this.http.post(`${this.config.api_base_url}/api/trade2/search/poe2/${league}`, query, { headers: headers, withCredentials: true });
   }
 
-  get_trade_fetch(fetchstr: any, fetchQueryID: any): any {
-    return this.http.get(`${this.config.api_base_url}/api/trade2/fetch/${fetchstr}?query=${fetchQueryID}&realm=poe2`, { withCredentials: true });
+  get_trade_fetch(fetchstr: any, fetchQueryID: any, pseudos: any = []): any {
+    return this.http.get(`${this.config.api_base_url}/api/trade2/fetch/${fetchstr}?query=${fetchQueryID}&realm=poe2` + (pseudos.length > 0 ? `&pseudos[]=${pseudos.join(',')}` : ''), { withCredentials: true });
   }
 
   getOfficialItemData(): any {

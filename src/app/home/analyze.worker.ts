@@ -97,6 +97,8 @@ function analyze(text: string, basics: any, stats: any, config: any) {
     let itemArray = text.split(newLine);
     itemArray = deleteUnUseString(itemArray);
 
+    console.log(itemArray);
+
     let start = itemArray[0].indexOf("物品種類") === -1 ? 0 : 1;
 
     //物品稀有度
@@ -114,7 +116,7 @@ function analyze(text: string, basics: any, stats: any, config: any) {
         const i = itemBasic.indexOf(element.type);
         let b = itemBasic.split(' ');
 
-        if (i > -1 && (b.length > 1 ? (b[0].length > i ? b[0].length === element.type.length : b[1].length === element.type.length) : itemBasic.length === (i + element.type.length) && i === 0)) {
+        if (i > -1 && (b.length > 1 ? (b[0].length > i ? b[0].length === element.type.length : b[1].length === element.type.length) : (element.type === '戒指' && Rarity !== '傳奇') ? false : itemBasic.length === (i + element.type.length))) {
             itemBasic = element.type;
             item.basic = element.type;
 

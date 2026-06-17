@@ -88,29 +88,39 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <div ngbDropdown class="d-inline-block w-100">
-                                        <button type="button" class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center" id="dropdownSavedSearch" ngbDropdownToggle style="height: 58px; padding-top: 1.625rem;">
+                                        <button type="button"
+                                            class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                                            id="dropdownSavedSearch" ngbDropdownToggle
+                                            style="height: 58px; padding-top: 1.625rem;">
                                             {{ currentLoadedName || '已儲存搜尋' }}
                                         </button>
                                         <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
                                             @if (savedSearches.length === 0) {
-                                                <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
+                                            <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
                                             }
                                             @for (item of savedSearches; track $index) {
-                                                <div class="d-flex align-items-center dropdown-item" style="cursor: pointer;">
-                                                    <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name }}</span>
-                                                    <button class="btn btn-sm btn-link text-primary p-0 me-2" (click)="clickToRename(renameModal, $index, $event)" ngbTooltip="重新命名">✏️</button>
-                                                    <button class="btn btn-sm btn-link text-danger p-0" (click)="clickToDelete(deleteModal, $index, $event)" ngbTooltip="刪除">🗑️</button>
-                                                </div>
+                                            <div class="d-flex align-items-center dropdown-item"
+                                                style="cursor: pointer;">
+                                                <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
+                                                    }}</span>
+                                                <button class="btn btn-sm btn-link text-primary p-0 me-2"
+                                                    (click)="clickToRename(renameModal, $index, $event)"
+                                                    ngbTooltip="重新命名">✏️</button>
+                                                <button class="btn btn-sm btn-link text-danger p-0"
+                                                    (click)="clickToDelete(deleteModal, $index, $event)"
+                                                    ngbTooltip="刪除">🗑️</button>
+                                            </div>
                                             }
                                         </div>
                                     </div>
-                                    <label style="transform: scale(.85) translateY(-.5rem) translateX(.15rem); opacity: .65;">已儲存搜尋</label>
+                                    <label
+                                        style="transform: scale(.85) translateY(-.5rem) translateX(.15rem); opacity: .65;">已儲存搜尋</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="d-grid">
                                     <button type="button" class="btn btn-outline-primary" style="height: 58px;"
-                                        (click)="showCustomArea()">自訂詞綴搜尋</button>
+                                        (click)="showCustomArea()">交易市集搜尋</button>
                                 </div>
                             </div>
                         </div>
@@ -124,26 +134,27 @@
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating position-relative">
-                                    <input id="SESSIONID" [type]="isPoeSessionVisible ? 'text' : 'password'" 
-                                        class="form-control pe-5"
-                                        [class.is-valid]="poeSessionStatus === 'valid'"
-                                        [class.is-invalid]="poeSessionStatus === 'invalid'"
-                                        [(ngModel)]="poeSessionId" (ngModelChange)="onSessionIdChange()"
-                                        placeholder="POESESSID">
+                                    <input id="SESSIONID" [type]="isPoeSessionVisible ? 'text' : 'password'"
+                                        class="form-control pe-5" [class.is-valid]="poeSessionStatus === 'valid'"
+                                        [class.is-invalid]="poeSessionStatus === 'invalid'" [(ngModel)]="poeSessionId"
+                                        (ngModelChange)="onSessionIdChange()" placeholder="POESESSID">
                                     <label for="SESSIONID">POESESSID (由官方網站 Cookie 取得)</label>
-                                    
+
                                     <!-- 狀態圖示 -->
-                                    <div class="position-absolute end-0 top-50 translate-middle-y me-5" style="z-index: 10;">
+                                    <div class="position-absolute end-0 top-50 translate-middle-y me-5"
+                                        style="z-index: 10;">
                                         @if (poeSessionStatus === 'checking') {
-                                            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                                        <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                                        </div>
                                         } @else if (poeSessionStatus === 'valid') {
-                                            <span class="text-success">✔</span>
+                                        <span class="text-success">✔</span>
                                         } @else if (poeSessionStatus === 'invalid') {
-                                            <span class="text-danger" ngbTooltip="Session 可能無效或已過期">✘</span>
+                                        <span class="text-danger" ngbTooltip="Session 可能無效或已過期">✘</span>
                                         }
                                     </div>
 
-                                    <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-2 border-0 shadow-none" 
+                                    <button type="button"
+                                        class="btn position-absolute end-0 top-50 translate-middle-y me-2 border-0 shadow-none"
                                         (click)="isPoeSessionVisible = !isPoeSessionVisible" style="z-index: 10;">
                                         {{ isPoeSessionVisible ? '👁️' : '👁️‍🗨️' }}
                                     </button>
@@ -151,7 +162,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-10">
                                 <div class="form-floating">
                                     <ng-template #rt let-r="result" let-t="term">
                                         <span [style.color]="getStatColor(r)" style="font-weight: bold;">
@@ -167,6 +178,18 @@
                                         [resultTemplate]="rt" (focus)="focus$.next($any($event).target.value)"
                                         (click)="click$.next($any($event).target.value)" #instance="ngbTypeahead" />
                                     <label for="custom_stats_add">+ 新增數值過濾</label>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="form-floating">
+                                    <select class="form-select" id="filterMethods" aria-label="篩選器"
+                                        [(ngModel)]="selectedFilterMethod">
+                                        @for (method of filterMethods; track $index) {
+                                        <option [ngValue]="method.prop">{{
+                                            method.label }}</option>
+                                        }
+                                    </select>
+                                    <label for="filterMethods">篩選方法</label>
                                 </div>
                             </div>
                         </div>
@@ -256,13 +279,16 @@
 
                                 <div class="position-relative">
                                     <input #itemBasicInput id="custom_itemBasic" type="text" class="form-control pe-4"
-                                        [(ngModel)]="searchOptions.itemBasic.text" placeholder="物品基底" [ngbTypeahead]="search2"
-                                        container="body" [resultTemplate]="rt2"
+                                        [(ngModel)]="searchOptions.itemBasic.text" placeholder="物品基底"
+                                        [ngbTypeahead]="search2" container="body" [resultTemplate]="rt2"
                                         (focus)="focus2$.next($any($event).target.value)"
                                         (click)="click2$.next($any($event).target.value)" #instance2="ngbTypeahead" />
                                     @if (searchOptions.itemBasic.text) {
-                                    <button type="button" class="btn-close position-absolute end-0 top-50 translate-middle-y me-2" 
-                                        style="font-size: 0.65rem;" (click)="searchOptions.itemBasic.text = ''; itemBasicInput.focus()" aria-label="Clear"></button>
+                                    <button type="button"
+                                        class="btn-close position-absolute end-0 top-50 translate-middle-y me-2"
+                                        style="font-size: 0.65rem;"
+                                        (click)="searchOptions.itemBasic.text = ''; itemBasicInput.focus()"
+                                        aria-label="Clear"></button>
                                     }
                                 </div>
                                 }
@@ -391,7 +417,9 @@
                     (click)="ui.collapse.stats = !ui.collapse.stats"></h5>
             </div>
             }
-            @if (item.searchStats.length > 0 || item.searchDefences.length) {
+            <!-- 方法And -->
+            @if ((item.searchStats.length > 0 || item.searchDefences.length) && !this.ui.collapse.stats) {
+            <div style="text-align: left;margin: 6px 0 -4px 0; color:rgb(114, 114, 114)">篩選方法：和</div>
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats" style="margin-top:10px;">
                 <div class="card" style="padding-bottom: 4px;">
                     <div class="card-body" style="padding: 2px;">
@@ -572,7 +600,102 @@
                                             </td>
                                             @if (!ui.collapse.custom) {
                                             <td style="text-align: center; cursor: pointer;"
-                                                (click)="removeStat($index)">
+                                                (click)="removeStat($index, 'and')">
+                                                <span style="color: #dc3545; font-weight: bold;">&times;</span>
+                                            </td>
+                                            }
+                                        </tr>
+                                        }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+            <!-- 方法Count -->
+            @if (item.searchStatsCount.length > 0 && !this.ui.collapse.stats) {
+            <div style="text-align: left;margin: 6px 0 -4px 0; color:rgb(114, 114, 114)">篩選方法：總計</div>
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats" style="margin-top:10px;">
+                <div class="card" style="padding-bottom: 4px;">
+                    <div class="card-body" style="padding: 2px;">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table" id="stats">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width: 50px;">查詢</th>
+                                            <th scope="col" style="width: 55px;">種類</th>
+                                            @if(ui.collapse.custom){
+                                            <th scope="col" style="width: 10px;">T</th>
+                                            }
+                                            <th scope="col">詞綴內容</th>
+                                            <th scope="col" style="width: 70px;padding: 0 2px !important;"><input
+                                                    type="text" class="form-control" aria-label="min"
+                                                    [(ngModel)]="methodCount.min" style="width:100%"></th>
+                                            <th scope="col" style="width: 70px;padding: 0 2px !important;"><input
+                                                    type="text" class="form-control" aria-label="max"
+                                                    [(ngModel)]="methodCount.max" style="width:100%"></th>
+                                            @if(!ui.collapse.custom){
+                                            <th scope="col" style="width: 10px;"></th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!--詞綴-->
+                                        @for (stat of item.searchStatsCount; track $index) {
+                                        <tr>
+                                            <td
+                                                [ngStyle]="{'backgroundColor': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
+                                                @if (stat.id !== '') {
+                                                <div style="display: flex; align-items: center;justify-content: center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" name="ststsChecked"
+                                                            type="checkbox" [(ngModel)]="stat.isSearch"
+                                                            [id]="'StstsflexCheckDefault_' + $index">
+                                                        <label class="form-check-label"
+                                                            [for]="'StstsflexCheckDefault_' + $index">
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                }
+                                                @else {
+                                                <b style="cursor: pointer;" placement="top" ngbTooltip="無法解析詞綴">?</b>
+                                                }
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': typeColors.get(stat.type), 'font-weight': 'bolder'}">
+                                                {{
+                                                stat.type }}
+                                            </td>
+                                            @if (ui.collapse.custom) {
+                                            <td
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': stat.level < 3 ? '#dda42e' : '#aaa', 'font-weight': 'bolder'}">
+                                                {{ stat.level > -1 ? "T" + stat.level : "" }}
+                                            </td>
+                                            }
+                                            <td (click)="stat.isSearch = !stat.isSearch"
+                                                style="white-space:pre-wrap;cursor: pointer;"
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': (stat.id=='') ? 'red' : null}">
+                                                <div>{{ stat.text }}</div>
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
+                                                <div>
+                                                    <input type="text" class="form-control" aria-label="min"
+                                                        [(ngModel)]="stat.min">
+                                                </div>
+                                            </td>
+                                            <td
+                                                [ngStyle]="{'background': stat.isSearch ? 'rgb(39 45 69 / 30%)' : null}">
+                                                <div>
+                                                    <input type="text" class="form-control" aria-label="max"
+                                                        [(ngModel)]="stat.max">
+                                                </div>
+                                            </td>
+                                            @if (!ui.collapse.custom) {
+                                            <td style="text-align: center; cursor: pointer;"
+                                                (click)="removeStat($index, 'count')">
                                                 <span style="color: #dc3545; font-weight: bold;">&times;</span>
                                             </td>
                                             }
@@ -588,12 +711,12 @@
         </ng-container>
         <div style="display: flex; align-items: center;justify-content: center; flex: 1;">
             <!--之後做-->
-            @if (item.category || item.searchStats.length > 0) {
+            @if (item.category || item.searchStats.length > 0 || item.searchStatsCount.length > 0 || searchOptions.itemBasic.text) {
             <div id="search" style="width:100%">
                 <button (click)="clickToSearch()" class="btn btn-primary" style="width:100%">搜尋</button>
             </div>
             }
-            @if (!ui.collapse.custom && (item.category || item.searchStats.length > 0)) {
+            @if (!ui.collapse.custom && (item.category || item.searchStats.length > 0 || item.searchStatsCount.length > 0 || searchOptions.itemBasic.text)) {
             <div id="saveCustomSearch" style="width:100%">
                 <button (click)="clickToSaveCustomSearch()" class="btn btn-success" style="width:100%">儲存自訂搜尋</button>
             </div>
@@ -630,7 +753,10 @@
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>
 @if (searchResult.searchTotal > 0) {
-<app-analyze [searchResult]="searchResult" [isAnalyze]="ui.collapse.custom" [isSessionValid]="poeSessionStatus === 'valid'" (isCounting)="countingStatus($event)" (statsFilter)="statsFilter($event)"></app-analyze>
+<app-analyze [searchResult]="searchResult" [isAnalyze]="ui.collapse.custom"
+    [isSessionValid]="poeSessionStatus === 'valid'" [currentSortType]="currentSortType"
+    [currentSortDir]="currentSortDir" [pseudos]="pseudos" (isCounting)="countingStatus($event)" (statsFilter)="statsFilter($event)"
+    (changeSort)="changeSort($event)"></app-analyze>
 } @else if (!app.isCounting) {
 <div style="margin: 15px; text-align: center; padding: 20px; border: 1px dashed #626262; border-radius: 4px;">
     <div style="color: #959595; font-weight: bold; margin-bottom: 5px;">🔍 查無符合條件的物品</div>

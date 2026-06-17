@@ -17,13 +17,14 @@
         .itemDetail>div>div {
             position: relative;
 
-            .tier_detail, .tier {
+            .tier_detail,
+            .tier {
                 position: absolute;
                 right: -48px;
                 top: 0;
             }
 
-            .tier_detail{
+            .tier_detail {
                 display: none;
                 background-color: #0d0d0d;
                 padding: 0 6px;
@@ -56,12 +57,15 @@
         }
 
         .desecrated,
-        .skill {
+        .skill,
+        .duplicated,
+        .notable {
             color: #88f !important;
         }
 
         .implicit,
-        .explicit {
+        .explicit,
+        .sanctum {
             color: #ffffff !important;
         }
 
@@ -69,6 +73,16 @@
         .enchant,
         .rune {
             color: #b4b4ff !important;
+        }
+
+        .identified,
+        .corrupted,
+        .doubleCorrupted {
+            color: #d20000 !important;
+        }
+
+        .fractured, .sanctified {
+            color: #a29162 !important;
         }
 
         .gold-icon {
@@ -120,7 +134,7 @@
             color: #adaa47
         }
 
-        [data-field]{
+        [data-field] {
             cursor: pointer;
         }
     }

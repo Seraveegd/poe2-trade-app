@@ -62,48 +62,83 @@
                         <div style="display: flex;">
                             <div class="itemImage">
                                 <img [src]="result.item.icon" style="max-height:100px;" />
-                                <button class="searchBy" (click)="filterByProperty(result.item.extended.hashes, result.item.rarity)" [ngbTooltip]="'依物品屬性過濾'"></button>
+                                <button class="searchBy"
+                                    (click)="filterByProperty(result.item.extended.hashes, result.item.rarity)"
+                                    [ngbTooltip]="'依物品屬性過濾'"></button>
                             </div>
                             <div class="itemDetail">
-                                <div [style]="{'color': getRarityColor(result.item.rarity, result.item.isRelic)}">{{ result.item.typeLine }}
+                                <div [style]="{'color': getRarityColor(result.item.rarity, result.item.isRelic)}">{{
+                                    result.item.typeLine }}
                                 </div>
                                 @for( property of result.item.properties; track $index){
-                                <div>{{ replaceIllustrate(property.name) }}
+                                <div (click)="clickToSort(defenceTypes.get(replaceIllustrate(property.name)))"
+                                    style="cursor: pointer;">
+                                    {{
+                                    replaceIllustrate(property.name)
+                                    }}
                                     @if (property.values.length > 0) {
-                                    : <span style="color: #8888ff">{{ replaceIllustrate(property.values[0][0]) }}</span>
+                                    : <span
+                                        [style]="{'color': eDemageColors.get(replaceIllustrate(property.name)) ? eDemageColors.get(replaceIllustrate(property.name)) : '#8888ff'}">{{
+                                        replaceIllustrate(property.values[0][0]) }}</span>
                                     @if (!property.name.includes('品質') && !property.name.includes('精魂') &&
                                     !property.name.includes('傷害') && !property.name.includes('暴擊') &&
-                                    !property.name.includes('每秒')){
+                                    !property.name.includes('每秒') && !property.name.includes('重新')){
                                     (最高品質: <span style="color: #8888ff">{{
                                         result.item.extended[defenceTypes.get(replaceIllustrate(property.name))]
                                         }}</span>)
                                     }
                                     }
+                                    @if (currentSortType === defenceTypes.get(replaceIllustrate(property.name))) {
+                                    <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                    }
                                 </div>
                                 }
                                 @if (result.item.extended.dps){
-                                <div>每秒造成傷害 最高品質: <span style="color: #8888ff">{{ result.item.extended.dps }}</span>
+                                <div (click)="clickToSort('dps')" style="cursor: pointer;">
+                                    每秒造成傷害 最高品質: <span style="color: #8888ff">{{ result.item.extended.dps }}</span>
+                                    @if (currentSortType === 'dps') { <span>{{ currentSortDir === 'asc' ? '↑' : '↓'
+                                        }}</span> }
                                 </div>
                                 @if (result.item.extended.pdps){
-                                <div>物理傷害 最高品質: <span style="color: #8888ff">{{ result.item.extended.pdps }}</span>
+                                <div (click)="clickToSort('pdps')" style="cursor: pointer;">
+                                    物理傷害 最高品質: <span style="color: #8888ff">{{ result.item.extended.pdps }}</span>
+                                    @if (currentSortType === 'pdps') { <span>{{ currentSortDir === 'asc' ? '↑' : '↓'
+                                        }}</span> }
                                 </div>
                                 }
                                 @if (result.item.extended.edps){
-                                <div>元素傷害: <span style="color: #8888ff">{{ result.item.extended.edps }}</span></div>
+                                <div (click)="clickToSort('edps')" style="cursor: pointer;">
+                                    元素傷害: <span style="color: #8888ff">{{ result.item.extended.edps }}</span>
+                                    @if (currentSortType === 'edps') { <span>{{ currentSortDir === 'asc' ? '↑' : '↓'
+                                        }}</span> }
+                                </div>
                                 }
                                 }
                                 <hr>
-                                <div><span>物品等級: </span><span style="color: #fff">{{ result.item.ilvl }}</span></div>
+                                <div><span (click)="clickToSort('ilvl')" style="cursor: pointer;">
+                                        物品等級: </span><span style="color: #fff">{{ result.item.ilvl }}</span></div>
+                                @if (currentSortType === 'ilvl') { <span>{{ currentSortDir === 'asc' ? '↑' : '↓'
+                                    }}</span> }
                                 @if (result.item.requirements){
                                 <div>
                                     需求:
                                     @for ( require of result.item.requirements; track $index){
                                     @if (require.name === '等級'){
-                                    <span>{{require.name}} </span><span style="color: #fff">{{ require.type }}</span>
+                                    <span (click)="clickToSort('lvl')" style="cursor: pointer;">
+                                        {{require.name}}
+                                        @if (currentSortType === 'lvl') { <span>{{ currentSortDir === 'asc' ? '↑' : '↓'
+                                            }}</span> }
+                                    </span><span style="color: #fff">{{ require.type }}</span>
                                     } @else {
-                                    , <span style="color: #fff">{{ require.type }} </span><span>{{
-                                        replaceIllustrate(require.name)
-                                        }}</span>
+                                    , <span style="cursor: pointer;"
+                                        (click)="clickToSort(defenceTypes.get(replaceIllustrate(require.name)))"><span
+                                            style="color: #fff;">{{ require.type }} </span><span>{{
+                                            replaceIllustrate(require.name)
+                                            }}</span>@if (currentSortType ===
+                                        defenceTypes.get(replaceIllustrate(require.name))) { <span>{{ currentSortDir ===
+                                            'asc'
+                                            ? '↑' : '↓'
+                                            }}</span> }</span>
                                     }
                                     }
                                 </div>
@@ -113,7 +148,8 @@
                                 @if (result.item.enchantMods && result.item.enchantMods.length > 0) {
                                 <div class="enchant">
                                     @for (enchantMod of result.item.enchantMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.enchant[$index][0] }}">{{ replaceIllustrate(enchantMod) }}</div>
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.enchant[$index][0] }}">{{
+                                        replaceIllustrate(enchantMod) }}</div>
                                     }
                                 </div>
                                 }
@@ -121,7 +157,7 @@
                                 @if (result.item.grantedSkills && result.item.grantedSkills.length > 0) {
                                 <div class="skill">
                                     @for (grantedSkill of result.item.grantedSkills; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.skill[$index][0] }}">
+                                    <div>
                                         <img [src]="grantedSkill.icon" style="height: 1.4em;" /> {{ grantedSkill.name
                                         }}: {{ grantedSkill.values[0][0] }}
                                     </div>
@@ -132,7 +168,8 @@
                                 @if (result.item.implicitMods && result.item.implicitMods.length > 0) {
                                 <div class="implicit">
                                     @for (implicitMod of result.item.implicitMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.implicit[$index][0] }}">{{ replaceIllustrate(implicitMod) }}</div>
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.implicit[$index][0] }}">{{
+                                        replaceIllustrate(implicitMod) }}</div>
                                     }
                                 </div>
                                 }
@@ -140,7 +177,8 @@
                                 @if (result.item.runeMods && result.item.runeMods.length > 0) {
                                 <div class="rune">
                                     @for (runeMod of result.item.runeMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.rune[$index][0] }}">{{ replaceIllustrate(runeMod) }}</div>
+                                    <div>{{
+                                        replaceIllustrate(runeMod) }}</div>
                                     }
                                 </div>
                                 }
@@ -150,21 +188,39 @@
                                 }
                                 <!-- 破裂 -->
                                 @if (result.item.fracturedMods && result.item.fracturedMods.length >0) {
-                                <div class="explicit">
+                                <div class="fractured">
                                     @for (fracturedMod of result.item.fracturedMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.fractured[$index][0] }}">{{ replaceIllustrate(fracturedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.fractured?.[$index]?.[1],
-                                            result.item.extended?.mods?.fractured)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.fractured?.[$index]?.[1],
-                                            result.item.extended?.mods?.fractured)"></span></div>
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.fractured[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended.hashes.fractured[$index][0])">
+                                        {{ replaceIllustrate(fracturedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.fractured?.[$index]?.[1],
+                                            result.item.extended?.mods?.fractured)"></span><span class="tier"
+                                            [innerHTML]="getTierLevel(result.item.extended?.hashes?.fractured?.[$index]?.[1],
+                                            result.item.extended?.mods?.fractured)"></span>
+                                        @if (currentSortType === 'stat.' +
+                                        result.item.extended.hashes.fractured[$index][0]) {
+                                        <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                        }
+                                    </div>
                                     }
                                 </div>
                                 }
                                 <!-- 隨機 -->
-                                @if (result.item.explicitMods && result.item.explicitMods.length > 0) {
+                                @if (result.item.explicitMods && result.item.explicitMods.length > 0 &&
+                                !result.item.extended.hashes.sanctum) {
                                 <div class="explicit">
                                     @for (explicitMod of result.item.explicitMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.explicit[$index][0] }}">{{ replaceIllustrate(explicitMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit?.[$index]?.[1],
-                                            result.item.extended?.mods?.explicit)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.explicit?.[$index]?.[1],
-                                            result.item.extended?.mods?.explicit)"></span></div>
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.explicit[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended.hashes.explicit[$index][0])">
+                                        {{
+                                        replaceIllustrate(explicitMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit?.[$index]?.[1],
+                                            result.item.extended?.mods?.explicit)"></span><span class="tier"
+                                            [innerHTML]="getTierLevel(result.item.extended?.hashes?.explicit?.[$index]?.[1],
+                                            result.item.extended?.mods?.explicit)"></span>
+                                        @if (currentSortType === 'stat.' +
+                                        result.item.extended.hashes.explicit[$index][0]) {
+                                        <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                        }
+                                    </div>
                                     }
                                 </div>
                                 }
@@ -172,10 +228,19 @@
                                 @if (result.item.craftedMods && result.item.craftedMods.length >0) {
                                 <div class="crafted">
                                     @for (craftedMod of result.item.craftedMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.crafted[$index][0] }}">{{ replaceIllustrate(craftedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.crafted?.[$index]?.[1],
-                                            result.item.extended?.mods?.crafted)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.crafted?.[$index]?.[1],
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.crafted[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended.hashes.crafted[$index][0])">
+                                        {{
+                                        replaceIllustrate(craftedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.crafted?.[$index]?.[1],
+                                            result.item.extended?.mods?.crafted)"></span><span class="tier"
+                                            [innerHTML]="getTierLevel(result.item.extended?.hashes?.crafted?.[$index]?.[1],
                                             result.item.extended?.mods?.crafted)">
-                                        </span></div>
+                                        </span>
+                                        @if (currentSortType === 'stat.' +
+                                        result.item.extended.hashes.crafted[$index][0]) {
+                                        <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                        }
+                                    </div>
                                     }
                                 </div>
                                 }
@@ -183,25 +248,104 @@
                                 @if (result.item.desecratedMods && result.item.desecratedMods.length > 0) {
                                 <div class="desecrated">
                                     @for (desecratedMod of result.item.desecratedMods; track $index) {
-                                    <div attr.data-field="stat.{{ result.item.extended.hashes.desecrated[$index][0] }}">{{ replaceIllustrate(desecratedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.desecrated?.[$index]?.[1],
-                                            result.item.extended?.mods?.desecrated)"></span><span class="tier" [innerHTML]="getTierLevel(result.item.extended?.hashes?.desecrated?.[$index]?.[1],
-                                            result.item.extended?.mods?.desecrated)"></span></div>
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.desecrated[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended.hashes.desecrated[$index][0])">
+                                        {{ replaceIllustrate(desecratedMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.desecrated?.[$index]?.[1],
+                                            result.item.extended?.mods?.desecrated)"></span><span class="tier"
+                                            [innerHTML]="getTierLevel(result.item.extended?.hashes?.desecrated?.[$index]?.[1],
+                                            result.item.extended?.mods?.desecrated)"></span>
+                                        @if (currentSortType === 'stat.' +
+                                        result.item.extended.hashes.desecrated[$index][0]) {
+                                        <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                        }
+                                    </div>
+                                    }
+                                </div>
+                                }
+                                <!-- 聖物 -->
+                                @if (result.item.explicitMods && result.item.explicitMods.length > 0 &&
+                                result.item.extended.hashes.sanctum) {
+                                <div class="sanctum">
+                                    @for (explicitMod of result.item.explicitMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.sanctum[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended.hashes.sanctum[$index][0])">
+                                        {{ replaceIllustrate(explicitMod) }}<span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.sanctum?.[$index]?.[1],
+                                            result.item.extended?.mods?.sanctum)"></span><span class="tier"
+                                            [innerHTML]="getTierLevel(result.item.extended?.hashes?.sanctum?.[$index]?.[1],
+                                            result.item.extended?.mods?.sanctum)"></span>
+                                        @if (currentSortType === 'stat.' +
+                                        result.item.extended.hashes.sanctum[$index][0]) {
+                                        <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                        }
+                                    </div>
+                                    }
+                                </div>
+                                }
+                                <!-- 偽屬性 -->
+                                @if (result.item.pseudoMods && result.item.pseudoMods.length > 0) {
+                                <div class="pseudo">
+                                    @for (pseudoMod of result.item.pseudoMods; track $index) {
+                                    <div attr.data-field="stat.{{ result.item.extended.hashes.pseudo[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended.hashes.pseudo[$index][0])">
+                                        {{ replaceIllustrate(pseudoMod) }}
+                                        @if (currentSortType === 'stat.' +
+                                        result.item.extended.hashes.pseudo[$index][0]) {
+                                        <span>{{ currentSortDir === 'asc' ? '↑' : '↓' }}</span>
+                                        }
+                                    </div>
                                     }
                                 </div>
                                 }
                                 @if (result.item.fracturedMods || result.item.explicitMods || result.item.craftedMods ||
-                                result.item.desecratedMods) {
+                                result.item.desecratedMods || result.item.pseudoMods) {
+                                <hr>
+                                }
+                                @if (!result.item.identified && result.item.frameTypeId !== 'Currency') {
+                                <div class="identified">未鑑定</div>
+                                }
+                                @if (result.item.corrupted && !result.item.doubleCorrupted) {
+                                <div class="corrupted">已汙染</div>
+                                }
+                                @if (result.item.doubleCorrupted) {
+                                <div class="doubleCorrupted">雙重腐化</div>
+                                }
+                                @if (result.item.duplicated) {
+                                <div class="duplicated">已複製</div>
+                                }
+                                @if (result.item.sanctified) {
+                                <div class="sanctified">聖化</div>
+                                }
+                                @if (result.item.notableProperties && result.item.notableProperties.length > 0) {
+                                @for (notable of result.item.notableProperties; track $index){
+                                <div class="notable">{{ notable.name }}</div>
+                                @for (value of notable.values; track $index){
+                                <div>{{ replaceIllustrate(value[0]) }}</div>
+                                }
+                                }
+                                }
+                                @if ((!result.item.identified && result.item.frameTypeId !== 'Currency') ||
+                                result.item.corrupted || result.item.doubleCorrupted || result.item.duplicated ||
+                                result.item.sanctified || result.item.notableProperties) {
                                 <hr>
                                 }
                                 @let tradeToken = result.listing.hideout_token || result.listing.whisper_token;
                                 @let isHideout = !!result.listing.hideout_token;
-                                <div style="margin-top: 2px;">報價: {{ result.listing.price.amount }}<span
-                                        style="color: #a38d6d;"> &#215; </span><img
-                                        [src]="currencysList.get(result.listing.price.currency).image" placement="top"
-                                        [ngbTooltip]="currencysList.get(result.listing.price.currency).text"
-                                        style="cursor: pointer;width:22px;height:22px;"> <span style="color: #a38d6d;">
+                                <div style="margin-top: 2px;">報價: <span style="color: #a38d6d; cursor: pointer;"
+                                        (click)="clickToSort('price')">
+                                        {{
+                                        result.listing.price.amount }} &#215; <img
+                                            [src]="currencysList.get(result.listing.price.currency).image"
+                                            placement="top"
+                                            [ngbTooltip]="currencysList.get(result.listing.price.currency).text"
+                                            style="cursor: pointer;width:22px;height:22px;">@if (currentSortType ===
+                                        'price') { <span>{{ currentSortDir === 'asc' ? '↑' :
+                                            '↓' }}</span> }</span> <span style="color: #a38d6d; cursor: pointer;"
+                                        (click)="clickToSort('fee')">
                                         手續費: <span class="gold-icon"></span> {{
-                                        result.listing.fee }} 帳號: {{ result.listing.account.name }} </span>
+                                        result.listing.fee }}@if (currentSortType === 'fee') { <span>{{ currentSortDir
+                                            === 'asc' ? '↑' : '↓'
+                                            }}</span> }</span> <span style="color: #a38d6d;">帳號: {{
+                                        result.listing.account.name }} </span>
                                     @if (isSessionValid) {
                                     <span class="trade"
                                         [style.color]="processingTokens.has(tradeToken) ? '#666' : (successTokens.has(tradeToken) ? '#28a745' : null)"

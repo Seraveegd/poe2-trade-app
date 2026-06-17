@@ -262,7 +262,7 @@ export class Data {
                     this.basics.categorizedItems.push(element);
                     break;
                 case 4: // 長矛起始點 { "type": "硬木長矛", "text": "硬木長矛" }
-                    element.name = "長矛";
+                    element.name = "長鋒";
                     element.option = "weapon.spear";
                     element.weapon = "weapon.onemelee" // "weapon.one" 單手武器
                     this.basics.categorizedItems.push(element);

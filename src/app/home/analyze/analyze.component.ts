@@ -13,9 +13,13 @@ import { NgbTooltipModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 export class AnalyzeComponent implements OnInit, OnChanges {
   @Output() isCounting = new EventEmitter<any>();
   @Output() statsFilter = new EventEmitter<any>();
+  @Output() changeSort = new EventEmitter<any>();
   @Input({ required: true }) searchResult: any = [];
   @Input({ required: true }) isAnalyze: any = true;
   @Input() isSessionValid: boolean = false;
+  @Input() currentSortType: string = 'price'; // 改為 Input 接收父組件狀態
+  @Input() currentSortDir: 'asc' | 'desc' = 'asc'; // 改為 Input
+  @Input() pseudos: any = [];
 
   public defenceTypes: any = new Map([
     ['能量護盾', 'es'],
@@ -24,7 +28,17 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     ['保護', 'ward'],
     ['格擋機率', 'block'],
     ['物理傷害', 'pdps'],
-    ['元素傷害', 'edps']
+    ['元素傷害', 'edps'],
+    ['每秒攻擊次數', 'aps'],
+    ['暴擊率', 'crit'],
+    ['物理傷害', 'pdamage'],
+    ['品質', 'quality'],
+    ['元素傷害', 'edamage'],
+    ['精魂', 'spirit'],
+    ['敏捷', 'dex'],
+    ['力量', 'str'],
+    ['智慧', 'int'],
+    ['重新裝填時間', 'reload_time']
   ]);
 
   private rarityColors: any = new Map([
@@ -33,6 +47,12 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     ['Magic', '#8888ff'],
     ['Relic', '#82ad6a'],
     ['Normal', '#c8c8c8']
+  ]);
+
+  public eDemageColors: any = new Map([
+    ['火焰傷害', '#960000'],
+    ['閃電傷害', '#ffd700'],
+    ['冰冷傷害', '#366492']
   ]);
 
   public fetchResult: any = []; //回傳結果
@@ -136,7 +156,7 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       for (let i = 0; i < this.searchResult.fetchID.length && i < this.maxRead; i += 10) {
         const fetchIDs = this.searchResult.fetchID.slice(i, i + 10);
 
-        this.observ.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID));
+        this.observ.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID, this.pseudos));
       }
 
       //價格分析
@@ -340,5 +360,16 @@ export class AnalyzeComponent implements OnInit, OnChanges {
 
   filterByProperty(hashs: any, rarity: any) {
     this.statsFilter.emit({ hashs: hashs, rarity: rarity });
+  }
+
+  clickToSort(sortType: any) {
+    // 根據目前的 Input 狀態計算下一次應該發送的排序
+    let nextDir: 'asc' | 'desc' = 'desc';
+    if (this.currentSortType === sortType) {
+      nextDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+    }
+
+    // 發送物件給父組件，父組件更新後會透過 @Input 傳回新的 currentSortDir
+    this.changeSort.emit({ [sortType]: nextDir });
   }
 }

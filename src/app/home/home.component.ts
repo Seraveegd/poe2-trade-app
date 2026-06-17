@@ -39,6 +39,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   public poeSessionId: string = '';
   public tempRenameValue: string = '';
   customStat: any;
+  public currentSortType: string = 'price'; // 提升排序種類狀態
+  public currentSortDir: 'asc' | 'desc' = 'asc'; // 提升排序方向狀態
+  public selectedFilterMethod: string = 'and'; // 紀錄目前選擇的過濾方式 (and 或 count)
   private sessionCheckSubject = new Subject<string>();
 
   @ViewChild('instance') instance!: NgbTypeahead;
@@ -78,6 +81,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   private modalService = inject(NgbModal);
   private shell!: Shell;
   private subscriptions = new Subscription();
+
+  //篩選器方法
+  public filterMethods: any = [
+    {
+      label: "和",
+      prop: 'and'
+    },
+    {
+      label: "總計",
+      prop: 'count'
+    }
+  ]
 
   public isCollapsed: boolean = false;
   public typeColors: any = new Map([
@@ -127,6 +142,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     ['weapon.twomelee', '雙手近戰武器']
   ]);
 
+  public pseudos: any = [];
+
   //目前相關狀態
   public app: any = {
     baseUrl: 'https://pathofexile.tw',
@@ -165,9 +182,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     basic: '', //物品基底
     supported: true,
     copyText: '',
-    searchStats: [], // 分析拆解後的物品詞綴陣列，提供使用者在界面勾選是否查詢及輸入數值
+    searchStats: [], // 分析方法:AND
+    searchStatsCount: [], // 分析方法:COUNT
     searchDefences: []
   };
+
+  public methodCount = {
+    min: '',
+    max: ''
+  }
 
   //搜尋相關設定
   public searchOptions: any = {
@@ -503,9 +526,11 @@ export class HomeComponent implements OnInit, OnDestroy {
           level: -1 // 自定義詞綴設定為 -1 以區別於分析出的階層
         };
 
-        // 檢查是否已存在相同 ID 的詞綴，避免重複加入
-        if (!this.item.searchStats.some((s: any) => s.id === newStat.id)) {
-          this.item.searchStats = [...this.item.searchStats, newStat];
+        // 根據選擇的過濾方式決定加入哪個清單 (searchStats 或 searchStatsCount)
+        const targetKey = this.selectedFilterMethod === 'count' ? 'searchStatsCount' : 'searchStats';
+
+        if (!this.item[targetKey].some((s: any) => s.id === newStat.id)) {
+          this.item[targetKey] = [...this.item[targetKey], newStat];
         }
       }
     }
@@ -665,6 +690,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.item.searchStats = [];
     this.item.searchDefences = [];
 
+    this.currentSortType = 'price'; // 重置時恢復預設排序
+    this.currentSortDir = 'asc';
+
     this.app.apiErrorStr = '';
     this.app.preCopyText = '';
 
@@ -722,12 +750,18 @@ export class HomeComponent implements OnInit, OnDestroy {
    * 根據目前的 UI 狀態構建完整的搜尋 JSON 物件
    */
   private prepareSearchJson() {
+    this.pseudos = [];
+
     if ((this.searchOptions.itemLevel.isSearch || this.searchOptions.itemBasic.isSearch) && this.item.category === '') {
       this.item.category = 'item';
     }
 
+    if (!this.ui.collapse.custom) {
+      delete this.filters.searchJson.query.filters.trade_filters;
+    }
+
     // 每次搜尋前重置動態過濾區塊，確保搜尋條件與目前的 UI 顯示完全同步
-    this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
+    this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }, { "type": "count", "filters": [] }];
     if (this.filters.searchJson.query.filters.equipment_filters) {
       this.filters.searchJson.query.filters.equipment_filters.filters = {};
     }
@@ -759,8 +793,58 @@ export class HomeComponent implements OnInit, OnDestroy {
           "disabled": !element.isSearch,
           "value": value
         })
+
+        if (element.id.includes('pseudo')) {
+          this.pseudos.push(element.id);
+        }
       }
     })
+
+    this.item.searchStatsCount.forEach((element: any) => {
+      if (element.id !== '') {
+        let value = {};
+        let min = element.min;
+        let max = element.max;
+
+        if (!isNaN(min) && min != '') {
+          Object.assign(value, { min: Number(min) });
+        }
+
+        if (!isNaN(max) && max != '') {
+          Object.assign(value, { max: Number(max) });
+        }
+
+        if (element.option) {
+          Object.assign(value, { option: element.option });
+        }
+
+        if (element.isSearch) searchCount++;
+
+        this.filters.searchJson.query.stats[1].filters.push({
+          "id": element.id,
+          "disabled": !element.isSearch,
+          "value": value
+        })
+
+        if (element.id.includes('pseudo')) {
+          this.pseudos.push(element.id);
+        }
+      }
+    })
+    if (this.item.searchStatsCount.length > 0) {
+      let value = {};
+      let min = this.methodCount.min;
+      let max = this.methodCount.max;
+
+      if (!isNaN(Number(min)) && Number(min) > 0) {
+        Object.assign(value, { min: Number(min) });
+      }
+      if (!isNaN(Number(max)) && Number(max) > 0) {
+        Object.assign(value, { max: Number(max) });
+      }
+
+      this.filters.searchJson.query.stats[1].value = value
+    }
 
     if (this.filters.searchJson.query.filters.equipment_filters.filters) {
       this.item.searchDefences.forEach((element: any) => {
@@ -908,7 +992,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //是否針對物品分類搜尋
   isItemCategorySearch() {
     if (!this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj) {
-      this.filters.searchJson.query.filters.type_filters.filters.category = {}; // 刪除物品種類 filter
+      delete this.filters.searchJson.query.filters.type_filters.filters.category; // 刪除物品種類 filter
     } else if (this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj) {
       this.filters.searchJson.query.filters.type_filters.filters.category = { // 增加物品種類 filter
         option: this.searchOptions.itemCategory.chosenObj
@@ -957,6 +1041,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //點擊後搜尋
   clickToSearch() { // TODO: 重構物品/地圖交替搜尋時邏輯 stats: [{type: "and", filters: [], disabled: true(?)}]
+    this.currentSortType = 'price'; // 點擊時恢復預設排序
+    this.currentSortDir = 'asc';
+
     if (this.item.category === 'item' || this.item.category === 'unique' || this.item.category === 'map') {
       this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
       this.filters.searchJson.query.filters.equipment_filters = { filters: {} };
@@ -1042,8 +1129,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   /**
    * 移除特定索引的詞綴
    */
-  removeStat(index: number) {
-    this.item.searchStats.splice(index, 1);
+  removeStat(index: number, type: string) {
+    switch (type) {
+      case 'and':
+        this.item.searchStats.splice(index, 1);
+        break;
+      case 'count':
+        this.item.searchStatsCount.splice(index, 1);
+        break;
+    }
     this.cdr.markForCheck();
   }
 
@@ -1288,9 +1382,21 @@ export class HomeComponent implements OnInit, OnDestroy {
         })
       }
     });
-    
+
     this.ui.collapse.stats = false; // 關鍵：選擇後強制展開詞綴列表介面
     this.customStat = ''; // 選擇完畢後清空輸入框內容
+    this.cdr.markForCheck();
+  }
+
+  changeSort(sort: any) {
+    this.filters.searchJson.sort = sort;
+    // 解析傳入的物件以記錄目前的狀態
+    const entries = Object.entries(sort);
+    if (entries.length > 0) {
+      this.currentSortType = entries[0][0];
+      this.currentSortDir = entries[0][1] as any;
+    }
+    this.searchTrade();
     this.cdr.markForCheck();
   }
 }

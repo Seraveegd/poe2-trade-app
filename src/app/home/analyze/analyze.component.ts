@@ -1,16 +1,16 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { AppService } from '../../app.service';
-import { forkJoin } from 'rxjs';
-import { NgbTooltipModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { from, concatMap, toArray } from 'rxjs';
+import { NgbTooltipModule, NgbAlertModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-analyze',
-  imports: [NgbTooltipModule, NgbAlertModule],
+  imports: [NgbTooltipModule, NgbAlertModule, NgbToastModule],
   templateUrl: './analyze.component.html',
   styleUrl: './analyze.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AnalyzeComponent implements OnInit, OnChanges {
+export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   @Output() isCounting = new EventEmitter<any>();
   @Output() statsFilter = new EventEmitter<any>();
   @Output() changeSort = new EventEmitter<any>();
@@ -38,7 +38,8 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     ['敏捷', 'dex'],
     ['力量', 'str'],
     ['智慧', 'int'],
-    ['重新裝填時間', 'reload_time']
+    ['重新裝填時間', 'reload_time'],
+    ['等級', 'gem_level']
   ]);
 
   private rarityColors: any = new Map([
@@ -56,13 +57,16 @@ export class AnalyzeComponent implements OnInit, OnChanges {
   ]);
 
   public fetchResult: any = []; //回傳結果
-  public maxRead = 40; //每次讀取
+  public maxRead = 100; // 最大讀取量改為 100
+  public currentRead = 0; // 紀錄目前已從 fetchID 讀取的索引位置
+  public isLoading = false; // 讀取鎖定，改為 public 讓模板可存取
   public observ: any = []; //紀錄序列
   public processingTokens = new Set<string>(); // 紀錄正在處理中的交易 Token
   public failedTokens = new Set<string>(); // 紀錄請求失敗的交易 Token
   public successTokens = new Set<string>(); // 紀錄請求成功的交易 Token
   public errorMessages = new Map<string, string>(); // 紀錄每個 Token 的錯誤訊息
   private alertTimeouts = new Map<string, any>(); // 紀錄每個 Token 的計時器
+  public toasts: any[] = []; // 存放所有 Toast 訊息
 
   //價格分析
   public computed: any = new Map(); //價格統計  
@@ -75,12 +79,36 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       text: "蛻變石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9NYWdpYyIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/2f8e1ff9f8/CurrencyUpgradeToMagic.png"
     }],
+    ["greater-orb-of-transmutation", {
+      text: "高階蛻變石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9NYWdpYyIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/2f8e1ff9f8/CurrencyUpgradeToMagic.png"
+    }],
+    ["perfect-orb-of-transmutation", {
+      text: "完美蛻變石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9NYWdpYyIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/2f8e1ff9f8/CurrencyUpgradeToMagic.png"
+    }],
     ["aug", {
       text: "增幅石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb01hZ2ljIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c8ad0ddc84/CurrencyAddModToMagic.png"
     }],
+    ["greater-orb-of-augmentation", {
+      text: "高階增幅石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb01hZ2ljIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c8ad0ddc84/CurrencyAddModToMagic.png"
+    }],
+    ["perfect-orb-of-augmentation", {
+      text: "完美增幅石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb01hZ2ljIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c8ad0ddc84/CurrencyAddModToMagic.png"
+    }],
     ["regal", {
       text: "富豪石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlTWFnaWNUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/e8fb148e80/CurrencyUpgradeMagicToRare.png"
+    }],
+    ["greater-regal-orb", {
+      text: "高階富豪石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlTWFnaWNUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/e8fb148e80/CurrencyUpgradeMagicToRare.png"
+    }],
+    ["perfect-regal-orb", {
+      text: "完美富豪石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlTWFnaWNUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/e8fb148e80/CurrencyUpgradeMagicToRare.png"
     }],
     ["annul", {
@@ -90,9 +118,25 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     ["exalted", {
       text: "崇高石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png"
+    }], 
+    ["greater-exalted-orb", {
+      text: "高階崇高石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png"
+    }],
+    ["perfect-exalted-orb", {
+      text: "完美崇高石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png"
     }],
     ["chaos", {
       text: "混沌石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxSYXJlIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c0ca392a78/CurrencyRerollRare.png"
+    }],
+    ["greater-chaos-orb", {
+      text: "高階混沌石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxSYXJlIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c0ca392a78/CurrencyRerollRare.png"
+    }],
+    ["perfect-chaos-orb", {
+      text: "完美混沌石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxSYXJlIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c0ca392a78/CurrencyRerollRare.png"
     }],
     ["vaal", {
@@ -116,12 +160,16 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9VbmlxdWUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/93c6cc8d5b/CurrencyUpgradeToUnique.png"
     }],
     ["artificers", {
-      text: "工匠石",
+      text: "巧匠石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRFcXVpcG1lbnRTb2NrZXQiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/5131fd4774/CurrencyAddEquipmentSocket.png"
     }],
     ["wisdom", {
       text: "知識卷軸",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lJZGVudGlmaWNhdGlvbiIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/884f7bc58b/CurrencyIdentification.png"
+    }],
+  ["fracturing-orb", {
+      text: "破裂石",
+      image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvRnJhY3R1cmluZ09yYiIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8b85ed1dc2/FracturingOrb.png"
     }]]);
 
   constructor(private poe_service: AppService, private cdr: ChangeDetectorRef) {
@@ -138,6 +186,31 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     if (this.searchResult?.fetchID?.length > 0) {
       this.analyze();
     }
+
+    // 監聽重試狀態
+    this.poe_service.retryStatus$.subscribe(msg => {
+      // 先移除舊的重試訊息
+      this.toasts = this.toasts.filter(t => t.type !== 'retry');
+
+      if (msg) {
+        this.toasts.push({
+          type: 'retry',
+          text: msg,
+          classname: 'bg-warning text-dark',
+          autohide: false
+        });
+      }
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.alertTimeouts.forEach(t => clearTimeout(t));
+  }
+
+  removeToast(toast: any) {
+    this.toasts = this.toasts.filter(t => t !== toast);
+    this.cdr.markForCheck();
   }
 
   //取得每個物品資料
@@ -152,9 +225,12 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       this.errorMessages.clear();
       this.alertTimeouts.forEach(t => clearTimeout(t));
       this.alertTimeouts.clear();
+      this.currentRead = 0;
 
-      for (let i = 0; i < this.searchResult.fetchID.length && i < this.maxRead; i += 10) {
-        const fetchIDs = this.searchResult.fetchID.slice(i, i + 10);
+      // 初始讀取：設定為前 40 筆（或總數若少於 40）
+      const initialCount = Math.min(this.searchResult.fetchID.length, 40);
+      for (let i = 0; i < initialCount; i += 10) {
+        const fetchIDs = this.searchResult.fetchID.slice(i, Math.min(i + 10, initialCount));
 
         this.observ.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID, this.pseudos));
       }
@@ -183,9 +259,13 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       return;
     }
 
-    forkJoin([...this.observ]).subscribe({
+    from(this.observ).pipe(
+      concatMap((obs: any) => obs),
+      toArray()
+    ).subscribe({
       next: (res: any) => {
         this.fetchResult = [].concat(...res.map((e: any) => { return e.result }));
+        this.currentRead = this.fetchResult.length; // 更新目前讀取進度
         if (this.fetchResult.length > 0) this.itemImage = this.fetchResult[0].item.icon;
 
         this.fetchResult.forEach((item: any) => {
@@ -219,7 +299,14 @@ export class AnalyzeComponent implements OnInit, OnChanges {
         this.cdr.markForCheck(); // 非同步作業結束，手動通知 UI 更新
       },
       error: (error: any) => {
-        console.error(error.error?.message || error.message);
+        let msg = '';
+        if (error.status === 429) {
+          msg = '請求過於頻繁 (429)，請稍候再試。';
+        } else {
+          msg = error.error?.message || error.message;
+        }
+        this.toasts.push({ text: msg, classname: 'bg-danger text-light', delay: 5000 });
+        console.error(msg);
         this.isCounting.emit(false);
         this.cdr.markForCheck();
       }
@@ -233,16 +320,83 @@ export class AnalyzeComponent implements OnInit, OnChanges {
       return;
     }
 
-    forkJoin([...this.observ]).subscribe({
+    from(this.observ).pipe(
+      concatMap((obs: any) => obs),
+      toArray()
+    ).subscribe({
       next: (res: any) => {
         this.fetchResult = [].concat(...res.map((e: any) => { return e.result }));
-
+        this.currentRead = this.fetchResult.length; // 更新目前讀取進度
         this.isCounting.emit(false);
         this.cdr.markForCheck(); // 非同步作業結束，手動通知 UI 更新
 
       },
       error: (error: any) => {
-        console.error(error.error?.message || error.message);
+        let msg = '';
+        if (error.status === 429) {
+          msg = '請求過於頻繁 (429)，請稍候再試。';
+        } else {
+          msg = error.error?.message || error.message;
+        }
+        this.toasts.push({ text: msg, classname: 'bg-danger text-light', delay: 5000 });
+        console.error(msg);
+        this.isCounting.emit(false);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  // 監聽視窗捲動事件
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    // 1. 如果是價格分析模式（不顯示列表）則不處理
+    // 2. 如果正在載入、或已達 100 筆上限、或已載入全部搜尋結果，則不處理
+    if (this.isAnalyze || this.isLoading || this.currentRead >= this.maxRead || this.currentRead >= this.searchResult.fetchID.length) {
+      return;
+    }
+
+    // 計算捲動位置是否接近底部 (緩衝距離 200px)
+    const pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.clientHeight;
+    const max = document.documentElement.scrollHeight;
+
+    if (pos > max - 200) {
+      this.loadMore();
+    }
+  }
+
+  // 載入更多批次 (Lazy Loading)
+  loadMore() {
+    if (this.isLoading) return;
+
+    const start = this.currentRead;
+    const nextCount = 10; // 每次觸發捲動額外加載 10 筆
+    const end = Math.min(start + nextCount, this.searchResult.fetchID.length, this.maxRead);
+
+    if (start >= end) return;
+
+    this.isLoading = true;
+    this.isCounting.emit(true);
+
+    const moreObserv = [];
+    for (let i = start; i < end; i += 10) {
+      const fetchIDs = this.searchResult.fetchID.slice(i, Math.min(i + 10, end));
+      moreObserv.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID, this.pseudos));
+    }
+
+    from(moreObserv).pipe(
+      concatMap((obs: any) => obs),
+      toArray()
+    ).subscribe({
+      next: (res: any) => {
+        const newItems = [].concat(...res.map((e: any) => e.result));
+        this.fetchResult = [...this.fetchResult, ...newItems]; // 將新項目附加到現有結果後方
+        this.currentRead = end;
+        this.isLoading = false;
+        this.isCounting.emit(false);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isLoading = false;
         this.isCounting.emit(false);
         this.cdr.markForCheck();
       }
@@ -264,14 +418,18 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     return tiers.length > 0 ? tiers.map(t => t).join(' + ') : '';
   }
 
-  getTierLevelDetail(hashes: any, mods: any) {
+  getTierLevelDetail(hashes: any, mods: any, statId: any) {
     // 1. 安全檢查：確保資料存在且 hashes 是陣列
     if (!hashes || !mods || !Array.isArray(hashes)) return '';
 
     // 2. 透過索引陣列 hashes 從 mods 中提取對應的 tier 
     // 注意：API 回傳的是純物件，直接使用 .tier 存取
     const tiers = hashes
-      .map(index => this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "]"))
+      .map((index: any) => {
+        return mods[index]?.magnitudes.length === 1 ?
+          (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "]")) : mods[index]?.magnitudes[0].hash === mods[index]?.magnitudes[1].hash ?
+            (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "] 至 [" + (mods[index]?.magnitudes[1].min === mods[index]?.magnitudes[1].max ? mods[index]?.magnitudes[1].min : mods[index]?.magnitudes[1].min + "-" + mods[index]?.magnitudes[1].max) + "]")) : (statId === mods[index]?.magnitudes[0].hash ? (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "]")) : (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[1].min === mods[index]?.magnitudes[1].max ? mods[index]?.magnitudes[1].min : mods[index]?.magnitudes[1].min + "-" + mods[index]?.magnitudes[1].max) + "]")))
+      })
       .filter(t => t !== undefined && t !== null);
 
     // 3. 格式化輸出，例如單一詞綴顯示 "T1"，複合詞綴顯示 "T1 + T2"
@@ -336,6 +494,13 @@ export class AnalyzeComponent implements OnInit, OnChanges {
         this.errorMessages.set(token, msg);
         this.failedTokens.add(token);
 
+        // 同時彈出 Toast 提示
+        this.toasts.push({
+          text: `交易失敗: ${msg}`,
+          classname: 'bg-danger text-light',
+          delay: 5000
+        });
+
         // 設定 5 秒後自動移除該筆錯誤
         if (this.alertTimeouts.has(token)) clearTimeout(this.alertTimeouts.get(token));
         const timeout = setTimeout(() => {
@@ -358,18 +523,30 @@ export class AnalyzeComponent implements OnInit, OnChanges {
     this.cdr.markForCheck();
   }
 
+  /**
+   * 根據目前的排序狀態回傳對應的箭頭符號
+   */
+  getSortArrow(sortType: string | undefined): string {
+    if (!sortType || this.currentSortType !== sortType) {
+      return '';
+    }
+    return this.currentSortDir === 'asc' ? ' ↑' : ' ↓';
+  }
+
   filterByProperty(hashs: any, rarity: any) {
     this.statsFilter.emit({ hashs: hashs, rarity: rarity });
   }
 
   clickToSort(sortType: any) {
-    // 根據目前的 Input 狀態計算下一次應該發送的排序
-    let nextDir: 'asc' | 'desc' = 'desc';
-    if (this.currentSortType === sortType) {
-      nextDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
-    }
+    if (sortType) {
+      // 根據目前的 Input 狀態計算下一次應該發送的排序
+      let nextDir: 'asc' | 'desc' = 'desc';
+      if (this.currentSortType === sortType) {
+        nextDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+      }
 
-    // 發送物件給父組件，父組件更新後會透過 @Input 傳回新的 currentSortDir
-    this.changeSort.emit({ [sortType]: nextDir });
+      // 發送物件給父組件，父組件更新後會透過 @Input 傳回新的 currentSortDir
+      this.changeSort.emit({ [sortType]: nextDir });
+    }
   }
 }

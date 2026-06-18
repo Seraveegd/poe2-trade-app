@@ -9,7 +9,7 @@ export class Data {
     public datas: any = {
         items: [], // 交易網物品 API 資料
         stats: [],  // 交易網詞綴 API 資料
-        ranges: [] //詞綴範圍資料
+        // ranges: [] //詞綴範圍資料
     };
     //物品資料
     public basics: any = {
@@ -23,7 +23,8 @@ export class Data {
             option: [],
             chosenG: '無',
             isSearch: false,
-        }
+        },
+        uniques:[] //傳奇裝備
     };
     //詞綴資料
     public stats: Record<string, Map<string, string[]>> = {
@@ -118,6 +119,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 accessoryIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (accessoryIndex) {
@@ -146,6 +149,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 armourIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (armourIndex) {
@@ -199,6 +204,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 flasksIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (flasksIndex) {
@@ -222,6 +229,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 jewelIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (jewelIndex) {
@@ -240,6 +249,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 weaponIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (weaponIndex) {
@@ -345,6 +356,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 mapIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (mapIndex) {
@@ -398,7 +411,7 @@ export class Data {
         });
         //"id": "gems", "label": "技能寶石"
         result[result.findIndex((e: any) => e.id === "gem")].entries.forEach((element: any) => {
-            this.basics.gem.option.push(element.text);
+            this.basics.gem.option.push(element.type);
         });
         //"id": "sanctum"
         result[result.findIndex((e: any) => e.id === "sanctum")].entries.forEach((element: any) => {
@@ -406,6 +419,8 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 sanctumIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
             }
 
             switch (sanctumIndex) {

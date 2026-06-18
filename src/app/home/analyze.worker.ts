@@ -173,15 +173,15 @@ function analyze(text: string, basics: any, stats: any, config: any) {
         basics.gem.chosenG = searchName;
         basics.gem.isSearch = true;
 
-        if (item.indexOf('輔助寶石') === -1) {
-            let levelPos = item.substring(item.indexOf('等級: ') + 4);
+        if (text.indexOf('輔助寶石') === -1) {
+            let levelPos = text.substring(text.indexOf('等級: ') + 4);
             let levelPosEnd = levelPos.indexOf(newLine);
             searchOptions.gemLevel.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
             searchOptions.gemLevel.isSearch = true;
 
             let minQuality = 0;
-            if (item.indexOf('品質: +') > -1) {
-                let quaPos = item.substring(item.indexOf('品質: +') + 5); // 品質截斷字串 (包含'品質: +'前的字串全截斷)
+            if (text.indexOf('品質: +') > -1) {
+                let quaPos = text.substring(text.indexOf('品質: +') + 5); // 品質截斷字串 (包含'品質: +'前的字串全截斷)
                 let quaPosEnd = quaPos.indexOf('% (augmented)'); // 品質定位點
                 minQuality = parseInt(quaPos.substring(0, quaPosEnd).trim(), 10);
 
@@ -190,13 +190,13 @@ function analyze(text: string, basics: any, stats: any, config: any) {
             }
 
             searchOptions.gemSocket.isSearch = true;
-            searchOptions.gemSocket.min = getSocketNumber(item, newLine);
+            searchOptions.gemSocket.min = getSocketNumber(text, newLine);
         }
     } else if (Rarity === "通貨" || Rarity === "通貨不足") {
         item.category = 'currency';
 
         if (searchName.indexOf('寶石') > -1) {
-            let levelPos = item.substring(item.indexOf('等級: ') + 4);
+            let levelPos = text.substring(text.indexOf('等級: ') + 4);
             let levelPosEnd = levelPos.indexOf(newLine);
             let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
             searchOptions.itemLevel.min = level;
@@ -207,7 +207,7 @@ function analyze(text: string, basics: any, stats: any, config: any) {
         }
 
         if (searchName.indexOf("巨靈之幣") > -1 || searchName.indexOf('最後通牒雕刻') > -1) {
-            let levelPos = item.substring(item.indexOf('區域等級: ') + 6);
+            let levelPos = text.substring(text.indexOf('區域等級: ') + 6);
             let levelPosEnd = levelPos.indexOf(newLine);
             let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
             searchOptions.itemLevel.min = level;

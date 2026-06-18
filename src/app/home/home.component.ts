@@ -30,6 +30,7 @@ import { Data } from './data';
 export class HomeComponent implements OnInit, OnDestroy {
   states: any = [];
   itemBasics: any = [];
+  public itemIcons = new Map<string, string>();
   public savedSearches: any[] = [];
   public selectedSavedSearchIndex: any = null;
   public currentLoadedName: string | null = null;
@@ -284,8 +285,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         label: "等同崇高石",
         prop: ''
       }, {
+        label: "崇高石或神聖石",
+        prop: 'exalted_divine'
+      }, {
         label: "崇高石",
         prop: 'exalted'
+      }, {
+        label: "神聖石",
+        prop: 'divine'
       }, {
         label: "混沌石",
         prop: 'chaos'
@@ -293,11 +300,23 @@ export class HomeComponent implements OnInit, OnDestroy {
         label: "機會石",
         prop: 'chance'
       }, {
-        label: "神聖石",
-        prop: 'divine'
+        label: "增幅石",
+        prop: "aug"
       }, {
-        label: "崇高石或神聖石",
-        prop: 'exalted_divine'
+        label: "蛻變石",
+        prop: "transmute"
+      }, {
+        label: "瓦爾寶珠",
+        prop: "vaal"
+      }, {
+        label: "點金石",
+        prop: "alch"
+      }, {
+        label: "無效石",
+        prop: "annul"
+      }, {
+        label: "卡蘭德魔鏡",
+        prop: "mirror"
       }],
       chosenObj: ''
     },
@@ -1003,7 +1022,28 @@ export class HomeComponent implements OnInit, OnDestroy {
   //是否針對物品基底搜尋
   isItemBasicSearch() {
     if (this.searchOptions.itemBasic.isSearch && this.searchOptions.itemBasic.text) {
-      this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+      let itemBasicStrs = this.searchOptions.itemBasic.text.split(' ');
+      switch (itemBasicStrs.length) {
+        case 1:
+          this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+          break;
+        case 2:
+          this.filters.searchJson.query.name = itemBasicStrs[0];
+          this.filters.searchJson.query.type = itemBasicStrs[1];
+          break;
+        case 3:
+          this.filters.searchJson.query.name = {
+            discriminator: "legacy",
+            option: itemBasicStrs[0]
+          };
+          this.filters.searchJson.query.type = {
+            discriminator: "legacy",
+            option: itemBasicStrs[1]
+          };
+          break;
+        default:
+          this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+      }
     } else {
       delete this.filters.searchJson.query.type;
     }
@@ -1209,14 +1249,42 @@ export class HomeComponent implements OnInit, OnDestroy {
     const allowedPrefixes = ['accessory', 'armour', 'flask', 'jewel', 'weapon', 'map', 'sanctum'];
     const uniqueOptions = new Map<string, { label: string, prop: string }>();
     const basicsSet = new Set<string>();
+    this.itemIcons.clear();
 
     this.data.basics.categorizedItems.forEach((item: any) => {
       // 填充物品名稱到基底清單供 Typeahead 選取
-      if (item.type) basicsSet.add(item.type);
+      if (item.type) {
+        basicsSet.add(item.type);
+        this.itemIcons.set(item.type, '📦'); // 一般裝備基底使用盒子圖示
+      }
 
       const root = item.option?.split('.')[0];
       if (allowedPrefixes.includes(root) && !uniqueOptions.has(item.option)) {
         uniqueOptions.set(item.option, { label: item.name, prop: item.option });
+      }
+    });
+
+    this.data.basics.uniques.forEach((item: any) => {
+      // 填充傳奇物品名稱到清單供 Typeahead 選取
+      if (item.text) {
+        basicsSet.add(item.text);
+        this.itemIcons.set(item.text, '⭐'); // 傳奇物品使用星星圖示
+      }
+    });
+
+    this.data.basics.map.option.forEach((opt: any) => {
+      // 填充地圖基底名稱 (如：換界石、巨靈之幣等)
+      if (opt) {
+        basicsSet.add(opt);
+        this.itemIcons.set(opt, '🗺️'); // 地圖相關使用地圖圖示
+      }
+    });
+
+    this.data.basics.gem.option.forEach((opt: any) => {
+      // 填充技能寶石名稱
+      if (opt) {
+        basicsSet.add(opt);
+        this.itemIcons.set(opt, '💎'); // 技能寶石使用寶石圖示
       }
     });
 

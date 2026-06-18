@@ -26,7 +26,7 @@
 
             .tier_detail {
                 display: none;
-                background-color: #0d0d0d;
+                background-color: rgba(13, 13, 13, 0.7);
                 padding: 0 6px;
             }
 
@@ -43,6 +43,7 @@
 
         .itemDetail div {
             text-align: left;
+            vertical-align: middle;
         }
 
         hr {
@@ -81,7 +82,8 @@
             color: #d20000 !important;
         }
 
-        .fractured, .sanctified {
+        .fractured,
+        .sanctified {
             color: #a29162 !important;
         }
 
@@ -114,6 +116,28 @@
             left: 6px;
         }
 
+        .socket-rune {
+            background: url(https://webtw.poecdn.com/protected/image/gen/socket2.png?v=1781215435194&key=bOOTV3VD4QQrcQMzHLZ1RA) no-repeat center / 35px auto;
+            background-position: 0px -64px;
+            background-size: 16px;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin: 0 6px;
+
+            img {
+                top: 1px;
+                left:1px;
+                right: 1px;
+                bottom: 1px;
+                position: absolute;
+                width: 14px;
+                height: 14px;
+                background: radial-gradient(ellipse at center, rgba(0, 0, 0, .6) 0%, rgba(0, 0, 0, .3) 33%, transparent 70%);
+            }
+
+        }
+
         [data-field="stat.explicit.stat_3299347043"],
         [data-field="stat.explicit.stat_3299347043"] {
             color: #d14e4e
@@ -136,6 +160,28 @@
 
         [data-field] {
             cursor: pointer;
+
+            &:hover {
+                background-color: rgba(84, 84, 84, 0.15) !important;
+                box-shadow: inset 0.1em 0.1em 1em -0.6em rgba(255, 255, 255, 0.3);
+            }
+        }
+    }
+}
+
+/* Toast 樣式優化 */
+.toast-container {
+    ngb-toast {
+        backdrop-filter: blur(8px);
+        border-radius: 4px;
+        margin-top: 0.5rem;
+        
+        .toast-body {
+            padding: 0.75rem 1rem;
+        }
+
+        &.bg-warning {
+            border-left: 4px solid #ffc107 !important;
         }
     }
 }
@@ -162,6 +208,18 @@
                 color: #e5e4e4;
                 border-color: #6d6d6d;
             }
+        }
+    }
+
+    /* 深色模式下的 Toast 調整 */
+    .toast-container ngb-toast {
+        background-color: rgba(33, 37, 41, 0.9) !important; /* 深灰色背景 */
+        color: #e5e4e4;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+        border: 1px solid #444 !important;
+
+        &.bg-warning {
+            color: #212529 !important; /* 警告訊息在深色模式仍保持黃底黑字以示醒目 */
         }
     }
 }

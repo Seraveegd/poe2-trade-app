@@ -295,7 +295,7 @@ let lastText = ''; // 移至外部作用域以利重置
 
         session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
             // 官方要求自定義工具必須提供辨識用的 User-Agent (名稱/版本/聯絡方式)
-            details.requestHeaders['User-Agent'] = 'POE2TradeApp/0.8.3 (Contact: your@email.com)';
+            details.requestHeaders['User-Agent'] = 'POE2TradeApp/0.9.2 (Contact: your@email.com)';
 
             // 模擬官方網站的環境。在 file:// 下 Origin 會是 null，這會觸發 403
             details.requestHeaders['Origin'] = 'https://pathofexile.tw';
@@ -378,7 +378,7 @@ let lastText = ''; // 移至外部作用域以利重置
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.9.1');
+        tray.setToolTip('POE2 查價工具 v0.9.2');
         tray.setContextMenu(contextMenu);
 
         setTimeout(

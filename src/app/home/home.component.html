@@ -265,7 +265,7 @@
                                     <input class="form-check-input" type="checkbox" id="ItemBasicflexSwitchCheckChecked"
                                         [(ngModel)]="searchOptions.itemBasic.isSearch"
                                         (click)="searchOptions.itemBasic.isSearch = !searchOptions.itemBasic.isSearch">
-                                    <label class="form-check-label" for="ItemBasicflexSwitchCheckChecked">物品基底</label>
+                                    <label class="form-check-label" for="ItemBasicflexSwitchCheckChecked">{{ ui.collapse.custom ? '物品基底' : '物品名稱' }}</label>
                                 </div>
                             </div>
                             <div class="col-4">
@@ -274,12 +274,12 @@
                                     [(ngModel)]="searchOptions.itemBasic.text" disabled="true">
                                 } @else {
                                 <ng-template #rt2 let-r="result" let-t="term">
-                                    📦 <ngb-highlight [result]="r" [term]="t"></ngb-highlight>
+                                    {{ itemIcons.get(r) || '📦' }} <ngb-highlight [result]="r" [term]="t"></ngb-highlight>
                                 </ng-template>
 
                                 <div class="position-relative">
                                     <input #itemBasicInput id="custom_itemBasic" type="text" class="form-control pe-4"
-                                        [(ngModel)]="searchOptions.itemBasic.text" placeholder="物品基底"
+                                        [(ngModel)]="searchOptions.itemBasic.text" placeholder="物品名稱"
                                         [ngbTypeahead]="search2" container="body" [resultTemplate]="rt2"
                                         (focus)="focus2$.next($any($event).target.value)"
                                         (click)="click2$.next($any($event).target.value)" #instance2="ngbTypeahead" />

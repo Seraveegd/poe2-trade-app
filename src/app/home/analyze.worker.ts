@@ -203,11 +203,12 @@ function analyze(text: string, basics: any, stats: any, config: any, uxSearchOpt
         // uxSearchOptions.equipment.rune_sockets.min = getSocketNumber(text, newLine);
         // uxSearchOptions.equipment.rune_sockets.max = getSocketNumber(text, newLine);
 
-        if (text.indexOf('未鑑定') === -1) { // 已鑑定傳奇            
-            Object.assign(filters.searchJson.query, { name: searchName, type: itemBasic });
+        searchOptions.itemBasic.isSearch = true;
+        if (text.indexOf('未鑑定') === -1) { // 已鑑定傳奇  
+            searchOptions.itemBasic.text = searchName + ' ' + itemBasic;
             itemStatsAnalysis(itemArray, 1, item, ui, stats, config);
         } else { // 未鑑定傳奇(但會搜到相同基底)
-            Object.assign(filters.searchJson.query, { type: (searchName.indexOf('精良的') > -1) ? searchName.substring(4) : searchName });
+            searchOptions.itemBasic.text = (searchName.indexOf('精良的') > -1) ? searchName.substring(4) : searchName;
         }
     } else if (Rarity === "寶石") {//之後檢視
         item.category = 'gem';

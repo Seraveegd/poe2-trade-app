@@ -154,8 +154,8 @@
                                 <div
                                     [style.backgroundColor]="currentSortType === 'ilvl' ? 'rgba(255, 255, 255, 0.1)' : null">
                                     <span (click)="clickToSort('ilvl')" style="cursor: pointer;">
-                                        物品等級: </span><span style="color: #fff">{{ result.item.ilvl }}</span>
-                                    {{ getSortArrow('ilvl') }}
+                                        物品等級: <span style="color: #fff">{{ result.item.ilvl }}</span>
+                                        {{ getSortArrow('ilvl') }}</span>
                                 </div>
                                 }
                                 @if (result.item.requirements){
@@ -167,7 +167,7 @@
                                         [style.backgroundColor]="currentSortType === 'lvl' ? 'rgba(255, 255, 255, 0.1)' : null">
                                         {{require.name}}
                                         {{ getSortArrow('lvl') }}
-                                    </span><span style="color: #fff">{{ require.type }}</span>
+                                        <span style="color: #fff">{{ require.type }}</span></span>
                                     } @else {
                                     , <span style="cursor: pointer;"
                                         (click)="clickToSort(defenceTypes.get(replaceIllustrate(require.name)))"
@@ -313,11 +313,11 @@
                                 @if (result.item.pseudoMods && result.item.pseudoMods.length > 0) {
                                 <div class="pseudo">
                                     @for (pseudoMod of result.item.pseudoMods; track $index) {
-                                    <div attr.data-field="{{ result.item.extended?.hashes?.pseudo[$index] }}"
-                                        (click)="clickToSort(result.item.extended?.hashes?.pseudo[$index])"
-                                        [style.backgroundColor]="currentSortType === result.item.extended?.hashes?.pseudo[$index] ? 'rgba(255, 255, 255, 0.1)' : null">
+                                    <div attr.data-field="{{ 'stat.' +  result.item.extended?.hashes?.pseudo[$index][0] }}"
+                                        (click)="clickToSort('stat.' + result.item.extended?.hashes?.pseudo[$index][0])"
+                                        [style.backgroundColor]="currentSortType === ('stat.' + result.item.extended?.hashes?.pseudo[$index][0]) ? 'rgba(255, 255, 255, 0.1)' : null">
                                         {{ replaceIllustrate(pseudoMod) }}
-                                        {{ getSortArrow(result.item.extended?.hashes?.pseudo[$index]) }}
+                                        {{ getSortArrow('stat.' + result.item.extended?.hashes?.pseudo[$index][0]) }}
                                     </div>
                                     }
                                 </div>

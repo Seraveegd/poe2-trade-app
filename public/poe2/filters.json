@@ -227,6 +227,10 @@
                                 "text": "魔力藥劑"
                             },
                             {
+                                "id": "flask.charm",
+                                "text": "Charm"
+                            },
+                            {
                                 "id": "map",
                                 "text": "任何終局物品"
                             },
@@ -473,15 +477,19 @@
                     "minMax": true
                 },
                 {
-                    "id": "map_iiq",
-                    "text": "換界石物品數量",
-                    "tip": "物品數量增加",
+                    "id": "map_magic_monsters",
+                    "text": "Monster Effectiveness",
                     "minMax": true
                 },
                 {
                     "id": "map_iir",
                     "text": "換界石物品稀有度",
                     "tip": "物品稀有度增加",
+                    "minMax": true
+                },
+                {
+                    "id": "map_rare_monsters",
+                    "text": "Monster Rarity",
                     "minMax": true
                 },
                 {
@@ -502,16 +510,6 @@
                 {
                     "id": "map_experience",
                     "text": "換界石經驗值獲取",
-                    "minMax": true
-                },
-                {
-                    "id": "map_magic_monsters",
-                    "text": "換界石魔法怪物數量",
-                    "minMax": true
-                },
-                {
-                    "id": "map_rare_monsters",
-                    "text": "換界石稀有怪物數量",
                     "minMax": true
                 },
                 {

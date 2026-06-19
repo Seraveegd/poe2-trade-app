@@ -164,13 +164,532 @@ export class HomeComponent implements OnInit, OnDestroy {
   public ui: any = {
     collapse: {
       custom: true,
-      item: true,
-      map: true,
-      gem: true,
       stats: true,
-      mapArea: false,
-      price: true
+      advanced: true
     }
+  }
+
+  // UX 架構展示區塊專用的資料模型
+  public uxSearchOptions: any = {
+    base: {
+      category: '',
+      rarity: '',
+      ilvl: { min: '', max: '' },
+      quality: { min: '', max: '' }
+    },
+    equipment: {
+      damage: { min: '', max: '' },
+      aps: { min: '', max: '' },
+      crit: { min: '', max: '' },
+      dps: { min: '', max: '' },
+      pdps: { min: '', max: '' },
+      edps: { min: '', max: '' },
+      reload_time: { min: '', max: '' },
+      ar: { min: '', max: '' },
+      ev: { min: '', max: '' },
+      es: { min: '', max: '' },
+      ward: { min: '', max: '' },
+      block: { min: '', max: '' },
+      spirit: { min: '', max: '' },
+      rune_sockets: { min: '', max: '' }
+    },
+    requirements: {
+      lvl: { min: '', max: '' },
+      str: { min: '', max: '' },
+      dex: { min: '', max: '' },
+      int: { min: '', max: '' }
+    },
+    maps: {
+      map_tier: { min: '', max: '' },
+      map_packsize: { min: '', max: '' },
+      map_magic_monsters: { min: '', max: '' },
+      map_rare_monsters: { min: '', max: '' },
+      map_iir: { min: '', max: '' },
+      map_revives: { min: '', max: '' },
+      map_bonus: { min: '', max: '' },
+      map_gold: { min: '', max: '' },
+      map_experience: { min: '', max: '' },
+      ultimatum_hint: ''
+    },
+    misc: {
+      gem_level: { min: '', max: '' },
+      gem_sockets: { min: '', max: '' },
+      area_level: { min: '', max: '' },
+      stack_size: { min: '', max: '' },
+      identified: '',
+      fractured_item: '',
+      corrupted: '',
+      sanctified: '',
+      twice_corrupted: '',
+      mutated: '',
+      veiled: '',
+      desecrated: '',
+      crafted: '',
+      foreseeing: '',
+      mirrored: '',
+      sanctum_gold: { min: '', max: '' },
+      unidentified_tier: { min: '', max: '' }
+    }
+  };
+
+  /**
+   * 遞迴地過濾物件，只保留非空（非空字串、非null、非undefined、非空物件/陣列）的屬性。
+   * 用於在偵錯區塊中顯示更精簡的 uxSearchOptions 狀態。
+   * @param obj 待過濾的物件或值
+   * @returns 過濾後的物件或值，如果整個物件/陣列為空則返回 undefined
+   */
+  public getFilteredUxSearchOptions(obj: any): any {
+    // 核心修正：統一處理 null, undefined 與空字串，將其視為不可顯示的過濾項
+    if (obj === null || obj === undefined || obj === '') {
+      return undefined;
+    }
+
+    if (typeof obj !== 'object') {
+      return obj;
+    }
+
+    // 如果是陣列，遞迴過濾其元素
+    if (Array.isArray(obj)) {
+      const filteredArray = obj.map(item => this.getFilteredUxSearchOptions(item)).filter(item => {
+        // 過濾掉 undefined, null, 空字串, 以及遞迴後變為空物件/空陣列的元素
+        if (item === undefined || item === null || item === '') {
+          return false;
+        }
+        if (typeof item === 'object' && Object.keys(item).length === 0) {
+          return false;
+        }
+        return true;
+      });
+      // 如果陣列過濾後為空，則返回 undefined
+      return filteredArray.length > 0 ? filteredArray : undefined;
+    }
+
+    // 如果是物件，遞迴過濾其屬性
+    const filteredObj: any = {};
+    let hasNonEmptyProperty = false;
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const filteredValue = this.getFilteredUxSearchOptions(obj[key]);
+        if (filteredValue !== undefined) { // 只保留非 undefined 的值
+          filteredObj[key] = filteredValue;
+          hasNonEmptyProperty = true;
+        }
+      }
+    }
+    // 如果物件過濾後為空，則返回 undefined
+    return hasNonEmptyProperty ? filteredObj : undefined;
+  }
+
+  /**
+   * 取得 UX 搜尋選項的預設結構
+   */
+  private getUxSearchOptionsDefaults(): any {
+    return {
+      base: { category: '', rarity: '', ilvl: { min: '', max: '' }, quality: { min: '', max: '' } },
+      equipment: {
+        damage: { min: '', max: '' }, aps: { min: '', max: '' }, crit: { min: '', max: '' }, dps: { min: '', max: '' },
+        pdps: { min: '', max: '' }, edps: { min: '', max: '' }, reload_time: { min: '', max: '' }, ar: { min: '', max: '' },
+        ev: { min: '', max: '' }, es: { min: '', max: '' }, ward: { min: '', max: '' }, block: { min: '', max: '' },
+        spirit: { min: '', max: '' }, rune_sockets: { min: '', max: '' }
+      },
+      requirements: {
+        lvl: { min: '', max: '' }, str: { min: '', max: '' }, dex: { min: '', max: '' }, int: { min: '', max: '' }
+      },
+      maps: {
+        map_tier: { min: '', max: '' }, map_packsize: { min: '', max: '' }, map_magic_monsters: { min: '', max: '' },
+        map_rare_monsters: { min: '', max: '' }, map_iir: { min: '', max: '' }, map_revives: { min: '', max: '' },
+        map_bonus: { min: '', max: '' }, map_gold: { min: '', max: '' }, map_experience: { min: '', max: '' },
+        ultimatum_hint: ''
+      },
+      misc: {
+        gem_level: { min: '', max: '' }, gem_sockets: { min: '', max: '' }, area_level: { min: '', max: '' },
+        stack_size: { min: '', max: '' }, identified: '', fractured_item: '', corrupted: '', sanctified: '',
+        twice_corrupted: '', mutated: '', veiled: '', desecrated: '', crafted: '', foreseeing: '',
+        mirrored: '', sanctum_gold: { min: '', max: '' }, unidentified_tier: { min: '', max: '' }
+      }
+    };
+  }
+
+  /**
+   * 判斷過濾條件是否處於啟動狀態
+   * 排除 null, undefined 與空字串
+   * @param value 欲檢查的數值
+   * @returns 是否為啟動狀態
+   */
+  public isFilterActive(value: any): boolean {
+    return value !== null && value !== undefined && value !== '';
+  }
+
+  /**
+   * 計算特定區塊中已啟用的過濾器數量
+   * @param section 區塊物件 (如 uxSearchOptions.base)
+   */
+  public getActiveFilterCount(section: any): number {
+    if (!section) return 0;
+    let count = 0;
+    for (const key in section) {
+      const val = section[key];
+      // 如果是包含 min/max 的物件，只要其中一個有值就計為 1 項
+      if (val && typeof val === 'object' && ('min' in val || 'max' in val)) {
+        if (this.isFilterActive(val.min) || this.isFilterActive(val.max)) {
+          count++;
+        }
+      } else if (this.isFilterActive(val)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * 計算 uxSearchOptions 全部的啟用過濾器總數
+   */
+  public get totalUxFilterCount(): number {
+    return this.getActiveFilterCount(this.uxSearchOptions.base) +
+      this.getActiveFilterCount(this.uxSearchOptions.equipment) +
+      this.getActiveFilterCount(this.uxSearchOptions.requirements) +
+      this.getActiveFilterCount(this.uxSearchOptions.maps) +
+      this.getActiveFilterCount(this.uxSearchOptions.misc);
+  }
+
+  /**
+   * 檢查 uxSearchOptions 中是否有任何無效的範圍
+   */
+  public get hasUxSearchError(): boolean {
+    const sections = [
+      this.uxSearchOptions.base,
+      this.uxSearchOptions.equipment,
+      this.uxSearchOptions.requirements,
+      this.uxSearchOptions.maps,
+      this.uxSearchOptions.misc
+    ];
+    return sections.some(section => {
+      return Object.values(section).some((val: any) =>
+        val && typeof val === 'object' && 'min' in val && 'max' in val && this.isRangeInvalid(val)
+      );
+    });
+  }
+
+  /**
+   * 驗證數值範圍是否有效
+   */
+  public isRangeInvalid(range: any): boolean {
+    if (!range || range.min === '' || range.max === '' || range.min === null || range.max === null) {
+      return false;
+    }
+    return Number(range.min) > Number(range.max);
+  }
+
+  /**
+   * 重置特定 UX 搜尋區塊
+   */
+  public resetUxSection(section: 'base' | 'equipment' | 'requirements' | 'maps' | 'misc') {
+    const defaults = this.getUxSearchOptionsDefaults();
+    this.uxSearchOptions[section] = JSON.parse(JSON.stringify(defaults[section]));
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * 重置所有 UX 搜尋選項
+   */
+  public resetUxSearchOptions() {
+    this.resetUxSection('base');
+    this.resetUxSection('equipment');
+    this.resetUxSection('requirements');
+    this.resetUxSection('maps');
+    this.resetUxSection('misc');
+  }
+
+  public options = {
+    category: [
+      {
+        "id": null,
+        "text": "任何"
+      },
+      {
+        "id": "weapon",
+        "text": "武器"
+      },
+      {
+        "id": "weapon.onemelee",
+        "text": "任何單手近戰武器"
+      },
+      {
+        "id": "weapon.unarmed",
+        "text": "空手"
+      },
+      {
+        "id": "weapon.claw",
+        "text": "爪"
+      },
+      {
+        "id": "weapon.dagger",
+        "text": "匕首"
+      },
+      {
+        "id": "weapon.onesword",
+        "text": "單手劍"
+      },
+      {
+        "id": "weapon.oneaxe",
+        "text": "單手斧"
+      },
+      {
+        "id": "weapon.onemace",
+        "text": "單手錘"
+      },
+      {
+        "id": "weapon.spear",
+        "text": "長鋒"
+      },
+      {
+        "id": "weapon.flail",
+        "text": "鏈錘"
+      },
+      {
+        "id": "weapon.twomelee",
+        "text": "任何雙手近戰武器"
+      },
+      {
+        "id": "weapon.twosword",
+        "text": "雙手劍"
+      },
+      {
+        "id": "weapon.twoaxe",
+        "text": "雙手斧"
+      },
+      {
+        "id": "weapon.twomace",
+        "text": "雙手錘"
+      },
+      {
+        "id": "weapon.warstaff",
+        "text": "細杖"
+      },
+      {
+        "id": "weapon.talisman",
+        "text": "魔符"
+      },
+      {
+        "id": "weapon.ranged",
+        "text": "任何遠程武器"
+      },
+      {
+        "id": "weapon.bow",
+        "text": "弓"
+      },
+      {
+        "id": "weapon.crossbow",
+        "text": "十字弓"
+      },
+      {
+        "id": "weapon.caster",
+        "text": "任何法術武器"
+      },
+      {
+        "id": "weapon.wand",
+        "text": "法杖"
+      },
+      {
+        "id": "weapon.sceptre",
+        "text": "權杖"
+      },
+      {
+        "id": "weapon.staff",
+        "text": "長杖"
+      },
+      {
+        "id": "weapon.rod",
+        "text": "釣竿"
+      },
+      {
+        "id": "armour",
+        "text": "任意護甲"
+      },
+      {
+        "id": "armour.helmet",
+        "text": "頭盔"
+      },
+      {
+        "id": "armour.chest",
+        "text": "胸甲"
+      },
+      {
+        "id": "armour.gloves",
+        "text": "手套"
+      },
+      {
+        "id": "armour.boots",
+        "text": "鞋子"
+      },
+      {
+        "id": "armour.quiver",
+        "text": "箭袋"
+      },
+      {
+        "id": "armour.shield",
+        "text": "盾"
+      },
+      {
+        "id": "armour.focus",
+        "text": "法器"
+      },
+      {
+        "id": "armour.buckler",
+        "text": "輕盾"
+      },
+      {
+        "id": "accessory",
+        "text": "配件"
+      },
+      {
+        "id": "accessory.amulet",
+        "text": "項鍊"
+      },
+      {
+        "id": "accessory.belt",
+        "text": "腰帶"
+      },
+      {
+        "id": "accessory.ring",
+        "text": "戒指"
+      },
+      {
+        "id": "gem",
+        "text": "任何寶石"
+      },
+      {
+        "id": "gem.activegem",
+        "text": "技能寶石"
+      },
+      {
+        "id": "gem.supportgem",
+        "text": "輔助寶石"
+      },
+      {
+        "id": "gem.metagem",
+        "text": "主要寶石"
+      },
+      {
+        "id": "jewel",
+        "text": "任何珠寶"
+      },
+      {
+        "id": "flask",
+        "text": "任何藥劑"
+      },
+      {
+        "id": "flask.life",
+        "text": "生命藥劑"
+      },
+      {
+        "id": "flask.mana",
+        "text": "魔力藥劑"
+      },
+      {
+        "id": "flask.charm",
+        "text": "護符"
+      },
+      {
+        "id": "map",
+        "text": "任何終局物品"
+      },
+      {
+        "id": "map.waystone",
+        "text": "換界石"
+      },
+      {
+        "id": "map.fragment",
+        "text": "地圖碎片"
+      },
+      {
+        "id": "map.logbook",
+        "text": "日誌"
+      },
+      {
+        "id": "map.breachstone",
+        "text": "裂痕石"
+      },
+      {
+        "id": "map.barya",
+        "text": "巨靈之幣"
+      },
+      {
+        "id": "map.bosskey",
+        "text": "巔峰鑰匙"
+      },
+      {
+        "id": "map.ultimatum",
+        "text": "通牒鑰匙"
+      },
+      {
+        "id": "map.tablet",
+        "text": "碑牌"
+      },
+      {
+        "id": "card",
+        "text": "命運卡"
+      },
+      {
+        "id": "sanctum.relic",
+        "text": "古典"
+      },
+      {
+        "id": "currency",
+        "text": "任何通貨"
+      },
+      {
+        "id": "currency.omen",
+        "text": "預兆"
+      },
+      {
+        "id": "currency.socketable",
+        "text": "任何增幅"
+      },
+      {
+        "id": "currency.rune",
+        "text": "符文"
+      },
+      {
+        "id": "currency.soulcore",
+        "text": "靈魂核心"
+      },
+      {
+        "id": "currency.idol",
+        "text": "魔偶"
+      }
+    ],
+    rarity: [
+      {
+        "id": null,
+        "text": "任何"
+      },
+      {
+        "id": "normal",
+        "text": "一般"
+      },
+      {
+        "id": "magic",
+        "text": "魔法"
+      },
+      {
+        "id": "rare",
+        "text": "稀有"
+      },
+      {
+        "id": "unique",
+        "text": "傳奇"
+      },
+      {
+        "id": "uniquefoil",
+        "text": "傳奇 (貼模)"
+      },
+      {
+        "id": "nonunique",
+        "text": "非傳奇道具"
+      }
+    ]
   }
 
   private data: any;
@@ -219,66 +738,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         label: "非傳奇",
         prop: 'nonunique'
       }],
-      chosenObj: "",
-      isSearch: false
-    },
-    itemLevel: { // 搜尋設定->物品等級
-      min: 0,
-      max: '',
-      isSearch: false
-    },
-    itemSocket: { // 搜尋設定->物品插槽
-      min: 0,
-      max: '',
-      isSearch: false
-    },
-    mapLevel: { // 搜尋設定->地圖階級
-      min: 0,
-      max: 0,
-      isSearch: false
-    },
-    mapAreaLevel: { // 搜尋設定->地圖區域等級
-      min: 0,
-      max: 0,
-      isSearch: false
     },
     itemBasic: { // 搜尋設定->物品基底
       text: '',
       isSearch: false
     },
-    gemLevel: { // 搜尋設定->技能寶石等級
-      min: 0,
-      max: '',
-      isSearch: false
-    },
-    gemQuality: { // 搜尋設定->技能寶石品質
-      min: 0,
-      max: '',
-      isSearch: false
-    },
-    gemSocket: { // 搜尋設定->技能寶石插槽
-      min: 0,
-      max: '',
-      isSearch: false
-    },
-    corruptedSet: { // 搜尋設定->汙染設定
-      options: [{
-        label: "是",
-        prop: 'true'
-      }, {
-        label: "否",
-        prop: 'false'
-      }, {
-        label: "任何",
-        prop: 'any'
-      }],
-      chosenObj: "any"
-      // isSearch: true,
-    },
     itemCategory: { // 物品分類
       option: [],
-      chosenObj: '',
-      isSearch: false
     },
     priceSetting: { // 搜尋設定->價格設定
       options: [{
@@ -342,6 +808,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         prop: 'any'
       }],
       chosenObj: "securable"
+    },
+    itemSocket: {
+      min: 0,
+      max: '',
+      isSearch: false
     }
   };
 
@@ -358,7 +829,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           "filters": []
         }],
         "filters": {
-          "type_filters": {
+          "type_filters": {//類別過濾
             "filters": {
               "ilvl": {},
               "rarity": {}
@@ -372,13 +843,16 @@ export class HomeComponent implements OnInit, OnDestroy {
               "price": {}
             }
           },
-          "misc_filters": {
+          "misc_filters": {//其它
             "filters": {}
           },
-          "map_filters": {
+          "map_filters": {//終局篩選器
             "filters": {}
           },
-          "equipment_filters": {
+          "equipment_filters": {//裝備篩選器
+            "filters": {}
+          },
+          "req_filters": {//物品需求
             "filters": {}
           }
         }
@@ -548,6 +1022,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         // 根據選擇的過濾方式決定加入哪個清單 (searchStats 或 searchStatsCount)
         const targetKey = this.selectedFilterMethod === 'count' ? 'searchStatsCount' : 'searchStats';
 
+        // 確保目標陣列存在，避免舊有的儲存設定因缺少欄位而崩潰
+        if (!this.item[targetKey]) {
+          this.item[targetKey] = [];
+        }
+
         if (!this.item[targetKey].some((s: any) => s.id === newStat.id)) {
           this.item[targetKey] = [...this.item[targetKey], newStat];
         }
@@ -560,8 +1039,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // console.log(localStorage.getItem('copyText'));
-    // this.analyze();
+    // 初始化時深層複製預設搜尋 JSON 結構，確保觀測對象具有完整的初始屬性
+    this.filters.searchJson = JSON.parse(JSON.stringify(this.filters.searchJson_Def));
+  }
+
+  /**
+   * 用於在 UI 即時預覽目前的搜尋 JSON 狀態 (filters.searchJson)
+   */
+  public get liveSearchJson(): any {
+    this.prepareSearchJson();
+    return this.filters.searchJson;
   }
 
   ngOnDestroy(): void {
@@ -590,6 +1077,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         type: 'INIT',
         basics: this.data.basics,
         stats: this.statsSnapshot,
+        uxSearchOptions: this.uxSearchOptions,
         weaponTypes: Object.fromEntries(this.weaponTypes)
       });
       this.workerInitialized = true;
@@ -599,6 +1087,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.worker?.postMessage({
       type: 'ANALYZE',
       text,
+      uxSearchOptions: this.uxSearchOptions,
       config: {
         newLine: this.newLine,
         filters_def: this.filters.searchJson_Def,
@@ -619,10 +1108,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('[Worker] Data received:', data);
 
     this.ngZone.run(() => {
-      const { item, filters, searchOptions, ui, basicsUpdate } = data;
+      const { item, filters, searchOptions, uxSearchOptions, ui, basicsUpdate } = data;
       this.item = item;
       this.filters.searchJson = filters.searchJson;
       this.searchOptions = searchOptions;
+      this.uxSearchOptions = uxSearchOptions;
       this.ui = ui;
 
       // 僅更新 basics 中變動的部分（例如寶石選擇），避免覆蓋整個大物件
@@ -637,12 +1127,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       // 關鍵：Worker 處理完畢且 Angular 資料綁定後，才通知主程序顯示視窗
       (<any>window).ipcRenderer.send('show-overlay');
 
-      // 稀有物品停止搜尋，選擇詞綴才搜尋
-      if (!this.ui.collapse.item) {
-        this.app.isCounting = false;
-        return;
-      }
-
       this.searchTrade();
     });
   }
@@ -651,9 +1135,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //重置搜尋資料
   resetSearchData() {
     this.ui.collapse.custom = true;
-    this.ui.collapse.item = true;
-    this.ui.collapse.gem = true;
-    this.ui.collapse.map = true;
+    this.ui.collapse.advanced = true;
 
     this.selectedSavedSearchIndex = null;
     this.isPoeSessionVisible = false;
@@ -663,44 +1145,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.item.copyText = '';
     this.item.supported = true;
 
-    this.searchResult.fetchID.length = 0;
-    this.searchResult.searchTotal = 0;
-    this.searchResult.resultLength = 0;
-
-    this.searchOptions.raritySet.isSearch = false;
-
-    this.searchOptions.itemLevel.isSearch = false;
-    this.searchOptions.itemLevel.min = '';
-    this.searchOptions.itemLevel.max = '';
-
-    this.searchOptions.mapLevel.isSearch = false;
-    this.searchOptions.mapLevel.min = '';
-    this.searchOptions.mapLevel.max = '';
-
-    this.searchOptions.itemBasic.text = '';
-    this.searchOptions.itemBasic.isSearch = false;
-
     this.searchOptions.itemSocket.isSearch = false;
     this.searchOptions.itemSocket.min = 0;
     this.searchOptions.itemSocket.max = '';
 
-    this.searchOptions.mapAreaLevel.isSearch = false;
-    this.searchOptions.mapAreaLevel.min = '';
-    this.searchOptions.mapAreaLevel.max = '';
+    this.searchResult.fetchID.length = 0;
+    this.searchResult.searchTotal = 0;
+    this.searchResult.resultLength = 0;
 
-    this.searchOptions.gemLevel.isSearch = false;
-    this.searchOptions.gemLevel.min = '';
-    this.searchOptions.gemLevel.max = '';
-
-    this.searchOptions.gemQuality.isSearch = false;
-    this.searchOptions.gemQuality.min = '';
-    this.searchOptions.gemQuality.max = '';
-
-    this.searchOptions.gemSocket.isSearch = false;
-    this.searchOptions.gemSocket.min = '';
-    this.searchOptions.gemSocket.max = '';
-
-    this.searchOptions.corruptedSet.chosenObj = 'any';
+    this.searchOptions.itemBasic.text = '';
+    this.searchOptions.itemBasic.isSearch = false;
 
     this.searchResult.fetchQueryID = '';
     this.searchResult.status = '';
@@ -708,6 +1162,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.item.searchStats = [];
     this.item.searchDefences = [];
+
+    this.resetUxSearchOptions();
 
     this.currentSortType = 'price'; // 重置時恢復預設排序
     this.currentSortDir = 'asc';
@@ -720,6 +1176,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //建立搜尋資料
   searchTrade() {
+    // 稀有物品停止搜尋，選擇詞綴才搜尋
+    if (this.ui.collapse.custom && !this.ui.collapse.stats) {
+      this.app.isCounting = false;
+      return;
+    }
+
     this.prepareSearchJson();
 
     this.app.isCounting = true;
@@ -735,7 +1197,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           ...this.searchResult,
           resultLength: res.result.length,
           searchTotal: res.total,
-          status: ` 共 ${res.total} 筆符合 ${this.ui.collapse.price && res.total !== res.result.length ? '- 報價已摺疊' : ''}`,
+          status: ` 共 ${res.total} 筆符合 ${res.total !== res.result.length ? '- 報價已摺疊' : ''}`,
           fetchQueryID: res.id,
           fetchID: res.result
         };
@@ -768,10 +1230,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   /**
    * 根據目前的 UI 狀態構建完整的搜尋 JSON 物件
    */
-  private prepareSearchJson() {
+  public prepareSearchJson() {
     this.pseudos = [];
 
-    if ((this.searchOptions.itemLevel.isSearch || this.searchOptions.itemBasic.isSearch) && this.item.category === '') {
+    if ((this.isFilterActive(this.uxSearchOptions.base.ilvl.min) || this.searchOptions.itemBasic.isSearch) && this.item.category === '') {
       this.item.category = 'item';
     }
 
@@ -779,11 +1241,107 @@ export class HomeComponent implements OnInit, OnDestroy {
       delete this.filters.searchJson.query.filters.trade_filters;
     }
 
-    // 每次搜尋前重置動態過濾區塊，確保搜尋條件與目前的 UI 顯示完全同步
+    // 每次搜尋前重置動態過濾區塊
     this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }, { "type": "count", "filters": [] }];
-    if (this.filters.searchJson.query.filters.equipment_filters) {
-      this.filters.searchJson.query.filters.equipment_filters.filters = {};
+
+    // 初始化過濾器結構 (增加安全性檢查，確保 query 與 filters 存在)
+    if (!this.filters.searchJson.query) this.filters.searchJson.query = {};
+    if (!this.filters.searchJson.query.filters) this.filters.searchJson.query.filters = {};
+
+    const f = this.filters.searchJson.query.filters;
+    f.type_filters = { filters: {} };
+    f.equipment_filters = { filters: {} };
+    f.req_filters = { filters: {} };
+    f.map_filters = { filters: {} };
+    f.misc_filters = { filters: {} };
+
+    // 處理基礎交易狀態範圍、價格條件與物品名稱/基底文字搜尋
+    this.searchRange();
+    this.priceSetting();
+    this.isItemBasicSearch();
+    if (this.ui.collapse.custom) {
+      this.isItemSocketSearch();
     }
+
+
+    // 處理 UX 草案中的過濾設定 (包含類別、裝備、需求、終局及其它)
+    const addRange = (target: any, key: string, range: any) => {
+      if (range && (this.isFilterActive(range.min) || this.isFilterActive(range.max))) {
+        const value: any = {};
+        if (this.isFilterActive(range.min)) value.min = Number(range.min);
+        if (this.isFilterActive(range.max)) value.max = Number(range.max);
+        target[key] = value;
+      }
+    };
+
+    const addOption = (target: any, key: string, value: any) => {
+      if (this.isFilterActive(value)) {
+        target[key] = { option: value };
+      }
+    };
+
+    // 1. 類別過濾 (base -> type_filters)
+    addOption(f.type_filters.filters, 'category', this.uxSearchOptions.base.category);
+    addOption(f.type_filters.filters, 'rarity', this.uxSearchOptions.base.rarity);
+    addRange(f.type_filters.filters, 'ilvl', this.uxSearchOptions.base.ilvl);
+    addRange(f.type_filters.filters, 'quality', this.uxSearchOptions.base.quality);
+
+    // 2. 裝備篩選器 (equipment -> equipment_filters)
+    const eq = this.uxSearchOptions.equipment;
+    addRange(f.equipment_filters.filters, 'damage', eq.damage);
+    addRange(f.equipment_filters.filters, 'aps', eq.aps);
+    addRange(f.equipment_filters.filters, 'crit', eq.crit);
+    addRange(f.equipment_filters.filters, 'dps', eq.dps);
+    addRange(f.equipment_filters.filters, 'pdps', eq.pdps);
+    addRange(f.equipment_filters.filters, 'edps', eq.edps);
+    addRange(f.equipment_filters.filters, 'reload', eq.reload_time);
+    addRange(f.equipment_filters.filters, 'ar', eq.ar);
+    addRange(f.equipment_filters.filters, 'ev', eq.ev);
+    addRange(f.equipment_filters.filters, 'es', eq.es);
+    addRange(f.equipment_filters.filters, 'ward', eq.ward);
+    addRange(f.equipment_filters.filters, 'block', eq.block);
+    addRange(f.equipment_filters.filters, 'spirit', eq.spirit);
+    addRange(f.equipment_filters.filters, 'rune_sockets', eq.rune_sockets);
+
+    // 3. 物品需求 (requirements -> req_filters)
+    const req = this.uxSearchOptions.requirements;
+    addRange(f.req_filters.filters, 'lvl', req.lvl);
+    addRange(f.req_filters.filters, 'str', req.str);
+    addRange(f.req_filters.filters, 'dex', req.dex);
+    addRange(f.req_filters.filters, 'int', req.int);
+
+    // 4. 終局篩選器 (maps -> map_filters)
+    const maps = this.uxSearchOptions.maps;
+    addRange(f.map_filters.filters, 'map_tier', maps.map_tier);
+    addRange(f.map_filters.filters, 'map_packsize', maps.map_packsize);
+    addRange(f.map_filters.filters, 'map_magic_monsters', maps.map_magic_monsters);
+    addRange(f.map_filters.filters, 'map_rare_monsters', maps.map_rare_monsters);
+    addRange(f.map_filters.filters, 'map_iir', maps.map_iir);
+    addRange(f.map_filters.filters, 'map_revives', maps.map_revives);
+    addRange(f.map_filters.filters, 'map_bonus', maps.map_bonus);
+    addRange(f.map_filters.filters, 'map_gold', maps.map_gold);
+    addRange(f.map_filters.filters, 'map_experience', maps.map_experience);
+    addOption(f.map_filters.filters, 'ultimatum_hint', maps.ultimatum_hint);
+
+    // 5. 其它 (misc -> misc_filters)
+    const misc = this.uxSearchOptions.misc;
+    addRange(f.misc_filters.filters, 'gem_level', misc.gem_level);
+    addRange(f.misc_filters.filters, 'gem_sockets', misc.gem_sockets);
+    addRange(f.misc_filters.filters, 'area_level', misc.area_level);
+    addRange(f.misc_filters.filters, 'stack_size', misc.stack_size);
+    addOption(f.misc_filters.filters, 'identified', misc.identified);
+    addOption(f.misc_filters.filters, 'fractured_item', misc.fractured_item);
+    addOption(f.misc_filters.filters, 'corrupted', misc.corrupted);
+    addOption(f.misc_filters.filters, 'sanctified_item', misc.sanctified);
+    addOption(f.misc_filters.filters, 'twice_corrupted', misc.twice_corrupted);
+    addOption(f.misc_filters.filters, 'mutated_item', misc.mutated);
+    addOption(f.misc_filters.filters, 'veiled', misc.veiled);
+    addOption(f.misc_filters.filters, 'desecrated_item', misc.desecrated);
+    addOption(f.misc_filters.filters, 'crafted_item', misc.crafted);
+    addOption(f.misc_filters.filters, 'foreseen_item', misc.foreseeing);
+    addOption(f.misc_filters.filters, 'mirrored', misc.mirrored);
+    addRange(f.misc_filters.filters, 'sanctum_gold', misc.sanctum_gold);
+    addRange(f.misc_filters.filters, 'unidentified_tier', misc.unidentified_tier);
 
     let searchCount = 0;
 
@@ -865,135 +1423,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.filters.searchJson.query.stats[1].value = value
     }
 
-    if (this.filters.searchJson.query.filters.equipment_filters.filters) {
-      this.item.searchDefences.forEach((element: any) => {
-        let value = {};
-
-        if (element.isSearch) {
-          Object.assign(value, { min: element.min });
-          Object.assign(value, { max: element.max > element.min ? element.max : null });
-          Object.assign(this.filters.searchJson.query.filters.equipment_filters.filters, JSON.parse(`{ "${this.defenceTypes.get(element.text)}" : ${JSON.stringify(value)} }`));
+    this.item.searchDefences.forEach((element: any) => {
+      if (element.isSearch) {
+        const value: any = {};
+        if (this.isFilterActive(element.min)) value.min = Number(element.min);
+        if (this.isFilterActive(element.max)) value.max = Number(element.max);
+        const apiField = this.defenceTypes.get(element.text);
+        if (apiField) {
+          this.filters.searchJson.query.filters.equipment_filters.filters[apiField] = value;
         }
-      });
-    }
-
-    this.searchRange();
-    this.priceSetting();
-    this.corruptedSet();
-    switch (this.item.category) {
-      case 'item':
-        if (this.item.name !== '') {
-          this.ui.collapse.stats = true;
-        }
-        this.isRaritySearch();
-        this.isItemBasicSearch();
-        this.isItemCategorySearch();
-        this.isItemLevelSearch();
-        this.isItemSocketSearch();
-        break;
-      case 'map':
-        this.ui.collapse.map = false;
-        this.isRaritySearch();
-        this.isMapLevelSearch();
-        this.isMapAreaLevelSearch();
-        break;
-      case 'gem':
-        this.ui.collapse.gem = !(this.searchOptions.gemLevel.min > 0);
-        this.isRaritySearch();
-        this.isGemBasicSearch();
-        this.isGemLevelSearch();
-        this.isGemQualitySearch();
-        this.isGemSocketSearch();
-        break;
-      case 'unique':
-        this.ui.collapse.stats = true;
-        this.isItemSocketSearch();
-        this.isRaritySearch();
-        break;
-      default:
-        this.isRaritySearch();
-        break;
-    }
+      }
+    });
 
     console.log(this.filters.searchJson);
-  }
-
-
-  //是否針對物品等級搜尋
-  isItemLevelSearch() {
-    if (!this.searchOptions.itemLevel.isSearch) {
-      this.filters.searchJson.query.filters.type_filters.filters.ilvl = {}; // 刪除物品等級 filter
-    } else if (this.searchOptions.itemLevel.isSearch) {
-      console.log(this.filters.searchJson);
-      this.filters.searchJson.query.filters.type_filters.filters.ilvl = { // 增加物品等級最小值 filter
-        min: this.searchOptions.itemLevel.min ? this.searchOptions.itemLevel.min : null,
-        max: this.searchOptions.itemLevel.max ? this.searchOptions.itemLevel.max : null
-      };
-    }
-  }
-
-  //是否針對稀有度搜尋
-  isRaritySearch() {
-    if (!this.searchOptions.raritySet.isSearch) {
-      // if (this.item.category !== 'currency' && this.item.category !== 'gem' && this.item.category !== '') {
-      //   this.filters.searchJson.query.filters.type_filters.filters.rarity = {}; // 刪除稀有度 filter
-      // } else {
-      delete this.filters.searchJson.query.filters.type_filters.filters.rarity;
-      // }
-    } else if (this.searchOptions.raritySet.isSearch) {
-      if (this.searchOptions.raritySet.chosenObj !== '') {
-        this.filters.searchJson.query.filters.type_filters.filters.rarity = { // 增加稀有度 filter
-          option: this.searchOptions.raritySet.chosenObj
-        };
-      } else {
-        delete this.filters.searchJson.query.filters.type_filters.filters.rarity;
-      }
-    }
-  }
-
-  //是否針對寶石搜尋
-  isGemBasicSearch() {
-    if (!this.data.basics.gem.isSearch && Object.keys(this.filters.searchJson.query).includes("type")) {
-      delete this.filters.searchJson.query.type; // 刪除技能基底 filter
-    } else if (this.data.basics.gem.isSearch) {
-      this.filters.searchJson.query.type = this.data.basics.gem.chosenG; // 增加技能基底 filter
-    }
-  }
-
-  //是否針對寶石等級搜尋
-  isGemLevelSearch() {
-    if (!this.searchOptions.gemLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("gem_level")) {
-      delete this.filters.searchJson.query.filters.type_filters.filters.gem_level; // 刪除技能品質 filter
-    } else if (this.searchOptions.gemLevel.isSearch) {
-      this.filters.searchJson.query.filters.type_filters.filters.gem_level = {
-        min: this.searchOptions.gemLevel.min ? this.searchOptions.gemLevel.min : null,
-        max: this.searchOptions.gemLevel.max ? this.searchOptions.gemLevel.max : null
-      };
-    }
-  }
-
-  //是否針對寶石品質搜尋
-  isGemQualitySearch() {
-    if (!this.searchOptions.gemQuality.isSearch && Object.keys(this.filters.searchJson.query.filters.type_filters.filters).includes("quality")) {
-      delete this.filters.searchJson.query.filters.type_filters.filters.quality; // 刪除技能品質 filter
-    } else if (this.searchOptions.gemQuality.isSearch) {
-      this.filters.searchJson.query.filters.type_filters.filters.quality = {
-        min: this.searchOptions.gemQuality.min ? this.searchOptions.gemQuality.min : null,
-        max: this.searchOptions.gemQuality.max ? this.searchOptions.gemQuality.max : null
-      };
-    }
-  }
-
-  //是否針對寶石插槽搜尋
-  isGemSocketSearch() {
-    if (!this.searchOptions.gemSocket.isSearch && Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("gem_sockets")) {
-      delete this.filters.searchJson.query.filters.misc_filters.filters.gem_sockets; // 刪除技能品質 filter
-    } else if (this.searchOptions.gemSocket.isSearch) {
-      this.filters.searchJson.query.filters.misc_filters.filters.gem_sockets = {
-        min: this.searchOptions.gemSocket.min ? this.searchOptions.gemSocket.min : null,
-        max: this.searchOptions.gemSocket.max ? this.searchOptions.gemSocket.max : null
-      };
-    }
   }
 
   //是否針對物品插槽搜尋
@@ -1004,17 +1446,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.filters.searchJson.query.filters.equipment_filters.filters.rune_sockets = {
         min: this.searchOptions.itemSocket.min ? this.searchOptions.itemSocket.min : null,
         max: this.searchOptions.itemSocket.max ? this.searchOptions.itemSocket.max : null
-      };
-    }
-  }
-
-  //是否針對物品分類搜尋
-  isItemCategorySearch() {
-    if (!this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj) {
-      delete this.filters.searchJson.query.filters.type_filters.filters.category; // 刪除物品種類 filter
-    } else if (this.searchOptions.itemCategory.isSearch && this.searchOptions.itemCategory.chosenObj) {
-      this.filters.searchJson.query.filters.type_filters.filters.category = { // 增加物品種類 filter
-        option: this.searchOptions.itemCategory.chosenObj
       };
     }
   }
@@ -1045,31 +1476,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
       }
     } else {
+      delete this.filters.searchJson.query.name;
       delete this.filters.searchJson.query.type;
-    }
-  }
-
-  //是否針對地圖階級搜尋
-  isMapLevelSearch() {
-    if (!this.searchOptions.mapLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.map_filters.filters).includes("map_tier")) {
-      delete this.filters.searchJson.query.filters.map_filters.filters.map_tier; // 刪除地圖階級 filter
-    } else if (this.searchOptions.mapLevel.isSearch) {
-      this.filters.searchJson.query.filters.map_filters.filters.map_tier = {// 指定地圖階級最小 / 最大值 filter
-        min: this.searchOptions.mapLevel.min ? this.searchOptions.mapLevel.min : null,
-        max: this.searchOptions.mapLevel.max ? this.searchOptions.mapLevel.max : null
-      };
-    }
-  }
-
-  //是否針對地圖區域等級搜尋
-  isMapAreaLevelSearch() {
-    if (!this.searchOptions.mapAreaLevel.isSearch && Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("area_level")) {
-      delete this.filters.searchJson.query.filters.misc_filters.filters.area_level; // 刪除地圖區域等級 filter
-    } else if (this.searchOptions.mapAreaLevel.isSearch) {
-      this.filters.searchJson.query.filters.misc_filters.filters.area_level = {// 指定地圖區域等級最小 / 最大值 filter
-        min: this.searchOptions.mapAreaLevel.min ? this.searchOptions.mapAreaLevel.min : null,
-        max: this.searchOptions.mapAreaLevel.max ? this.searchOptions.mapAreaLevel.max : null
-      };
     }
   }
 
@@ -1083,14 +1491,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   clickToSearch() { // TODO: 重構物品/地圖交替搜尋時邏輯 stats: [{type: "and", filters: [], disabled: true(?)}]
     this.currentSortType = 'price'; // 點擊時恢復預設排序
     this.currentSortDir = 'asc';
-
-    if (this.item.category === 'item' || this.item.category === 'unique' || this.item.category === 'map') {
-      this.filters.searchJson.query.stats = [{ "type": "and", "filters": [] }];
-      this.filters.searchJson.query.filters.equipment_filters = { filters: {} };
+    this.ui.collapse.advanced = true; // 搜尋時自動隱藏進階過濾區塊
+    if (this.ui.collapse.custom) {
+      this.ui.collapse.stats = true; // 搜尋時自動隱藏詞綴區塊
     }
-    // else if (this.item.category === 'map' && this.basics.map.isSearch) {
-    //   console.log('map進來了');
-    //   this.item.name = `物品名稱 <br>『${this.basics.map.chosenM}』`;
+
     // } else if (this.item.category === 'gem' && this.basics.gem.isSearch) { //需要重看
     //   this.item.name = `物品名稱 <br>『${this.basics.gem.chosenG}』`
     // }
@@ -1116,17 +1521,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //已汙染設定
   corruptedSet() {
-    if (this.searchOptions.corruptedSet.chosenObj === 'any') {
-      if (Object.keys(this.filters.searchJson.query.filters.misc_filters.filters).includes("corrupted")) {
-        delete this.filters.searchJson.query.filters.misc_filters.filters.corrupted; // 刪除已汙染 filter
-      }
-    } else {
-      Object.assign(this.filters.searchJson.query.filters.misc_filters.filters, { // 增加已汙染 filter
-        corrupted: {
-          option: this.searchOptions.corruptedSet.chosenObj
-        }
-      });
-    }
+    // 移到 uxSearchOptions.misc.corrupted 處理
   }
 
   //搜尋範圍設定
@@ -1161,8 +1556,8 @@ export class HomeComponent implements OnInit, OnDestroy {
    * 移除插槽過濾（重置數值與搜尋開關）
    */
   removeSocket() {
-    this.searchOptions.itemSocket.min = 0;
-    this.searchOptions.itemSocket.isSearch = false;
+    this.uxSearchOptions.equipment.rune_sockets.min = '';
+    this.uxSearchOptions.equipment.rune_sockets.max = '';
     this.cdr.markForCheck();
   }
 
@@ -1216,7 +1611,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * 當自定義分類變更時，同步更新 item.category 以確保正確的搜尋邏輯與介面顯示
    */
   onCategoryChange() {
-    if (this.searchOptions.itemCategory.chosenObj && this.searchOptions.itemCategory.chosenObj.startsWith('map')) {
+    if (this.uxSearchOptions.base.category && this.uxSearchOptions.base.category.startsWith('map')) {
       this.item.category = 'map';
     } else {
       this.item.category = 'item';
@@ -1232,14 +1627,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     // 使用深拷貝避免污染原始樣板物件
     this.filters.searchJson = JSON.parse(JSON.stringify(this.filters.searchJson_Def));
 
-    this.searchOptions.raritySet.isSearch = false;
-
     this.updateCategoryOptions();
-    this.searchOptions.itemCategory.chosenObj = '';
-    this.searchOptions.itemCategory.isSearch = false;
 
     this.ui.collapse.custom = false;
-    this.ui.collapse.item = false;
+    this.ui.collapse.advanced = true;
   }
 
   /**
@@ -1288,6 +1679,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.data.basics.currency.option.forEach((opt: any) => {
+      // 填充胎贈名稱
+      if (opt) {
+        basicsSet.add(opt);
+        this.itemIcons.set(opt, '🌱'); // 胎贈使用圖示
+      }
+    });
+
     this.itemBasics = Array.from(basicsSet);
     this.searchOptions.itemCategory.option = [
       { label: '任何', prop: '' },
@@ -1317,7 +1716,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       overwrite: isOverwrite,
       content: JSON.parse(JSON.stringify(this.filters.searchJson)),
       item: JSON.parse(JSON.stringify(this.item)),
-      searchOptions: JSON.parse(JSON.stringify(this.searchOptions))
+      searchOptions: JSON.parse(JSON.stringify(this.searchOptions)),
+      uxSearchOptions: JSON.parse(JSON.stringify(this.uxSearchOptions)) // 新增：儲存 UX 過濾器狀態
     };
 
     // 3. 透過 IPC 傳送至主程序儲存為 JSON 檔案
@@ -1360,17 +1760,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (saved) {
       this.currentLoadedName = saved.name;
       // 還原搜尋用的 JSON 結構
-      if (saved.content) this.filters.searchJson = JSON.parse(JSON.stringify(saved.content));
+      if (saved.content) {
+        // 先套用預設模板，再覆蓋儲存內容，確保結構完整性
+        const base = JSON.parse(JSON.stringify(this.filters.searchJson_Def));
+        this.filters.searchJson = Object.assign(base, JSON.parse(JSON.stringify(saved.content)));
+      }
 
       // 還原 UI 繫結的物品資料 (名稱、基底、詞綴清單等)
-      if (saved.item) this.item = JSON.parse(JSON.stringify(saved.item));
+      if (saved.item) {
+        this.item = JSON.parse(JSON.stringify(saved.item));
+        // 關鍵：補齊舊資料可能缺少的陣列欄位
+        if (!this.item.searchStats) this.item.searchStats = [];
+        if (!this.item.searchStatsCount) this.item.searchStatsCount = [];
+        if (!this.item.searchDefences) this.item.searchDefences = [];
+      }
 
       // 還原搜尋選項 (等級、插槽、稀有度、分類勾選狀態等)
       if (saved.searchOptions) this.searchOptions = JSON.parse(JSON.stringify(saved.searchOptions));
 
+      // 還原 UX 過濾器狀態 (新增)
+      if (saved.uxSearchOptions) {
+        // 使用 Object.assign 確保即使舊存檔缺少某些屬性，也能從預設值繼承，避免錯誤
+        this.uxSearchOptions = Object.assign(JSON.parse(JSON.stringify(this.getUxSearchOptionsDefaults())), JSON.parse(JSON.stringify(saved.uxSearchOptions)));
+      }
+
       // 自動展開相關介面以顯示讀取後的內容
       this.ui.collapse.custom = false;
-      this.ui.collapse.item = false;
       if (this.item.searchStats.length > 0 || this.item.searchDefences.length > 0) {
         this.ui.collapse.stats = false;
       }
@@ -1426,16 +1841,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     statTypes.forEach(type => {
       if (statsFilter.hashs[type]) {
+        const targetKey = this.selectedFilterMethod === 'count' ? 'searchStatsCount' : 'searchStats';
+
+        // 確保陣列存在
+        if (!this.item[targetKey]) this.item[targetKey] = [];
+
         statsFilter.hashs[type].forEach((hash: any) => {
           const statId = hash[0];
           const statText = this.data.statsById[type].get(statId);
 
           // 檢查是否已存在於目前的搜尋列表中，避免重複加入
-          const exists = this.item.searchStats.some((s: any) => s.id === statId);
+          const exists = this.item[targetKey].some((s: any) => s.id === statId);
 
           if (statText && !exists) {
-            // 使用 push 並在最後觸發 cdr
-            this.item.searchStats = [...this.item.searchStats, {
+            this.item[targetKey] = [...this.item[targetKey], {
               id: statId,
               text: statText,
               option: "",

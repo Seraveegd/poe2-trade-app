@@ -12,6 +12,11 @@
 
         .itemDetail {
             width: 100%;
+
+            hr {
+                border: 0;
+                border-top: 1px dashed #a2a9b6;
+            }
         }
 
         .itemDetail>div>div {
@@ -127,7 +132,7 @@
 
             img {
                 top: 1px;
-                left:1px;
+                left: 1px;
                 right: 1px;
                 bottom: 1px;
                 position: absolute;
@@ -175,7 +180,7 @@
         backdrop-filter: blur(8px);
         border-radius: 4px;
         margin-top: 0.5rem;
-        
+
         .toast-body {
             padding: 0.75rem 1rem;
         }
@@ -213,13 +218,15 @@
 
     /* 深色模式下的 Toast 調整 */
     .toast-container ngb-toast {
-        background-color: rgba(33, 37, 41, 0.9) !important; /* 深灰色背景 */
+        background-color: rgba(33, 37, 41, 0.9) !important;
+        /* 深灰色背景 */
         color: #e5e4e4;
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
         border: 1px solid #444 !important;
 
         &.bg-warning {
-            color: #212529 !important; /* 警告訊息在深色模式仍保持黃底黑字以示醒目 */
+            color: #212529 !important;
+            /* 警告訊息在深色模式仍保持黃底黑字以示醒目 */
         }
     }
 }

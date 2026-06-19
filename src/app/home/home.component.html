@@ -1,9 +1,9 @@
 <div id="home">
     <div style="padding:5px 0px;">
         <ng-container>
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-                <div class="card">
-                    <div class="card-body">
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="mt-2">
+                <div class="card border-secondary shadow-sm">
+                    <div class="py-2 px-2">
                         <div class="row">
                             <div class="col-6">
                                 <select class="form-select" aria-label="伺服器">
@@ -22,36 +22,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <select class="form-select" id="floatingSelect_range"
-                                        [(ngModel)]="searchOptions.ranges.chosenObj" aria-label="搜尋範圍">
-                                        @for (item of searchOptions.ranges.options; track $index) {
-                                        <option [ngValue]="item.prop">{{
-                                            item.label }}</option>
-                                        }
-                                    </select>
-                                    <label for="floatingSelect_range">搜尋範圍</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <!-- <div class="col-4">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="OnlineflexSwitchCheckChecked"
-                                        [checked]="searchOptions.isOnline"
-                                        (click)="searchOptions.isOnline = !searchOptions.isOnline">
-                                    <label class="form-check-label" for="OnlineflexSwitchCheckChecked">只顯示線上</label>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="PricedflexSwitchCheckChecked"
-                                        [checked]="searchOptions.isPriced"
-                                        (click)="searchOptions.isPriced = !searchOptions.isPriced">
-                                    <label class="form-check-label" for="PricedflexSwitchCheckChecked">有標價</label>
-                                </div>
-                            </div> -->
                             <div class="col-6">
                                 <div class="form-floating">
                                     <select class="form-select" id="floatingSelect_price"
@@ -66,14 +36,14 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <select class="form-select" id="floatingSelect_corrupt" aria-label="已汙染"
-                                        [(ngModel)]="searchOptions.corruptedSet.chosenObj">
-                                        @for (item of searchOptions.corruptedSet.options; track $index) {
+                                    <select class="form-select" id="floatingSelect_range"
+                                        [(ngModel)]="searchOptions.ranges.chosenObj" aria-label="搜尋範圍">
+                                        @for (item of searchOptions.ranges.options; track $index) {
                                         <option [ngValue]="item.prop">{{
                                             item.label }}</option>
                                         }
                                     </select>
-                                    <label for="floatingSelect_corrupt">汙染</label>
+                                    <label for="floatingSelect_range">搜尋範圍</label>
                                 </div>
                             </div>
                         </div>
@@ -81,45 +51,72 @@
                 </div>
             </div>
             <!--自定義詞綴搜尋-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" style="margin-top:10px;">
-                <div class="card">
-                    <div class="card-body">
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="mt-2">
+                <div class="card border-secondary shadow-sm">
+                    <div class="py-2 px-2">
                         <div class="row">
                             <div class="col-6">
-                                <div class="form-floating">
-                                    <div ngbDropdown class="d-inline-block w-100">
+                                <!-- <div class="form-floating">
+                                    <div ngbDropdown class="d-block">
                                         <button type="button"
                                             class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
                                             id="dropdownSavedSearch" ngbDropdownToggle
                                             style="height: 58px; padding-top: 1.625rem;">
                                             {{ currentLoadedName || '已儲存搜尋' }}
                                         </button>
-                                        <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
-                                            @if (savedSearches.length === 0) {
-                                            <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
-                                            }
-                                            @for (item of savedSearches; track $index) {
-                                            <div class="d-flex align-items-center dropdown-item"
-                                                style="cursor: pointer;">
-                                                <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
-                                                    }}</span>
-                                                <button class="btn btn-sm btn-link text-primary p-0 me-2"
-                                                    (click)="clickToRename(renameModal, $index, $event)"
-                                                    ngbTooltip="重新命名">✏️</button>
-                                                <button class="btn btn-sm btn-link text-danger p-0"
-                                                    (click)="clickToDelete(deleteModal, $index, $event)"
-                                                    ngbTooltip="刪除">🗑️</button>
-                                            </div>
-                                            }
-                                        </div>
                                     </div>
-                                    <label
-                                        style="transform: scale(.85) translateY(-.5rem) translateX(.15rem); opacity: .65;">已儲存搜尋</label>
+                                </div> -->
+                                <div ngbDropdown container="body" class="d-block">
+                                    <div class="form-floating">
+                                        <button type="button"
+                                            class="form-control btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                                            id="dropdownSavedSearch" ngbDropdownToggle>
+                                            <span>{{ currentLoadedName || '已儲存搜尋' }}</span>
+                                        </button>
+                                        <label for="dropdownSavedSearch">已儲存搜尋</label>
+                                    </div>
+                                    <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
+                                        @if (savedSearches.length === 0) {
+                                        <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
+                                        }
+                                        @for (item of savedSearches; track $index) {
+                                        <div class="d-flex align-items-center dropdown-item" style="cursor: pointer;">
+                                            <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
+                                                }}</span>
+                                            <button class="btn btn-sm btn-link text-primary p-0 me-2"
+                                                (click)="clickToRename(renameModal, $index, $event)"
+                                                ngbTooltip="重新命名">✏️</button>
+                                            <button class="btn btn-sm btn-link text-danger p-0"
+                                                (click)="clickToDelete(deleteModal, $index, $event)"
+                                                ngbTooltip="刪除">🗑️</button>
+                                        </div>
+                                        }
+                                    </div>
+                                    <!-- <label for="dropdownSavedSearch">已儲存搜尋</label> -->
                                 </div>
+                                <!-- 為了 form-floating 樣式而保留的 label -->
+                                <!-- <label for="dropdownSavedSearch">已儲存搜尋</label>
+                                    <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
+                                        @if (savedSearches.length === 0) {
+                                        <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
+                                        }
+                                        @for (item of savedSearches; track $index) {
+                                        <div class="d-flex align-items-center dropdown-item" style="cursor: pointer;">
+                                            <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
+                                                }}</span>
+                                            <button class="btn btn-sm btn-link text-primary p-0 me-2"
+                                                (click)="clickToRename(renameModal, $index, $event)"
+                                                ngbTooltip="重新命名">✏️</button>
+                                            <button class="btn btn-sm btn-link text-danger p-0"
+                                                (click)="clickToDelete(deleteModal, $index, $event)"
+                                                ngbTooltip="刪除">🗑️</button>
+                                        </div>
+                                        }
+                                    </div> -->
                             </div>
                             <div class="col-6">
                                 <div class="d-grid">
-                                    <button type="button" class="btn btn-outline-primary" style="height: 58px;"
+                                    <button type="button" class="btn btn-outline-primary" style="height: 50px;"
                                         (click)="showCustomArea()">交易市集搜尋</button>
                                 </div>
                             </div>
@@ -128,11 +125,11 @@
                 </div>
             </div>
             <!--自定義詞綴區塊-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.custom" style="margin-top:10px;">
-                <div class="card">
-                    <div class="card-body">
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.custom" class="mt-2">
+                <div class="card border-secondary shadow-sm">
+                    <div class="py-2 px-2">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-12 mb-2">
                                 <div class="form-floating position-relative">
                                     <input id="SESSIONID" [type]="isPoeSessionVisible ? 'text' : 'password'"
                                         class="form-control pe-5" [class.is-valid]="poeSessionStatus === 'valid'"
@@ -160,8 +157,6 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-10">
                                 <div class="form-floating">
                                     <ng-template #rt let-r="result" let-t="term">
@@ -196,219 +191,1151 @@
                     </div>
                 </div>
             </div>
-            <!--物品搜尋-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.item" style="margin-top:10px;">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="ItemLevelflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.itemLevel.isSearch"
-                                        (click)="searchOptions.itemLevel.isSearch = !searchOptions.itemLevel.isSearch">
-                                    <label class="form-check-label" for="ItemLevelflexSwitchCheckChecked">物品等級</label>
-                                </div>
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="min" class="form-control"
-                                    [(ngModel)]="searchOptions.itemLevel.min"
-                                    [disabled]="!searchOptions.itemLevel.isSearch">
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="max" class="form-control"
-                                    [(ngModel)]="searchOptions.itemLevel.max"
-                                    [disabled]="!searchOptions.itemLevel.isSearch">
-                            </div>
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="RaritySetflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.raritySet.isSearch"
-                                        (click)="searchOptions.raritySet.isSearch = !searchOptions.raritySet.isSearch">
-                                    <label class="form-check-label" for="RaritySetflexSwitchCheckChecked">稀有度</label>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <select class="form-select" aria-label="稀有度"
-                                    [disabled]="!searchOptions.raritySet.isSearch"
-                                    [(ngModel)]="searchOptions.raritySet.chosenObj">
-                                    @for (item of searchOptions.raritySet.option; track $index) {
-                                    <option [ngValue]="item.prop">{{ item.label
-                                        }}</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox"
-                                        id="ItemCategoryflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.itemCategory.isSearch"
-                                        (click)="searchOptions.itemCategory.isSearch = !searchOptions.itemCategory.isSearch">
-                                    <label class="form-check-label"
-                                        for="ItemCategoryflexSwitchCheckChecked">物品分類</label>
-                                </div>
-                            </div>
-                            <div class="col-2" style="padding: 0 2px;">
-                                <select class="form-select" aria-label="物品分類"
-                                    [disabled]="!searchOptions.itemCategory.isSearch"
-                                    [(ngModel)]="searchOptions.itemCategory.chosenObj"
-                                    (ngModelChange)="onCategoryChange()">
-                                    @for (item of searchOptions.itemCategory.option; track $index) {
-                                    <option [ngValue]="item.prop">{{
-                                        item.label }}</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="ItemBasicflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.itemBasic.isSearch"
-                                        (click)="searchOptions.itemBasic.isSearch = !searchOptions.itemBasic.isSearch">
-                                    <label class="form-check-label" for="ItemBasicflexSwitchCheckChecked">{{ ui.collapse.custom ? '物品基底' : '物品名稱' }}</label>
-                                </div>
-                            </div>
-                            <div class="col-4">
+            @if(!ui.collapse.custom || !this.ui.collapse.stats){
+            <div class="card border-secondary shadow-sm mt-2">
+                <div class="py-2 px-2">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="form-floating">
                                 @if(ui.collapse.custom){
-                                <input type="text" class="form-control" placeholder="物品基底" aria-label="物品基底"
-                                    [(ngModel)]="searchOptions.itemBasic.text" disabled="true">
+                                <input id="item_base_display" type="text" class="form-control" placeholder="物品基底"
+                                    [(ngModel)]="searchOptions.itemBasic.text" disabled="true" style="width:100%">
+                                <label for="item_base_display">目前分析基底</label>
                                 } @else {
                                 <ng-template #rt2 let-r="result" let-t="term">
-                                    {{ itemIcons.get(r) || '📦' }} <ngb-highlight [result]="r" [term]="t"></ngb-highlight>
+                                    {{ itemIcons.get(r) || '📦' }} <ngb-highlight [result]="r"
+                                        [term]="t"></ngb-highlight>
                                 </ng-template>
 
-                                <div class="position-relative">
-                                    <input #itemBasicInput id="custom_itemBasic" type="text" class="form-control pe-4"
-                                        [(ngModel)]="searchOptions.itemBasic.text" placeholder="物品名稱"
-                                        [ngbTypeahead]="search2" container="body" [resultTemplate]="rt2"
-                                        (focus)="focus2$.next($any($event).target.value)"
-                                        (click)="click2$.next($any($event).target.value)" #instance2="ngbTypeahead" />
-                                    @if (searchOptions.itemBasic.text) {
-                                    <button type="button"
-                                        class="btn-close position-absolute end-0 top-50 translate-middle-y me-2"
-                                        style="font-size: 0.65rem;"
-                                        (click)="searchOptions.itemBasic.text = ''; itemBasicInput.focus()"
-                                        aria-label="Clear"></button>
-                                    }
-                                </div>
+                                <input #itemBasicInput id="custom_itemBasic" type="text" class="form-control pe-5"
+                                    [(ngModel)]="searchOptions.itemBasic.text" placeholder="物品名稱"
+                                    [ngbTypeahead]="search2" container="body" [resultTemplate]="rt2"
+                                    (focus)="focus2$.next($any($event).target.value)"
+                                    (click)="click2$.next($any($event).target.value)" #instance2="ngbTypeahead" />
+                                <label for="custom_itemBasic">搜尋物品名稱</label>
+
+                                @if (searchOptions.itemBasic.text) {
+                                <button type="button"
+                                    class="btn-close position-absolute end-0 top-50 translate-middle-y me-2"
+                                    style="font-size: 0.65rem;"
+                                    (click)="searchOptions.itemBasic.text = ''; itemBasicInput.focus()"
+                                    aria-label="Clear"></button>
+                                }
                                 }
                             </div>
                         </div>
+                        <div class="col-2">
+                            <div class="form-floating">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="switchCheckChecked" [(ngModel)]="searchOptions.itemBasic.isSearch">
+                                    <label class="form-check-label" for="switchCheckChecked">啟用</label>
+                                </div>
+                                <!-- <input class="form-check-input" type="checkbox" id="ItemBasicflexSwitchCheckChecked"
+                                    [(ngModel)]="searchOptions.itemBasic.isSearch">
+                                <label class="form-check-label small text-light"
+                                    for="ItemBasicflexSwitchCheckChecked">啟用</label> -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!--地圖搜尋-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.map" style="margin-top:10px;">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="MapLevelflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.mapLevel.isSearch"
-                                        (click)="searchOptions.mapLevel.isSearch = !searchOptions.mapLevel.isSearch">
-                                    <label class="form-check-label" for="MapLevelflexSwitchCheckChecked">階級</label>
-                                </div>
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="min" class="form-control"
-                                    [(ngModel)]="searchOptions.mapLevel.min"
-                                    [disabled]="!searchOptions.mapLevel.isSearch">
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="max" class="form-control"
-                                    [(ngModel)]="searchOptions.mapLevel.max"
-                                    [disabled]="!searchOptions.mapLevel.isSearch">
-                            </div>
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox"
-                                        id="_RaritySetflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.raritySet.isSearch"
-                                        (click)="searchOptions.raritySet.isSearch = !searchOptions.raritySet.isSearch">
-                                    <label class="form-check-label" for="_RaritySetflexSwitchCheckChecked">稀有度</label>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <select class="form-select" aria-label="稀有度"
-                                    [(ngModel)]="searchOptions.raritySet.chosenObj"
-                                    [disabled]="!searchOptions.raritySet.isSearch">
-                                    @for (item of searchOptions.raritySet.option; track $index) {
-                                    <option [ngValue]="item.prop">{{ item.label
-                                        }}</option>
+            <!-- UX 重新設計展示區塊 -->
+            <div class="container-fluid mt-2 mb-2 p-0">
+                <div class="poe-filter-panel card">
+                    <div class="card-header py-2 border-secondary bg-gradient d-flex justify-content-between align-items-center cursor-pointer"
+                        (click)="ui.collapse.advanced = !ui.collapse.advanced"
+                        [class.text-info]="totalUxFilterCount > 0 && !hasUxSearchError"
+                        [class.text-danger]="hasUxSearchError">
+                        <span>
+                            <i class="bi bi-filter-square me-2"
+                                [class.filter-active-icon]="totalUxFilterCount > 0 && !hasUxSearchError"></i>
+                            進階物品過濾
+                            @if (totalUxFilterCount > 0) {
+                            <span class="badge rounded-pill ms-1" [class.bg-info]="!hasUxSearchError"
+                                [class.bg-danger]="hasUxSearchError" style="font-size: 0.65rem;">{{ totalUxFilterCount
+                                }}</span>
+                            }
+                        </span>
+                        <div class="d-flex align-items-center">
+                            @if (totalUxFilterCount > 0) {
+                            <i class="bi bi-x-circle-fill text-danger me-2"
+                                (click)="resetUxSearchOptions(); $event.stopPropagation()" ngbTooltip="清空所有進階過濾器"></i>
+                            }
+                            <i class="bi" [class.bi-chevron-down]="ui.collapse.advanced"
+                                [class.bi-chevron-up]="!ui.collapse.advanced"></i>
+                        </div>
+                    </div>
+
+                    <form class="card-body p-2" #cDraft="ngbCollapse" [(ngbCollapse)]="ui.collapse.advanced"
+                        #uxForm="ngForm">
+                        <!-- 1. 類別過濾 -->
+                        <div class="filter-section mb-2 border border-secondary rounded overflow-hidden">
+                            <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
+                                (click)="c1.toggle(); !c1.collapsed && (c2.collapsed = c3.collapsed = c4.collapsed = c5.collapsed = true)"
+                                [class.text-info]="getActiveFilterCount(uxSearchOptions.base) > 0">
+                                <span>
+                                    <i class="bi bi-tag me-2"
+                                        [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.base) > 0"></i>類別過濾
+                                    @if (getActiveFilterCount(uxSearchOptions.base) > 0) {
+                                    <span class="badge rounded-pill bg-info ms-1" style="font-size: 0.65rem;">{{
+                                        getActiveFilterCount(uxSearchOptions.base) }}</span>
                                     }
-                                </select>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    @if (getActiveFilterCount(uxSearchOptions.base) > 0) {
+                                    <i class="bi bi-x-circle-fill text-danger me-2"
+                                        (click)="resetUxSection('base'); $event.stopPropagation()"
+                                        ngbTooltip="清除此分類"></i>
+                                    }
+                                    <i class="bi" [class.bi-chevron-down]="c1.collapsed"
+                                        [class.bi-chevron-up]="!c1.collapsed"></i>
+                                </div>
+                            </div>
+                            <div class="section-content p-1" #c1="ngbCollapse" [ngbCollapse]="false">
+                                <div class="row g-1">
+                                    <div class="col-6">
+                                        <div class="row align-items-center g-1">
+                                            <div class="col-6 small text-muted text-end">道具分類</div>
+                                            <div class="col-6">
+                                                <select name="category" [(ngModel)]="uxSearchOptions.base.category"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.base.category)">
+                                                    @for ( category of options.category; track $index){
+                                                    <option value="{{category.id}}">{{category.text}}</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row align-items-center g-1">
+                                            <div class="col-6 small text-muted text-end">物品稀有度</div>
+                                            <div class="col-6">
+                                                <select name="rarity" [(ngModel)]="uxSearchOptions.base.rarity"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.base.rarity)">
+                                                    @for ( rarity of options.rarity; track $index){
+                                                    <option value="{{rarity.id}}">{{rarity.text}}</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">物品等級</div>
+                                            <div class="col-3">
+                                                <input name="ilvlMin" [(ngModel)]="uxSearchOptions.base.ilvl.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.base.ilvl)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.base.ilvl.min)">
+                                            </div>
+                                            <div class="col-3">
+                                                <input name="ilvlMax" [(ngModel)]="uxSearchOptions.base.ilvl.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.base.ilvl)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.base.ilvl.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">道具品質</div>
+                                            <div class="col-3">
+                                                <input name="qualityMin" [(ngModel)]="uxSearchOptions.base.quality.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.base.quality)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.base.quality.min)">
+                                            </div>
+                                            <div class="col-3">
+                                                <input name="qualityMax" [(ngModel)]="uxSearchOptions.base.quality.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.base.quality)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.base.quality.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                        <!-- 2. 裝備篩選器 -->
+                        <div class="filter-section mb-2 border border-secondary rounded overflow-hidden">
+                            <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
+                                (click)="c2.toggle(); !c2.collapsed && (c1.collapsed = c3.collapsed = c4.collapsed = c5.collapsed = true)"
+                                [class.text-info]="getActiveFilterCount(uxSearchOptions.equipment) > 0">
+                                <span>
+                                    <i class="bi bi-shield me-2"
+                                        [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.equipment) > 0"></i>裝備篩選器
+                                    @if (getActiveFilterCount(uxSearchOptions.equipment) > 0) {
+                                    <span class="badge rounded-pill bg-info ms-1" style="font-size: 0.65rem;">{{
+                                        getActiveFilterCount(uxSearchOptions.equipment) }}</span>
+                                    }
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    @if (getActiveFilterCount(uxSearchOptions.equipment) > 0) {
+                                    <i class="bi bi-x-circle-fill text-danger me-2"
+                                        (click)="resetUxSection('equipment'); $event.stopPropagation()"
+                                        ngbTooltip="清除此分類"></i>
+                                    }
+                                    <i class="bi" [class.bi-chevron-down]="c2.collapsed"
+                                        [class.bi-chevron-up]="!c2.collapsed"></i>
+                                </div>
+                            </div>
+                            <div class="section-content p-1" #c2="ngbCollapse" [ngbCollapse]="true">
+                                <div class="row g-1">
+                                    <!-- 1. 傷害 & 2. 每秒攻擊速度 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">傷害</div>
+                                            <div class="col-3"><input name="dmgMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.damage.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.damage)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.damage.min)">
+                                            </div>
+                                            <div class="col-3"><input name="dmgMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.damage.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.damage)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.damage.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">每秒攻擊速度</div>
+                                            <div class="col-3"><input name="apsMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.aps.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.aps)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.aps.min)">
+                                            </div>
+                                            <div class="col-3"><input name="apsMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.aps.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.aps)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.aps.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 3. 暴擊機率 & 4. 每秒傷害 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">暴擊機率</div>
+                                            <div class="col-3"><input name="critMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.crit.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.crit)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.crit.min)">
+                                            </div>
+                                            <div class="col-3"><input name="critMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.crit.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.crit)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.crit.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">每秒傷害</div>
+                                            <div class="col-3"><input name="dpsMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.dps.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.dps)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.dps.min)">
+                                            </div>
+                                            <div class="col-3"><input name="dpsMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.dps.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.dps)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.dps.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 5. 物理傷害 & 6. 元素傷害 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">物理傷害</div>
+                                            <div class="col-3"><input name="pdpsMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.pdps.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.pdps)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.pdps.min)">
+                                            </div>
+                                            <div class="col-3"><input name="pdpsMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.pdps.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.pdps)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.pdps.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">元素傷害</div>
+                                            <div class="col-3"><input name="edpsMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.edps.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.edps)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.edps.min)">
+                                            </div>
+                                            <div class="col-3"><input name="edpsMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.edps.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.edps)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.edps.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 7. 重新載入時間 & 8. 護甲 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">重新載入時間</div>
+                                            <div class="col-3"><input name="reloadMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.reload_time.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.reload_time)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.reload_time.min)">
+                                            </div>
+                                            <div class="col-3"><input name="reloadMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.reload_time.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.reload_time)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.reload_time.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">護甲</div>
+                                            <div class="col-3"><input name="armourMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.ar.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.ar)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.ar.min)">
+                                            </div>
+                                            <div class="col-3"><input name="armourMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.ar.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.ar)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.ar.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 9. 閃避值 & 10. 能量護盾 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">閃避值</div>
+                                            <div class="col-3"><input name="evasionMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.ev.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.ev)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.ev.min)">
+                                            </div>
+                                            <div class="col-3"><input name="evasionMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.ev.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.ev)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.ev.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">能量護盾</div>
+                                            <div class="col-3"><input name="esMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.es.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.es)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.es.min)">
+                                            </div>
+                                            <div class="col-3"><input name="esMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.es.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.es)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.es.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 11. 保護 & 12. 格擋 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">保護</div>
+                                            <div class="col-3"><input name="wardMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.ward.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.ward)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.ward.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wardMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.ward.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.ward)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.ward.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">格擋</div>
+                                            <div class="col-3"><input name="blockMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.block.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.block)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.block.min)">
+                                            </div>
+                                            <div class="col-3"><input name="blockMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.block.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.block)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.block.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 13. 精魂 & 14. 可增幅插槽 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">精魂</div>
+                                            <div class="col-3"><input name="spiritMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.spirit.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.spirit)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.spirit.min)">
+                                            </div>
+                                            <div class="col-3"><input name="spiritMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.spirit.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.spirit)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.spirit.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">可增幅插槽</div>
+                                            <div class="col-3"><input name="socketsMin"
+                                                    [(ngModel)]="uxSearchOptions.equipment.rune_sockets.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.rune_sockets)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.rune_sockets.min)">
+                                            </div>
+                                            <div class="col-3"><input name="socketsMax"
+                                                    [(ngModel)]="uxSearchOptions.equipment.rune_sockets.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.equipment.rune_sockets)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.equipment.rune_sockets.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. 物品需求 -->
+                        <div class="filter-section mb-2 border border-secondary rounded overflow-hidden">
+                            <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
+                                (click)="c3.toggle(); !c3.collapsed && (c1.collapsed = c2.collapsed = c4.collapsed = c5.collapsed = true)"
+                                [class.text-info]="getActiveFilterCount(uxSearchOptions.requirements) > 0">
+                                <span>
+                                    <i class="bi bi-person-badge me-2"
+                                        [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.requirements) > 0"></i>物品需求
+                                    @if (getActiveFilterCount(uxSearchOptions.requirements) > 0) {
+                                    <span class="badge rounded-pill bg-info ms-1" style="font-size: 0.65rem;">{{
+                                        getActiveFilterCount(uxSearchOptions.requirements) }}</span>
+                                    }
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    @if (getActiveFilterCount(uxSearchOptions.requirements) > 0) {
+                                    <i class="bi bi-x-circle-fill text-danger me-2"
+                                        (click)="resetUxSection('requirements'); $event.stopPropagation()"
+                                        ngbTooltip="清除此分類"></i>
+                                    }
+                                    <i class="bi" [class.bi-chevron-down]="c3.collapsed"
+                                        [class.bi-chevron-up]="!c3.collapsed"></i>
+                                </div>
+                            </div>
+                            <div class="section-content p-1" #c3="ngbCollapse" [ngbCollapse]="true">
+                                <div class="row g-1">
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">等級</div>
+                                            <div class="col-3"><input name="reqLvlMin"
+                                                    [(ngModel)]="uxSearchOptions.requirements.lvl.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.lvl)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.lvl.min)">
+                                            </div>
+                                            <div class="col-3"><input name="reqLvlMax"
+                                                    [(ngModel)]="uxSearchOptions.requirements.lvl.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.lvl)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.lvl.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">力量</div>
+                                            <div class="col-3"><input name="reqStrMin"
+                                                    [(ngModel)]="uxSearchOptions.requirements.str.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.str)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.str.min)">
+                                            </div>
+                                            <div class="col-3"><input name="reqStrMax"
+                                                    [(ngModel)]="uxSearchOptions.requirements.str.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.str)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.str.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">敏捷</div>
+                                            <div class="col-3"><input name="reqDexMin"
+                                                    [(ngModel)]="uxSearchOptions.requirements.dex.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.dex)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.dex.min)">
+                                            </div>
+                                            <div class="col-3"><input name="reqDexMax"
+                                                    [(ngModel)]="uxSearchOptions.requirements.dex.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.dex)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.dex.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">智慧</div>
+                                            <div class="col-3"><input name="reqIntMin"
+                                                    [(ngModel)]="uxSearchOptions.requirements.int.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.int)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.int.min)">
+                                            </div>
+                                            <div class="col-3"><input name="reqIntMax"
+                                                    [(ngModel)]="uxSearchOptions.requirements.int.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.requirements.int)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.requirements.int.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. 終局篩選器 -->
+                        <div class="filter-section mb-2 border border-secondary rounded overflow-hidden">
+                            <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
+                                (click)="c4.toggle(); !c4.collapsed && (c1.collapsed = c2.collapsed = c3.collapsed = c5.collapsed = true)"
+                                [class.text-info]="getActiveFilterCount(uxSearchOptions.maps) > 0">
+                                <span>
+                                    <i class="bi bi-gem me-2"
+                                        [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.maps) > 0"></i>終局篩選器
+                                    @if (getActiveFilterCount(uxSearchOptions.maps) > 0) {
+                                    <span class="badge rounded-pill bg-info ms-1" style="font-size: 0.65rem;">{{
+                                        getActiveFilterCount(uxSearchOptions.maps) }}</span>
+                                    }
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    @if (getActiveFilterCount(uxSearchOptions.maps) > 0) {
+                                    <i class="bi bi-x-circle-fill text-danger me-2"
+                                        (click)="resetUxSection('maps'); $event.stopPropagation()"
+                                        ngbTooltip="清除此分類"></i>
+                                    }
+                                    <i class="bi" [class.bi-chevron-down]="c4.collapsed"
+                                        [class.bi-chevron-up]="!c4.collapsed"></i>
+                                </div>
+                            </div>
+                            <div class="section-content p-1" #c4="ngbCollapse" [ngbCollapse]="true">
+                                <div class="row g-1">
+                                    <!-- 1. 換界石階級 & 2. 換界石怪物群大小 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">換界石階級</div>
+                                            <div class="col-3"><input name="wayTierMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_tier.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_tier)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_tier.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayTierMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_tier.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_tier)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_tier.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">怪物群大小</div>
+                                            <div class="col-3"><input name="wayPackMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_packsize.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_packsize)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_packsize.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayPackMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_packsize.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_packsize)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_packsize.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 3. 換界石怪物效能 & 4. 換界石物品稀有度 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">怪物效能</div>
+                                            <div class="col-3"><input name="wayPwrMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_magic_monsters.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_magic_monsters)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_magic_monsters.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayPwrMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_magic_monsters.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_magic_monsters)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_magic_monsters.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">物品稀有度</div>
+                                            <div class="col-3"><input name="wayIRMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_iir.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_iir)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_iir.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayIRMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_iir.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_iir)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_iir.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 5. 換界石怪物稀有度 & 6. 換界石復活次數 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">怪物稀有度</div>
+                                            <div class="col-3"><input name="wayIiqMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_rare_monsters.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_rare_monsters)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_rare_monsters.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayIiqMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_rare_monsters.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_rare_monsters)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_rare_monsters.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">復活次數</div>
+                                            <div class="col-3"><input name="wayResMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_revives.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_revives)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_revives.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayResMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_revives.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_revives)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_revives.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 7. 換界石掉落機率 & 8. 換界石金幣數量 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">掉落機率</div>
+                                            <div class="col-3"><input name="wayDropMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_bonus.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_bonus)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_bonus.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayDropMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_bonus.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_bonus)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_bonus.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">金幣數量</div>
+                                            <div class="col-3"><input name="wayGoldMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_gold.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_gold)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_gold.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayGoldMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_gold.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_gold)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_gold.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 9. 換界石經驗值獲取 & 10. 最後通牒試煉提示 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">經驗值獲取</div>
+                                            <div class="col-3"><input name="wayExpMin"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_experience.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_experience)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_experience.min)">
+                                            </div>
+                                            <div class="col-3"><input name="wayExpMax"
+                                                    [(ngModel)]="uxSearchOptions.maps.map_experience.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.maps.map_experience)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.map_experience.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">最後通牒提示</div>
+                                            <div class="col-6">
+                                                <select name="ultimatum"
+                                                    [(ngModel)]="uxSearchOptions.maps.ultimatum_hint"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.maps.ultimatum_hint)">
+                                                    <option value="">任何</option>
+                                                    <option value="Victorious">勝利</option>
+                                                    <option value="Cowardly">怯懦</option>
+                                                    <option value="Deadly">致命</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 5. 其它 -->
+                        <div class="filter-section mb-2 border border-secondary rounded overflow-hidden">
+                            <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
+                                (click)="c5.toggle(); !c5.collapsed && (c1.collapsed = c2.collapsed = c3.collapsed = c4.collapsed = true)"
+                                [class.text-info]="getActiveFilterCount(uxSearchOptions.misc) > 0">
+                                <span>
+                                    <i class="bi bi-plus-circle me-2"
+                                        [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.misc) > 0"></i>其它
+                                    @if (getActiveFilterCount(uxSearchOptions.misc) > 0) {
+                                    <span class="badge rounded-pill bg-info ms-1" style="font-size: 0.65rem;">{{
+                                        getActiveFilterCount(uxSearchOptions.misc) }}</span>
+                                    }
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    @if (getActiveFilterCount(uxSearchOptions.misc) > 0) {
+                                    <i class="bi bi-x-circle-fill text-danger me-2"
+                                        (click)="resetUxSection('misc'); $event.stopPropagation()"
+                                        ngbTooltip="清除此分類"></i>
+                                    }
+                                    <i class="bi" [class.bi-chevron-down]="c5.collapsed"
+                                        [class.bi-chevron-up]="!c5.collapsed"></i>
+                                </div>
+                            </div>
+                            <div class="section-content p-1" #c5="ngbCollapse" [ngbCollapse]="true">
+                                <div class="row g-1">
+                                    <!-- 1. 寶石等級 & 2. 寶石插槽 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">寶石等級</div>
+                                            <div class="col-3"><input name="gemLvlMin"
+                                                    [(ngModel)]="uxSearchOptions.misc.gem_level.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.gem_level)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.gem_level.min)">
+                                            </div>
+                                            <div class="col-3"><input name="gemLvlMax"
+                                                    [(ngModel)]="uxSearchOptions.misc.gem_level.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.gem_level)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.gem_level.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">寶石插槽</div>
+                                            <div class="col-3"><input name="gemSockMin"
+                                                    [(ngModel)]="uxSearchOptions.misc.gem_sockets.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.gem_sockets)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.gem_sockets.min)">
+                                            </div>
+                                            <div class="col-3"><input name="gemSockMax"
+                                                    [(ngModel)]="uxSearchOptions.misc.gem_sockets.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.gem_sockets)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.gem_sockets.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 3. 區域等級 & 4. 堆疊數量 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">區域等級</div>
+                                            <div class="col-3"><input name="areaLvlMin"
+                                                    [(ngModel)]="uxSearchOptions.misc.area_level.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.area_level)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.area_level.min)">
+                                            </div>
+                                            <div class="col-3"><input name="areaLvlMax"
+                                                    [(ngModel)]="uxSearchOptions.misc.area_level.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.area_level)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.area_level.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">堆疊數量</div>
+                                            <div class="col-3"><input name="stackMin"
+                                                    [(ngModel)]="uxSearchOptions.misc.stack_size.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.stack_size)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.stack_size.min)">
+                                            </div>
+                                            <div class="col-3"><input name="stackMax"
+                                                    [(ngModel)]="uxSearchOptions.misc.stack_size.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.stack_size)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.stack_size.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 5. 已鑑定 & 6. 破裂 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">已鑑定</div>
+                                            <div class="col-6">
+                                                <select name="identified" [(ngModel)]="uxSearchOptions.misc.identified"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.identified)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">破裂</div>
+                                            <div class="col-6">
+                                                <select name="fractured_item"
+                                                    [(ngModel)]="uxSearchOptions.misc.fractured_item"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.fractured_item)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 7. 已汙染 & 8. 聖化 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">已汙染</div>
+                                            <div class="col-6">
+                                                <select name="corrupted" [(ngModel)]="uxSearchOptions.misc.corrupted"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.corrupted)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">聖化</div>
+                                            <div class="col-6">
+                                                <select name="sanctified" [(ngModel)]="uxSearchOptions.misc.sanctified"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.sanctified)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 9. 雙重腐化 & 10. 已培育的瓦爾傳奇 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">雙重腐化</div>
+                                            <div class="col-6">
+                                                <select name="twice_corrupted"
+                                                    [(ngModel)]="uxSearchOptions.misc.twice_corrupted"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.twice_corrupted)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">已培育瓦爾傳奇</div>
+                                            <div class="col-6">
+                                                <select name="mutated" [(ngModel)]="uxSearchOptions.misc.mutated"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.mutated)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 11. 未揭露 & 12. 褻瀆 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">未揭露</div>
+                                            <div class="col-6">
+                                                <select name="veiled" [(ngModel)]="uxSearchOptions.misc.veiled"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.veiled)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">褻瀆</div>
+                                            <div class="col-6">
+                                                <select name="desecrated" [(ngModel)]="uxSearchOptions.misc.desecrated"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.desecrated)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 13. 已工藝 & 14. 預見 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">已工藝</div>
+                                            <div class="col-6">
+                                                <select name="crafted" [(ngModel)]="uxSearchOptions.misc.crafted"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.crafted)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">預見</div>
+                                            <div class="col-6">
+                                                <select name="foreseeing" [(ngModel)]="uxSearchOptions.misc.foreseeing"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.foreseeing)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 15. 已複製 & 16. 巨靈之幣神聖之水 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">已複製</div>
+                                            <div class="col-6">
+                                                <select name="mirrored" [(ngModel)]="uxSearchOptions.misc.mirrored"
+                                                    class="form-select form-select-sm"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.mirrored)">
+                                                    <option value="">任何</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">巨靈之幣神聖水</div>
+                                            <div class="col-3"><input name="djinnMin"
+                                                    [(ngModel)]="uxSearchOptions.misc.sanctum_gold.min" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.sanctum_gold)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.sanctum_gold.min)">
+                                            </div>
+                                            <div class="col-3"><input name="djinnMax"
+                                                    [(ngModel)]="uxSearchOptions.misc.sanctum_gold.max" type="number"
+                                                    class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.sanctum_gold)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.sanctum_gold.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 17. 未鑑定階級 -->
+                                    <div class="col-6">
+                                        <div class="row g-1 align-items-center">
+                                            <div class="col-6 small text-muted text-end">未鑑定階級</div>
+                                            <div class="col-3"><input name="unTierMin"
+                                                    [(ngModel)]="uxSearchOptions.misc.unidentified_tier.min"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.unidentified_tier)"
+                                                    placeholder="最小"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.unidentified_tier.min)">
+                                            </div>
+                                            <div class="col-3"><input name="unTierMax"
+                                                    [(ngModel)]="uxSearchOptions.misc.unidentified_tier.max"
+                                                    type="number" class="form-control form-control-sm text-center"
+                                                    [class.is-invalid]="isRangeInvalid(uxSearchOptions.misc.unidentified_tier)"
+                                                    placeholder="最大"
+                                                    [class.filter-active]="isFilterActive(uxSearchOptions.misc.unidentified_tier.max)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            <!--技能寶石搜尋-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.gem" style="margin-top:10px;">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="GemLevelflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.gemLevel.isSearch"
-                                        (click)="searchOptions.gemLevel.isSearch = !searchOptions.gemLevel.isSearch">
-                                    <label class="form-check-label" for="GemLevelflexSwitchCheckChecked">等級</label>
-                                </div>
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="min" class="form-control"
-                                    [(ngModel)]="searchOptions.gemLevel.min"
-                                    [disabled]="!searchOptions.gemLevel.isSearch">
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="max" class="form-control"
-                                    [(ngModel)]="searchOptions.gemLevel.max"
-                                    [disabled]="!searchOptions.gemLevel.isSearch">
-                            </div>
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox"
-                                        id="GemQualityflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.gemQuality.isSearch"
-                                        (click)="searchOptions.gemQuality.isSearch = !searchOptions.gemQuality.isSearch">
-                                    <label class="form-check-label" for="GemQualityflexSwitchCheckChecked">品質</label>
-                                </div>
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="min" class="form-control"
-                                    [(ngModel)]="searchOptions.gemQuality.min"
-                                    [disabled]="!searchOptions.gemQuality.isSearch">
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="max" class="form-control"
-                                    [(ngModel)]="searchOptions.gemQuality.max"
-                                    [disabled]="!searchOptions.gemQuality.isSearch">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="GemSocketflexSwitchCheckChecked"
-                                        [(ngModel)]="searchOptions.gemSocket.isSearch"
-                                        (click)="searchOptions.gemSocket.isSearch = !searchOptions.gemSocket.isSearch">
-                                    <label class="form-check-label" for="GemSocketflexSwitchCheckChecked">插槽</label>
-                                </div>
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="min" class="form-control"
-                                    [(ngModel)]="searchOptions.gemSocket.min"
-                                    [disabled]="!searchOptions.gemSocket.isSearch">
-                            </div>
-                            <div class="col-1" style="padding: 0 2px;">
-                                <input type="text" aria-label="max" class="form-control"
-                                    [(ngModel)]="searchOptions.gemSocket.max"
-                                    [disabled]="!searchOptions.gemSocket.isSearch">
-                            </div>
-                        </div>
+                <!-- UX 測試專用按鈕列 -->
+                <!-- <div class="row g-2 mt-2 pt-2 border-top border-secondary border-opacity-25">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-sm btn-outline-danger w-100"
+                            (click)="resetUxSearchOptions()"><i class="bi bi-trash me-1"></i>清空全部草案</button>
                     </div>
-                </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-sm btn-info w-100 text-white" (click)="clickToSearch()"
+                            [disabled]="hasUxSearchError || totalUxFilterCount === 0"><i
+                                class="bi bi-search me-1"></i>執行搜尋</button>
+                    </div>
+                </div> -->
+
+                <!-- 偵錯區塊：顯示 uxSearchOptions 即時狀態 -->
+                <!-- <div class="mt-3 p-3 bg-dark border border-info rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-info small fw-bold"><i class="bi bi-bug me-1"></i>實時資料模型狀態
+                            (uxSearchOptions)</span>
+                        <button class="btn btn-outline-info btn-sm" style="font-size: 0.6rem;"
+                            (click)="uxSearchOptions.base.category = ''">測試重置</button>
+                    </div>
+                    <pre class="text-light mb-0"
+                        style="font-size: 0.7rem; max-height: 300px; overflow-y: auto;">{{ getFilteredUxSearchOptions(uxSearchOptions) | json }}</pre>
+                </div> -->
+
+                <!-- 偵錯區塊：顯示 filters.searchJson 即時狀態 -->
+                <!-- <div class="mt-3 p-3 bg-dark border border-warning rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-warning small fw-bold"><i class="bi bi-code-slash me-1"></i>搜尋 API 原始 JSON
+                            (filters.searchJson)</span>
+                    </div>
+                    <pre class="text-light mb-0"
+                        style="font-size: 0.7rem; max-height: 400px; overflow-y: auto;">{{ liveSearchJson | json }}</pre>
+                </div> -->
             </div>
+            }
             <!--詞綴搜尋-->
             @if(item.name !== ''){
             <div id="itemName" style="text-align: center;">
@@ -463,7 +1390,9 @@
                                                 {{ defence.type }}
                                             </td>
                                             @if (ui.collapse.custom) {
-                                            <td></td>
+                                            <td
+                                                [ngStyle]="{'background': defence.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'color': typeColors.get(defence.type), 'font-weight': 'bolder'}">
+                                            </td>
                                             }
                                             <td (click)="defence.isSearch = !defence.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
@@ -513,7 +1442,9 @@
                                                 [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'font-weight': 'bolder', 'color': typeColors.get('插槽')}">
                                                 插槽</td>
                                             @if (ui.collapse.custom) {
-                                            <td></td>
+                                            <td
+                                                [ngStyle]="{'background': searchOptions.itemSocket.isSearch ? 'rgb(39 45 69 / 30%)' : null, 'font-weight': 'bolder', 'color': typeColors.get('插槽')}">
+                                            </td>
                                             }
                                             <td (click)="searchOptions.itemSocket.isSearch = !searchOptions.itemSocket.isSearch"
                                                 style="white-space:pre-wrap;cursor: pointer;"
@@ -711,12 +1642,15 @@
         </ng-container>
         <div style="display: flex; align-items: center;justify-content: center; flex: 1;">
             <!--之後做-->
-            @if (item.category || item.searchStats.length > 0 || item.searchStatsCount.length > 0 || searchOptions.itemBasic.text) {
+            @if (item.category || item.searchStats.length > 0 || item.searchStatsCount.length > 0 ||
+            searchOptions.itemBasic.text || totalUxFilterCount > 0) {
             <div id="search" style="width:100%">
-                <button (click)="clickToSearch()" class="btn btn-primary" style="width:100%">搜尋</button>
+                <button (click)="clickToSearch()" class="btn btn-primary" style="width:100%"
+                    [disabled]="hasUxSearchError">搜尋</button>
             </div>
             }
-            @if (!ui.collapse.custom && (item.category || item.searchStats.length > 0 || item.searchStatsCount.length > 0 || searchOptions.itemBasic.text)) {
+            @if (!ui.collapse.custom && (item.category || item.searchStats.length > 0 || item.searchStatsCount.length >
+            0 || searchOptions.itemBasic.text)) {
             <div id="saveCustomSearch" style="width:100%">
                 <button (click)="clickToSaveCustomSearch()" class="btn btn-success" style="width:100%">儲存自訂搜尋</button>
             </div>
@@ -755,8 +1689,8 @@
 @if (searchResult.searchTotal > 0) {
 <app-analyze [searchResult]="searchResult" [isAnalyze]="ui.collapse.custom"
     [isSessionValid]="poeSessionStatus === 'valid'" [currentSortType]="currentSortType"
-    [currentSortDir]="currentSortDir" [pseudos]="pseudos" (isCounting)="countingStatus($event)" (statsFilter)="statsFilter($event)"
-    (changeSort)="changeSort($event)"></app-analyze>
+    [currentSortDir]="currentSortDir" [pseudos]="pseudos" (isCounting)="countingStatus($event)"
+    (statsFilter)="statsFilter($event)" (changeSort)="changeSort($event)"></app-analyze>
 } @else if (!app.isCounting) {
 <div style="margin: 15px; text-align: center; padding: 20px; border: 1px dashed #626262; border-radius: 4px;">
     <div style="color: #959595; font-weight: bold; margin-bottom: 5px;">🔍 查無符合條件的物品</div>

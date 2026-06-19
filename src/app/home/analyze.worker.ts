@@ -13,8 +13,8 @@ addEventListener('message', ({ data }) => {
     }
 
     if (data.type === 'ANALYZE') {
-        const { text, config } = data;
-        const result = analyze(text, cachedBasics, cachedStats, config);
+        const { text, config, uxSearchOptions } = data;
+        const result = analyze(text, cachedBasics, cachedStats, config, uxSearchOptions);
         postMessage(result);
     }
 });
@@ -26,7 +26,10 @@ const statTypes: any = [
     ['enchant', '附魔'],
     ['desecrated', '褻瀆'],
     ['fractured', '破裂'],
-    ['sanctum', '聖所']
+    ['sanctum', '聖所'],
+    ['crafted', '工藝'],
+    ['skill', '技能'],
+    ['explicit', '隨機']
 ];
 
 //有減少的詞綴部分字串
@@ -85,13 +88,18 @@ const pseudoElementalResistance: any = [
     'sanctum.stat_3128852541' //全部(聖所)
 ];
 
-function analyze(text: string, basics: any, stats: any, config: any) {
+function magicPositionGet(text: string){
+    return text.lastIndexOf('之') > -1 ? text.lastIndexOf('之') : text.lastIndexOf('的');
+}
+
+function analyze(text: string, basics: any, stats: any, config: any, uxSearchOptions_initial: any) {
     const { newLine, filters_def, item_initial, searchOptions_initial, ui_initial } = config;
     const weaponTypes = cachedWeaponTypes;
 
     let item = JSON.parse(JSON.stringify(item_initial));
     let filters = { searchJson: JSON.parse(JSON.stringify(filters_def)) };
     let searchOptions = JSON.parse(JSON.stringify(searchOptions_initial));
+    let uxSearchOptions = JSON.parse(JSON.stringify(uxSearchOptions_initial));
     let ui = JSON.parse(JSON.stringify(ui_initial));
 
     let itemArray = text.split(newLine);
@@ -116,13 +124,12 @@ function analyze(text: string, basics: any, stats: any, config: any) {
         const i = itemBasic.indexOf(element.type);
         let b = itemBasic.split(' ');
 
-        if (i > -1 && (b.length > 1 ? (b[0].length > i ? b[0].length === element.type.length : b[1].length === element.type.length) : (element.type === '戒指' && Rarity !== '傳奇') ? false : itemBasic.length === (i + element.type.length))) {
+        if (i > -1 && (b.length > 1 ? (b[0].length > i ? b[0].length === element.type.length : b[1].length === element.type.length) : Rarity === '魔法' ? (magicPositionGet(itemBasic) + 1) === i : i === 0 && itemBasic.length === (i + element.type.length))) {
             itemBasic = element.type;
             item.basic = element.type;
 
             searchOptions.itemCategory.option.length = 0;
-            searchOptions.raritySet.chosenObj = 'nonunique';
-            searchOptions.raritySet.isSearch = true;
+            uxSearchOptions.base.rarity = 'nonunique';
 
             item.type = element.option;
             searchOptions.itemBasic.text = element.text ?? element.type;
@@ -130,22 +137,19 @@ function analyze(text: string, basics: any, stats: any, config: any) {
             if (text.indexOf('物品等級: ') > -1) {
                 let levelPos = text.substring(text.indexOf('物品等級: ') + 5);
                 let levelValue = parseInt(levelPos.substring(0, levelPos.indexOf(newLine)).trim(), 10);
-                searchOptions.itemLevel.min = levelValue >= 86 ? 86 : levelValue;
+                uxSearchOptions.base.ilvl.min = levelValue >= 86 ? 86 : levelValue;
             }
 
             searchOptions.itemCategory.option.push({ label: element.name, prop: element.option });
-            searchOptions.itemCategory.chosenObj = element.option;
+            uxSearchOptions.base.category = element.option;
 
             if (element.weapon) {
                 searchOptions.itemCategory.option.push({ label: weaponTypes[element.weapon], prop: element.weapon });
             }
             if (element.option.indexOf('map') > -1) searchOptions.itemBasic.isSearch = true;
 
-            searchOptions.itemCategory.isSearch = true;
-
             if (Rarity !== '傳奇') {
                 item.category = 'item';
-                if (element.option.indexOf('map') === -1) ui.collapse.item = false;
             }
             return true;
         }
@@ -155,13 +159,13 @@ function analyze(text: string, basics: any, stats: any, config: any) {
     // 詞綴分析主邏輯
     if (Rarity === "傳奇") {
         item.category = 'unique';
-        ui.collapse.item = true;
-        searchOptions.raritySet.chosenObj = text.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
+        uxSearchOptions.base.rarity = text.indexOf('傳奇 (貼模)') > -1 ? 'uniquefoil' : 'unique';
 
         searchOptions.itemSocket.min = getSocketNumber(text, newLine);
         searchOptions.itemSocket.max = getSocketNumber(text, newLine);
+        // uxSearchOptions.equipment.rune_sockets.min = getSocketNumber(text, newLine);
+        // uxSearchOptions.equipment.rune_sockets.max = getSocketNumber(text, newLine);
 
-        searchOptions.raritySet.isSearch = true;
         if (text.indexOf('未鑑定') === -1) { // 已鑑定傳奇            
             Object.assign(filters.searchJson.query, { name: searchName, type: itemBasic });
             itemStatsAnalysis(itemArray, 1, item, ui, stats, config);
@@ -176,8 +180,7 @@ function analyze(text: string, basics: any, stats: any, config: any) {
         if (text.indexOf('輔助寶石') === -1) {
             let levelPos = text.substring(text.indexOf('等級: ') + 4);
             let levelPosEnd = levelPos.indexOf(newLine);
-            searchOptions.gemLevel.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
-            searchOptions.gemLevel.isSearch = true;
+            uxSearchOptions.misc.gem_level.min = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
 
             let minQuality = 0;
             if (text.indexOf('品質: +') > -1) {
@@ -185,12 +188,10 @@ function analyze(text: string, basics: any, stats: any, config: any) {
                 let quaPosEnd = quaPos.indexOf('% (augmented)'); // 品質定位點
                 minQuality = parseInt(quaPos.substring(0, quaPosEnd).trim(), 10);
 
-                searchOptions.gemQuality.isSearch = true;
-                searchOptions.gemQuality.min = minQuality;
+                uxSearchOptions.base.quality.min = minQuality;
             }
 
-            searchOptions.gemSocket.isSearch = true;
-            searchOptions.gemSocket.min = getSocketNumber(text, newLine);
+            uxSearchOptions.misc.gem_sockets.min = getSocketNumber(text, newLine);
         }
     } else if (Rarity === "通貨" || Rarity === "通貨不足") {
         item.category = 'currency';
@@ -199,9 +200,8 @@ function analyze(text: string, basics: any, stats: any, config: any) {
             let levelPos = text.substring(text.indexOf('等級: ') + 4);
             let levelPosEnd = levelPos.indexOf(newLine);
             let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
-            searchOptions.itemLevel.min = level;
-            searchOptions.itemLevel.max = level;
-            searchOptions.itemLevel.isSearch = true;
+            uxSearchOptions.base.ilvl.min = level;
+            uxSearchOptions.base.ilvl.max = level;
 
             item.name += ("<br>等級: " + level);
         }
@@ -210,7 +210,7 @@ function analyze(text: string, basics: any, stats: any, config: any) {
             let levelPos = text.substring(text.indexOf('區域等級: ') + 6);
             let levelPosEnd = levelPos.indexOf(newLine);
             let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
-            searchOptions.itemLevel.min = level;
+            uxSearchOptions.base.ilvl.min = level;
 
             let maxLevel = 0;
             switch (true) {
@@ -229,17 +229,18 @@ function analyze(text: string, basics: any, stats: any, config: any) {
                 default:
                     break;
             }
-            searchOptions.itemLevel.max = maxLevel;
-            searchOptions.itemLevel.isSearch = true;
+            uxSearchOptions.base.ilvl.max = maxLevel;
 
             item.name += ("<br>區域等級: " + level);
         }
 
         Object.assign(filters.searchJson.query, { type: searchName });
-        searchOptions.raritySet.chosenObj = "";
+        uxSearchOptions.base.rarity = "";
     } else if (item.category === 'item') {
         searchOptions.itemSocket.min = getSocketNumber(text, newLine);
         searchOptions.itemSocket.max = getSocketNumber(text, newLine);
+        // uxSearchOptions.equipment.rune_sockets.min = getSocketNumber(text, newLine);
+        // uxSearchOptions.equipment.rune_sockets.max = getSocketNumber(text, newLine);
         itemStatsAnalysis(itemArray, 0, item, ui, stats, config);
         if (item.type.indexOf('armour') > -1) itemDefencesAnalysis(itemArray, item);
 
@@ -248,9 +249,8 @@ function analyze(text: string, basics: any, stats: any, config: any) {
             let levelPos = item.substring(item.indexOf('地區等級: ') + 6);
             let levelPosEnd = levelPos.indexOf(newLine);
             let level = parseInt(levelPos.substring(0, levelPosEnd).replace(/[+-]^\D+/g, ''), 10);
-            searchOptions.mapAreaLevel.min = level;
-            searchOptions.mapAreaLevel.max = level;
-            searchOptions.mapAreaLevel.isSearch = true;
+            uxSearchOptions.misc.area_level.min = level;
+            uxSearchOptions.misc.area_level.max = level;
 
             item.name += ("<br>地區等級: " + level);
         }
@@ -260,16 +260,13 @@ function analyze(text: string, basics: any, stats: any, config: any) {
     if (text.indexOf('物品種類: 換界石') > -1) {
         item.category = 'map';
 
-        searchOptions.raritySet.chosenObj = 'nonunique';
-        searchOptions.raritySet.isSearch = true;
+        uxSearchOptions.base.rarity = 'nonunique';
 
-        ui.collapse.map = false;
         let mapPos: any = text.indexOf('換界石階級:') > -1 ? text.substring(text.indexOf('換界石階級:') + 6) : 0;
         if (mapPos) {
             let mapTier = parseInt(mapPos.substring(0, mapPos.indexOf(newLine)).trim(), 10);
-            searchOptions.mapLevel.min = mapTier;
-            searchOptions.mapLevel.max = mapTier;
-            searchOptions.mapLevel.isSearch = true;
+            uxSearchOptions.maps.map_tier.min = mapTier;
+            uxSearchOptions.maps.map_tier.max = mapTier;
         }
         if (Rarity !== '中') itemStatsAnalysis(itemArray, 0, item, ui, stats, config);
     }
@@ -282,7 +279,7 @@ function analyze(text: string, basics: any, stats: any, config: any) {
         }
     };
 
-    return { item, filters, searchOptions, ui, basicsUpdate };
+    return { item, filters, searchOptions, uxSearchOptions, ui, basicsUpdate };
 }
 
 function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, statsData: any, config: any) {
@@ -327,6 +324,8 @@ function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, 
             if (count > 0) { text = replaceIllustrate(text, count) }
 
             let [cleansedText, lv] = replaceLevelRange(text);
+            console.log(cleansedText, lv);
+
             //複合詞
             if (cleansedText.indexOf("\n") > -1) {
                 let stats = cleansedText.split("\n");
@@ -555,8 +554,9 @@ function indentifyStatType(stat: string, lv: any = -1, rarityFlag: any, tempStat
         let tempA = stat.split(' ');
         stat = "賦予技能: 等級 # " + tempA[tempA.length - 1];
         tempStat.push({ text: getStat(statsData, item, stat, 'skill'), type: "技能", category: "skill" });
-    } else if (stat.indexOf('已工藝') > -1) {
+    } else if (stat.indexOf('(crafted)') > -1) { // 工藝屬性
         console.log("工藝");
+        stat = stat.replaceAll('(crafted)', '').trim(); // 刪除(crafted)字串
         tempStat.push({ text: getStat(statsData, item, stat, 'crafted'), type: "工藝", category: "crafted" });
     } else if (stat.indexOf('(implicit)') > -1 || stat.indexOf('固定詞綴') > -1) { // 固定屬性
         console.log("固定");
@@ -616,6 +616,9 @@ function replaceLevelRange(text: any) {
     }
     if (text.indexOf("已褻瀆") > -1) {
         text += "(desecrated)";
+    }
+    if (text.indexOf("已工藝") > -1) {
+        text += "(crafted)";
     }
     if (text.indexOf("已破裂") > -1) {
         text += "(fractured)";

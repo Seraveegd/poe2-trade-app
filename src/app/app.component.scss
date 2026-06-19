@@ -19,6 +19,7 @@
 
         button {
             border: 1px solid rgba(97, 97, 97, 0.5);
+            cursor: pointer;
         }
     }
 
@@ -61,8 +62,8 @@
 @media (prefers-color-scheme: light) {
     #app {
         box-shadow: 1px 1px 5px rgba(255, 255, 255, 0.5);
-        background-color: #ffffff82;
-        border: 1px solid #cccccc7a;
+        background-color: rgb(255 255 255 / 80%);
+        border: 1px solid rgb(255 255 255 / 80%);
 
         a {
             color: #0067ff;

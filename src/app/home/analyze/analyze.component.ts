@@ -2,10 +2,11 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { AppService } from '../../app.service';
 import { from, concatMap, toArray } from 'rxjs';
 import { NgbTooltipModule, NgbAlertModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-analyze',
-  imports: [NgbTooltipModule, NgbAlertModule, NgbToastModule],
+  imports: [NgbTooltipModule, NgbAlertModule, NgbToastModule, NgClass],
   templateUrl: './analyze.component.html',
   styleUrl: './analyze.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -118,7 +119,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ["exalted", {
       text: "崇高石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png"
-    }], 
+    }],
     ["greater-exalted-orb", {
       text: "高階崇高石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png"
@@ -167,7 +168,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       text: "知識卷軸",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lJZGVudGlmaWNhdGlvbiIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/884f7bc58b/CurrencyIdentification.png"
     }],
-  ["fracturing-orb", {
+    ["fracturing-orb", {
       text: "破裂石",
       image: "https://webtw.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvRnJhY3R1cmluZ09yYiIsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8b85ed1dc2/FracturingOrb.png"
     }]]);
@@ -404,36 +405,41 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   //取得Tier
-  getTierLevel(hashes: any, mods: any) {
-    // 1. 安全檢查：確保資料存在且 hashes 是陣列
-    if (!hashes || !mods || !Array.isArray(hashes)) return '';
+  getTierLevel(mods: any) {
+    // 1. 安全檢查：確保資料存在且 mods 是陣列
+    if (!mods || !Array.isArray(mods)) return '';
 
     // 2. 透過索引陣列 hashes 從 mods 中提取對應的 tier 
     // 注意：API 回傳的是純物件，直接使用 .tier 存取
-    const tiers = hashes
-      .map(index => this.getTierColorSpan(mods[index]?.tier))
-      .filter(t => t !== undefined && t !== null);
+    const tiers = mods
+      .map((m: any) => {
+        return m?.tier ? this.getTierColorSpan(m?.tier) : '';
+      })
+      .filter((t: any) => t !== undefined && t !== null);      
 
     // 3. 格式化輸出，例如單一詞綴顯示 "T1"，複合詞綴顯示 "T1 + T2"
-    return tiers.length > 0 ? tiers.map(t => t).join(' + ') : '';
+    return tiers.length > 0 ? tiers.map((t: any) => t).join(' + ') : '';
   }
 
   getTierLevelDetail(hashes: any, mods: any, statId: any) {
     // 1. 安全檢查：確保資料存在且 hashes 是陣列
-    if (!hashes || !mods || !Array.isArray(hashes)) return '';
+    if (!hashes || !mods || !Array.isArray(mods)) return '';
 
     // 2. 透過索引陣列 hashes 從 mods 中提取對應的 tier 
     // 注意：API 回傳的是純物件，直接使用 .tier 存取
-    const tiers = hashes
-      .map((index: any) => {
-        return mods[index]?.magnitudes.length === 1 ?
-          (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "]")) : mods[index]?.magnitudes[0].hash === mods[index]?.magnitudes[1].hash ?
-            (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "] 至 [" + (mods[index]?.magnitudes[1].min === mods[index]?.magnitudes[1].max ? mods[index]?.magnitudes[1].min : mods[index]?.magnitudes[1].min + "-" + mods[index]?.magnitudes[1].max) + "]")) : (statId === mods[index]?.magnitudes[0].hash ? (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[0].min === mods[index]?.magnitudes[0].max ? mods[index]?.magnitudes[0].min : mods[index]?.magnitudes[0].min + "-" + mods[index]?.magnitudes[0].max) + "]")) : (this.getTierColorSpan(mods[index]?.tier + " [" + (mods[index]?.magnitudes[1].min === mods[index]?.magnitudes[1].max ? mods[index]?.magnitudes[1].min : mods[index]?.magnitudes[1].min + "-" + mods[index]?.magnitudes[1].max) + "]")))
+    const tiers = mods
+      .map((m: any) => {
+        return m?.tier ? m.magnitudes.length === 1 ?
+          (this.getTierColorSpan(m?.tier + " [" + (m?.magnitudes[0].min === m?.magnitudes[0].max ? m?.magnitudes[0].min : m?.magnitudes[0].min + "-" + m?.magnitudes[0].max) + "]")) : m?.magnitudes[0].hash === m?.magnitudes[1].hash ?
+            (this.getTierColorSpan(m?.tier + " [" + (m?.magnitudes[0].min === m?.magnitudes[0].max ? m?.magnitudes[0].min : m?.magnitudes[0].min + "-" + m?.magnitudes[0].max) + "] 至 [" + (m?.magnitudes[1].min === m?.magnitudes[1].max ? m?.magnitudes[1].min : m?.magnitudes[1].min + "-" + m?.magnitudes[1].max) + "]")) : (statId === m?.magnitudes[0].hash ? (this.getTierColorSpan(m?.tier + " [" + (m?.magnitudes[0].min === m?.magnitudes[0].max ? m?.magnitudes[0].min : m?.magnitudes[0].min + "-" + m?.magnitudes[0].max) + "]")) : (this.getTierColorSpan(m?.tier + " [" + (m?.magnitudes[1].min === m?.magnitudes[1].max ? m?.magnitudes[1].min : m?.magnitudes[1].min + "-" + m?.magnitudes[1].max) + "]"))) :
+          m.magnitudes.length === 1 ?
+            (this.getTierColorSpan("[" + (m?.magnitudes[0].min === m?.magnitudes[0].max ? m?.magnitudes[0].min : m?.magnitudes[0].min + "-" + m?.magnitudes[0].max) + "]")) : m?.magnitudes[0].hash === m?.magnitudes[1].hash ?
+              (this.getTierColorSpan("[" + (m?.magnitudes[0].min === m?.magnitudes[0].max ? m?.magnitudes[0].min : m?.magnitudes[0].min + "-" + m?.magnitudes[0].max) + "] 至 [" + (m?.magnitudes[1].min === m?.magnitudes[1].max ? m?.magnitudes[1].min : m?.magnitudes[1].min + "-" + m?.magnitudes[1].max) + "]")) : (statId === m?.magnitudes[0].hash ? (this.getTierColorSpan("[" + (m?.magnitudes[0].min === m?.magnitudes[0].max ? m?.magnitudes[0].min : m?.magnitudes[0].min + "-" + m?.magnitudes[0].max) + "]")) : (this.getTierColorSpan("[" + (m?.magnitudes[1].min === m?.magnitudes[1].max ? m?.magnitudes[1].min : m?.magnitudes[1].min + "-" + m?.magnitudes[1].max) + "]")))
       })
-      .filter(t => t !== undefined && t !== null);
+      .filter((t: any) => t !== undefined && t !== null);
 
     // 3. 格式化輸出，例如單一詞綴顯示 "T1"，複合詞綴顯示 "T1 + T2"
-    return tiers.length > 0 ? tiers.map(t => t).join(' + ') : '';
+    return tiers.length > 0 ? tiers.map((t: any) => t).join(' + ') : '';
   }
 
   //取得Tier顏色

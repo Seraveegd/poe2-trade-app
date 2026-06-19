@@ -24,6 +24,9 @@ export class Data {
             chosenG: '無',
             isSearch: false,
         },
+        currency:{ // 通貨
+            option: []
+        },
         uniques:[] //傳奇裝備
     };
     //詞綴資料
@@ -108,9 +111,14 @@ export class Data {
         let weaponIndex = 0; //武器
         let mapIndex = 0; //地圖
         let sanctumIndex = 0; //聖所
+        let wombgiftIndex = 0; //胎贈
+
+        //清除資料
         this.basics.categorizedItems.length = 0;
         this.basics.map.option.length = 0;
         this.basics.gem.option.length = 0;
+        this.basics.currency.option.length = 0;
+        this.basics.uniques.length = 0;
 
         let result = this.datas.items.result;
         //"id": "accessory", "label": "飾品"
@@ -434,6 +442,26 @@ export class Data {
                 //   element.option = "sanctum.research";
                 //   this.options.mapBasic.option.push(element.type);
                 //   break;
+                default:
+                    break;
+            }
+        });
+
+        //"id": "wombgift"
+        result[result.findIndex((e: any) => e.id === "wombgift")].entries.forEach((element: any) => {
+            const basetype = ["華麗之胎贈"];
+
+            if (basetype.includes(element.type) && !('flags' in element)) {
+                wombgiftIndex += 1;
+            }else{
+                this.basics.uniques.push(element);
+            }
+
+            switch (wombgiftIndex) {
+                case 1: // 胎贈起始點 { "type": "華麗之胎贈" }
+                    element.name = "胎贈";
+                    this.basics.currency.option.push(element.type);
+                    break;
                 default:
                     break;
             }

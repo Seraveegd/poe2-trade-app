@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { AppService } from '../../app.service';
-import { from, concatMap, toArray } from 'rxjs';
+import { from, concatMap, toArray, Subscription } from 'rxjs';
 import { NgbTooltipModule, NgbAlertModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgClass } from '@angular/common';
 
@@ -68,6 +68,19 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   public errorMessages = new Map<string, string>(); // 紀錄每個 Token 的錯誤訊息
   private alertTimeouts = new Map<string, any>(); // 紀錄每個 Token 的計時器
   public toasts: any[] = []; // 存放所有 Toast 訊息
+  private fetchSubscription?: Subscription;
+
+  private cancelFetch() {
+    if (this.fetchSubscription) {
+      this.fetchSubscription.unsubscribe();
+      this.fetchSubscription = undefined;
+    }
+  }
+
+  public showToast(text: string, classname: string = 'bg-danger text-light', delay: number = 5000) {
+    this.toasts.push({ text, classname, delay });
+    this.cdr.markForCheck();
+  }
 
   //價格分析
   public computed: any = new Map(); //價格統計  
@@ -206,6 +219,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.cancelFetch();
     this.alertTimeouts.forEach(t => clearTimeout(t));
   }
 
@@ -216,6 +230,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
 
   //取得每個物品資料
   analyze() {
+    this.cancelFetch();
     if (this.searchResult && this.searchResult.searchTotal > 0 && this.searchResult.fetchID?.length > 0) {
       // 初始化分析狀態
       this.fetchResult = [];
@@ -228,8 +243,9 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       this.alertTimeouts.clear();
       this.currentRead = 0;
 
-      // 初始讀取：設定為前 40 筆（或總數若少於 40）
-      const initialCount = Math.min(this.searchResult.fetchID.length, 40);
+      // 初始讀取：分析模式限制 40 筆，搜尋列表模式限制 20 筆
+      const limit = this.isAnalyze ? 40 : 20;
+      const initialCount = Math.min(this.searchResult.fetchID.length, limit);
       for (let i = 0; i < initialCount; i += 10) {
         const fetchIDs = this.searchResult.fetchID.slice(i, Math.min(i + 10, initialCount));
 
@@ -260,7 +276,8 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    from(this.observ).pipe(
+    this.cancelFetch();
+    this.fetchSubscription = from(this.observ).pipe(
       concatMap((obs: any) => obs),
       toArray()
     ).subscribe({
@@ -308,6 +325,11 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
         }
         this.toasts.push({ text: msg, classname: 'bg-danger text-light', delay: 5000 });
         console.error(msg);
+
+        // 遭遇錯誤時清除舊資料，避免渲染舊有或錯誤的介面
+        this.fetchResult = [];
+        this.computed = new Map();
+
         this.isCounting.emit(false);
         this.cdr.markForCheck();
       }
@@ -321,7 +343,8 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    from(this.observ).pipe(
+    this.cancelFetch();
+    this.fetchSubscription = from(this.observ).pipe(
       concatMap((obs: any) => obs),
       toArray()
     ).subscribe({
@@ -341,6 +364,10 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
         }
         this.toasts.push({ text: msg, classname: 'bg-danger text-light', delay: 5000 });
         console.error(msg);
+
+        // 遭遇錯誤時清除舊資料，避免渲染舊有或錯誤的介面
+        this.fetchResult = [];
+
         this.isCounting.emit(false);
         this.cdr.markForCheck();
       }
@@ -384,7 +411,8 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       moreObserv.push(this.poe_service.get_trade_fetch(fetchIDs.join(','), this.searchResult.fetchQueryID, this.pseudos));
     }
 
-    from(moreObserv).pipe(
+    this.cancelFetch();
+    this.fetchSubscription = from(moreObserv).pipe(
       concatMap((obs: any) => obs),
       toArray()
     ).subscribe({
@@ -415,7 +443,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       .map((m: any) => {
         return m?.tier ? this.getTierColorSpan(m?.tier) : '';
       })
-      .filter((t: any) => t !== undefined && t !== null);      
+      .filter((t: any) => t !== undefined && t !== null);
 
     // 3. 格式化輸出，例如單一詞綴顯示 "T1"，複合詞綴顯示 "T1 + T2"
     return tiers.length > 0 ? tiers.map((t: any) => t).join(' + ') : '';

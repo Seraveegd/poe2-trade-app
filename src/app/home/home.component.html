@@ -1646,7 +1646,7 @@
             searchOptions.itemBasic.text || totalUxFilterCount > 0) {
             <div id="search" style="width:100%">
                 <button (click)="clickToSearch()" class="btn btn-primary" style="width:100%"
-                    [disabled]="hasUxSearchError">搜尋</button>
+                    [disabled]="hasUxSearchError || app.isCounting">搜尋</button>
             </div>
             }
             @if (!ui.collapse.custom && (item.category || item.searchStats.length > 0 || item.searchStatsCount.length >

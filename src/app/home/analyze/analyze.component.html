@@ -372,7 +372,7 @@
                                         result.listing.fee }}{{ getSortArrow('fee') }}</span>
                                     <span style="color: #a38d6d;">帳號: {{
                                         result.listing.account.name }} </span>
-                                    @if (isSessionValid) {
+                                    @if (isSessionValid && tradeToken) {
                                     <span class="trade"
                                         [style.color]="processingTokens.has(tradeToken) ? '#666' : (successTokens.has(tradeToken) ? '#28a745' : null)"
                                         [style.cursor]="(processingTokens.has(tradeToken) || successTokens.has(tradeToken)) ? 'not-allowed' : 'pointer'"

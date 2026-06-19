@@ -47,6 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('instance') instance!: NgbTypeahead;
   @ViewChild('instance2') instance2!: NgbTypeahead;
+  @ViewChild(AnalyzeComponent) analyzeComponent!: AnalyzeComponent;
 
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
@@ -82,6 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private modalService = inject(NgbModal);
   private shell!: Shell;
   private subscriptions = new Subscription();
+  private searchSubscription?: Subscription;
 
   //篩選器方法
   public filterMethods: any = [
@@ -1052,6 +1054,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
     this.subscriptions.unsubscribe();
   }
 
@@ -1182,6 +1187,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+
     this.prepareSearchJson();
 
     this.app.isCounting = true;
@@ -1190,39 +1199,53 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.searchResult.fetchQueryID = '';
     this.searchResult.searchTotal = 0;
-    this.subscriptions.add(this.poe_service.get_trade(this.searchOptions.leagues.chosenL, this.filters.searchJson).subscribe((res: any) => {
-      if (res && !res.error) {
-        // 關鍵：使用解構賦值建立新物件參考，確保 AnalyzeComponent 的 ngOnChanges 能被觸發
-        this.searchResult = {
-          ...this.searchResult,
-          resultLength: res.result.length,
-          searchTotal: res.total,
-          status: ` 共 ${res.total} 筆符合 ${res.total !== res.result.length ? '- 報價已摺疊' : ''}`,
-          fetchQueryID: res.id,
-          fetchID: res.result
-        };
+    this.searchSubscription = this.poe_service.get_trade(this.searchOptions.leagues.chosenL, this.filters.searchJson).subscribe({
+      next: (res: any) => {
+        if (res && !res.error) {
+          // 關鍵：使用解構賦值建立新物件參考，確保 AnalyzeComponent 的 ngOnChanges 能被觸發
+          this.searchResult = {
+            ...this.searchResult,
+            resultLength: res.result.length,
+            searchTotal: res.total,
+            status: ` 共 ${res.total} 筆符合 ${res.total !== res.result.length ? '- 報價已摺疊' : ''}`,
+            fetchQueryID: res.id,
+            fetchID: res.result
+          };
 
-        if (res.total === 0) {
+          if (res.total === 0) {
+            this.app.isCounting = false;
+          }
+
+          this.app.isApiError = false;
+          this.cdr.markForCheck();
+        } else {
+          const errorMsg = res.error?.message || '搜尋發生錯誤';
+          this.searchResult.status = errorMsg;
+          // this.startCountdown(60);
+          this.app.isApiError = true;
           this.app.isCounting = false;
-        }
 
-        this.app.isApiError = false;
-        this.cdr.markForCheck();
-      } else {
-        this.searchResult.status = res.error.message;
-        // this.startCountdown(60);
+          if (this.analyzeComponent) {
+            this.analyzeComponent.showToast(errorMsg, 'bg-danger text-light', 5000);
+          }
+
+          this.resetSearchData();
+        }
+      },
+      error: (error: any) => {
+        this.resetSearchData();
         this.app.isApiError = true;
         this.app.isCounting = false;
+        const msg = error.error?.error?.message || error.message || '未知錯誤';
+        this.app.apiErrorStr = msg;
 
-        this.resetSearchData();
+        if (this.analyzeComponent) {
+          this.analyzeComponent.showToast(msg, 'bg-danger text-light', 5000);
+        }
+
+        console.log(error);
       }
-    }, (error: any) => {
-      this.resetSearchData();
-      this.app.isApiError = true;
-      this.app.isCounting = false;
-      this.app.apiErrorStr = error.error.error.message;
-      console.log(error);
-    }));
+    });
 
     return;
   }

@@ -7,7 +7,7 @@ const { exec } = require('child_process');
 const { updateElectronApp, UpdateSourceType } = require('update-electron-app')
 
 // 開啟硬體加速以提升渲染效能與動畫流暢度
-app.disableHardwareAcceleration(); 
+app.disableHardwareAcceleration();
 
 // 軟體渲染模式下的效能優化標籤
 app.commandLine.appendSwitch('disable-background-timer-throttling');
@@ -195,7 +195,7 @@ let lastText = ''; // 移至外部作用域以利重置
                     // 軟體渲染模式下，避免頻繁調用 win.show/restore
                     // 直接利用 OverlayController 提升層級
                     OverlayController.activateOverlay();
-                    
+
                     // 恢復接收滑鼠事件
                     win.setIgnoreMouseEvents(false);
                 } else {
@@ -228,7 +228,7 @@ let lastText = ''; // 移至外部作用域以利重置
                     console.log('[Main] Focus fight detected, keeping window alive');
                     return;
                 }
-                
+
                 console.log('[Main] Valid blur, hiding window');
                 lastText = '';
                 setInteractionState(false);
@@ -319,7 +319,7 @@ let lastText = ''; // 移至外部作用域以利重置
                 sameSite: 'no_restriction', // 確保使用者輸入新的 ID 時也能正確寫入 SameSite 屬性
                 expirationDate: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30)
             };
-            
+
             store.set('poesessid', poesessid); // 儲存至本地設定檔
             session.defaultSession.cookies.set(cookie).then(() => {
                 console.log('POESESSID set successfully');
@@ -378,7 +378,7 @@ let lastText = ''; // 移至外部作用域以利重置
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.9.3');
+        tray.setToolTip('POE2 查價工具 v0.9.4');
         tray.setContextMenu(contextMenu);
 
         setTimeout(
@@ -394,7 +394,7 @@ let lastText = ''; // 移至外部作用域以利重置
         // 2. 監聽變動事件
         clipboardListener.on('change', () => {
             const text = clipboard.readText(); // 取得當前剪貼簿文字
-            
+
             if (!text || text === lastText) return;
             lastText = text;
 
@@ -464,7 +464,7 @@ let lastText = ''; // 移至外部作用域以利重置
     // 取得所有已儲存的自訂搜尋檔案
     ipcMain.on('get-custom-searches', (event) => {
         const customSearchPath = path.join(app.getPath('userData'), 'custom_searches');
-        
+
         // 確保目錄存在
         if (!fs.existsSync(customSearchPath)) {
             fs.mkdirSync(customSearchPath, { recursive: true });

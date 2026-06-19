@@ -88,7 +88,44 @@ const pseudoElementalResistance: any = [
     'sanctum.stat_3128852541' //全部(聖所)
 ];
 
-function magicPositionGet(text: string){
+const statNoSplit: string[] = [
+    '獻祭',
+    '稀有度詞綴無效',
+    '每隔5秒替換',
+    '變形時',
+    '法術的投射物以環狀射出',
+    '雙靈波動',
+    '魔力回復率增減',
+    '其他移動速度詞綴將失效',
+    '無法使用生命藥劑',
+    '對你前方3公尺內',
+    '冰緩地面強化',
+    '雙手欄位為空',
+    '已汙染魔法珠寶',
+    '炸裂節奏並獲得炸裂狂熱',
+    '異常狀態中每有一種元素異常狀態',
+    '承受傷害損失的生命改為保留',
+    '格擋時對目標造成持續',
+    '當你變形成動物型態時',
+    '法術擊中時獲得1層符文束縛',
+    '血脈',
+    '玩家受到死亡印記',
+    '玷污的靈魂',
+    '層腐化之血減益',
+    '已汙染稀有珠寶',
+    '裂痕擴展半徑至少為',
+    '近戰擊中視為暴怒擊殺',
+    '地圖',
+    '擊中時施加缺血',
+    '命定: 若你的符文保護近期被傷害',
+    '每15精魂增加',
+    '若你近期沒有偏斜擊中',
+    '移動速度的增減同時套用',
+    '消耗2000魔力後開始充能能量護盾',
+    '你擊殺受深淵耗損'
+];
+
+function magicPositionGet(text: string) {
     return text.lastIndexOf('之') > -1 ? text.lastIndexOf('之') : text.lastIndexOf('的');
 }
 
@@ -327,7 +364,7 @@ function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, 
             console.log(cleansedText, lv);
 
             //複合詞
-            if (cleansedText.indexOf("\n") > -1) {
+            if (cleansedText.indexOf("\n") > -1 && !statNoSplit.some((element: any) => cleansedText.indexOf(element) > -1)) {
                 let stats = cleansedText.split("\n");
                 for (let i = 0; i < stats.length; i++) {
                     itemDisplayStats.push(stats[i]);

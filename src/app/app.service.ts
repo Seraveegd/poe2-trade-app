@@ -21,9 +21,16 @@ export class AppService {
     count: 3, // 最大重試次數
     delay: (error: any, retryCount: number) => {
       if (error.status === 429) {
-        // 指數退避邏輯: 1s, 2s, 4s...
-        this.retryStatus$.next(`偵測到流量限制，正在嘗試第 ${retryCount} 次重新連線...`);
-        const delayTime = Math.pow(2, retryCount - 1) * 1000;
+        // 取得官方的回傳重試時間，預設為指數退避
+        const retryAfter = error.headers?.get('Retry-After');
+        let delayTime = Math.pow(2, retryCount - 1) * 1000;
+        if (retryAfter) {
+          const seconds = parseInt(retryAfter, 10);
+          if (!isNaN(seconds)) {
+            delayTime = seconds * 1000;
+          }
+        }
+        this.retryStatus$.next(`偵測到流量限制，正在等待 ${delayTime / 1000} 秒後嘗試第 ${retryCount} 次重新連線...`);
         return timer(delayTime);
       }
       // 如果是其他錯誤 (如 400, 404)，則不重試，直接拋出錯誤

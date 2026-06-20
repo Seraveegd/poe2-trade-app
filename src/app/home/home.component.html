@@ -247,6 +247,11 @@
                         (click)="ui.collapse.advanced = !ui.collapse.advanced"
                         [class.text-info]="totalUxFilterCount > 0 && !hasUxSearchError"
                         [class.text-danger]="hasUxSearchError">
+                        <!-- <span>
+                            <input class="form-check-input" type="checkbox" id="cAllCheck"
+                                [(ngModel)]="filterPanel.checked.all"
+                                (click)="filterPanel.checked.all = !filterPanel.checked.all; onCheckedChangeAll()">
+                        </span> -->
                         <span>
                             <i class="bi bi-filter-square me-2"
                                 [class.filter-active-icon]="totalUxFilterCount > 0 && !hasUxSearchError"></i>
@@ -274,6 +279,11 @@
                             <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
                                 (click)="c1.toggle(); !c1.collapsed && (c2.collapsed = c3.collapsed = c4.collapsed = c5.collapsed = true)"
                                 [class.text-info]="getActiveFilterCount(uxSearchOptions.base) > 0">
+                                <!-- <span>
+                                    <input class="form-check-input" type="checkbox" id="c1Check"
+                                        [(ngModel)]="filterPanel.checked.c1"
+                                        (click)="filterPanel.checked.c1 = !filterPanel.checked.c1"> </span>
+                                <span> -->
                                 <span>
                                     <i class="bi bi-tag me-2"
                                         [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.base) > 0"></i>類別過濾
@@ -369,6 +379,11 @@
                             <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
                                 (click)="c2.toggle(); !c2.collapsed && (c1.collapsed = c3.collapsed = c4.collapsed = c5.collapsed = true)"
                                 [class.text-info]="getActiveFilterCount(uxSearchOptions.equipment) > 0">
+                                <!-- <span>
+                                    <input class="form-check-input" type="checkbox" id="c2Check"
+                                        [(ngModel)]="filterPanel.checked.c2"
+                                        (click)="filterPanel.checked.c2 = !filterPanel.checked.c2">
+                                </span> -->
                                 <span>
                                     <i class="bi bi-shield me-2"
                                         [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.equipment) > 0"></i>裝備篩選器
@@ -671,6 +686,11 @@
                             <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
                                 (click)="c3.toggle(); !c3.collapsed && (c1.collapsed = c2.collapsed = c4.collapsed = c5.collapsed = true)"
                                 [class.text-info]="getActiveFilterCount(uxSearchOptions.requirements) > 0">
+                                <!-- <span>
+                                    <input class="form-check-input" type="checkbox" id="c3Check"
+                                        [(ngModel)]="filterPanel.checked.c3"
+                                        (click)="filterPanel.checked.c3 = !filterPanel.checked.c3">
+                                </span> -->
                                 <span>
                                     <i class="bi bi-person-badge me-2"
                                         [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.requirements) > 0"></i>物品需求
@@ -776,6 +796,11 @@
                             <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
                                 (click)="c4.toggle(); !c4.collapsed && (c1.collapsed = c2.collapsed = c3.collapsed = c5.collapsed = true)"
                                 [class.text-info]="getActiveFilterCount(uxSearchOptions.maps) > 0">
+                                <!-- <span>
+                                    <input class="form-check-input" type="checkbox" id="c4Check"
+                                        [(ngModel)]="filterPanel.checked.c4"
+                                        (click)="filterPanel.checked.c4 = !filterPanel.checked.c4">
+                                </span> -->
                                 <span>
                                     <i class="bi bi-gem me-2"
                                         [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.maps) > 0"></i>終局篩選器
@@ -996,6 +1021,11 @@
                             <div class="section-header py-1 px-2 d-flex justify-content-between align-items-center cursor-pointer"
                                 (click)="c5.toggle(); !c5.collapsed && (c1.collapsed = c2.collapsed = c3.collapsed = c4.collapsed = true)"
                                 [class.text-info]="getActiveFilterCount(uxSearchOptions.misc) > 0">
+                                <!-- <span>
+                                    <input class="form-check-input" type="checkbox" id="c5Check"
+                                        [(ngModel)]="filterPanel.checked.c5"
+                                        (click)="filterPanel.checked.c5 = !filterPanel.checked.c5">
+                                </span> -->
                                 <span>
                                     <i class="bi bi-plus-circle me-2"
                                         [class.filter-active-icon]="getActiveFilterCount(uxSearchOptions.misc) > 0"></i>其它

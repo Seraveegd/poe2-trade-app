@@ -171,6 +171,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  //過濾面板勾選狀態
+  // public filterPanel = {
+  //   checked: {
+  //     all: false,
+  //     c1: false,
+  //     c2: false,
+  //     c3: false,
+  //     c4: false,
+  //     c5: false
+  //   }
+  // }
+
   // UX 架構展示區塊專用的資料模型
   public uxSearchOptions: any = {
     base: {
@@ -1207,7 +1219,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             ...this.searchResult,
             resultLength: res.result.length,
             searchTotal: res.total,
-            status: ` 共 ${res.total} 筆符合 ${res.total !== res.result.length ? '- 報價已摺疊' : ''}`,
+            status: ` 共 ${res.total} 筆符合`,
             fetchQueryID: res.id,
             fetchID: res.result
           };
@@ -1260,6 +1272,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.item.category = 'item';
     }
 
+    //刪除預設報價摺疊
     if (!this.ui.collapse.custom) {
       delete this.filters.searchJson.query.filters.trade_filters;
     }
@@ -1304,12 +1317,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
 
     // 1. 類別過濾 (base -> type_filters)
+    // if (this.filterPanel.checked.c1) {
     addOption(f.type_filters.filters, 'category', this.uxSearchOptions.base.category);
     addOption(f.type_filters.filters, 'rarity', this.uxSearchOptions.base.rarity);
     addRange(f.type_filters.filters, 'ilvl', this.uxSearchOptions.base.ilvl);
     addRange(f.type_filters.filters, 'quality', this.uxSearchOptions.base.quality);
+    // }
 
     // 2. 裝備篩選器 (equipment -> equipment_filters)
+    // if (this.filterPanel.checked.c2) {
     const eq = this.uxSearchOptions.equipment;
     addRange(f.equipment_filters.filters, 'damage', eq.damage);
     addRange(f.equipment_filters.filters, 'aps', eq.aps);
@@ -1325,15 +1341,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     addRange(f.equipment_filters.filters, 'block', eq.block);
     addRange(f.equipment_filters.filters, 'spirit', eq.spirit);
     addRange(f.equipment_filters.filters, 'rune_sockets', eq.rune_sockets);
+    // }
 
     // 3. 物品需求 (requirements -> req_filters)
+    // if (this.filterPanel.checked.c3) {
     const req = this.uxSearchOptions.requirements;
     addRange(f.req_filters.filters, 'lvl', req.lvl);
     addRange(f.req_filters.filters, 'str', req.str);
     addRange(f.req_filters.filters, 'dex', req.dex);
     addRange(f.req_filters.filters, 'int', req.int);
+    // }
 
     // 4. 終局篩選器 (maps -> map_filters)
+    // if (this.filterPanel.checked.c4) {
     const maps = this.uxSearchOptions.maps;
     addRange(f.map_filters.filters, 'map_tier', maps.map_tier);
     addRange(f.map_filters.filters, 'map_packsize', maps.map_packsize);
@@ -1345,8 +1365,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     addRange(f.map_filters.filters, 'map_gold', maps.map_gold);
     addRange(f.map_filters.filters, 'map_experience', maps.map_experience);
     addOption(f.map_filters.filters, 'ultimatum_hint', maps.ultimatum_hint);
+    // }
 
     // 5. 其它 (misc -> misc_filters)
+    // if (this.filterPanel.checked.c5) {
     const misc = this.uxSearchOptions.misc;
     addRange(f.misc_filters.filters, 'gem_level', misc.gem_level);
     addRange(f.misc_filters.filters, 'gem_sockets', misc.gem_sockets);
@@ -1365,6 +1387,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     addOption(f.misc_filters.filters, 'mirrored', misc.mirrored);
     addRange(f.misc_filters.filters, 'sanctum_gold', misc.sanctum_gold);
     addRange(f.misc_filters.filters, 'unidentified_tier', misc.unidentified_tier);
+    // }
 
     let searchCount = 0;
 
@@ -1909,4 +1932,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.searchTrade();
     this.cdr.markForCheck();
   }
+
+  // onCheckedChangeAll() {
+  //   this.filterPanel.checked.c1 = this.filterPanel.checked.all;
+  //   this.filterPanel.checked.c2 = this.filterPanel.checked.all;
+  //   this.filterPanel.checked.c3 = this.filterPanel.checked.all;
+  //   this.filterPanel.checked.c4 = this.filterPanel.checked.all;
+  //   this.filterPanel.checked.c5 = this.filterPanel.checked.all;
+  //   this.cdr.markForCheck();
+  // }
 }

@@ -309,7 +309,6 @@ function analyze(text: string, basics: any, config: any, uxSearchOptions_initial
         let mapPos: any = text.indexOf('換界石（') > -1 ? text.substring(text.indexOf('換界石（') + 6) : 0;
         if (mapPos) {
             let mapTier = parseInt(mapPos.substring(0, mapPos.indexOf(newLine)).trim(), 10);
-            console.log("mapTier: " + mapTier);
             uxSearchOptions.maps.map_tier.min = mapTier;
             uxSearchOptions.maps.map_tier.max = mapTier;
         }

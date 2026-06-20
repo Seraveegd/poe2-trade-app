@@ -218,6 +218,8 @@ function analyze(text: string, basics: any, config: any, uxSearchOptions_initial
                 uxSearchOptions.base.quality.min = minQuality;
             }
 
+            searchOptions.itemBasic.isSearch = true;
+            searchOptions.itemBasic.text = searchName;
             uxSearchOptions.misc.gem_sockets.min = getSocketNumber(text, newLine);
         }
     } else if (Rarity === "通貨" || Rarity === "通貨不足") {
@@ -261,7 +263,22 @@ function analyze(text: string, basics: any, config: any, uxSearchOptions_initial
             item.name += ("<br>區域等級: " + level);
         }
 
-        Object.assign(filters.searchJson.query, { type: searchName });
+        if (searchName.indexOf("最後通牒雕刻") > -1) {
+            const ultimatum_hints = ['勝利', '怯懦', '致命'];
+            const ultimatum_hints_options = ['Victorious', 'Cowardly', 'Deadly']
+            ultimatum_hints.some((hint: any, index: number) => {
+                const i = text.indexOf(hint);
+                if (i > -1) {
+                    uxSearchOptions.maps.ultimatum_hint = ultimatum_hints_options[index];
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        searchOptions.itemBasic.isSearch = true;
+        searchOptions.itemBasic.text = searchName;
+
         uxSearchOptions.base.rarity = "";
     } else if (item.category === 'item') {
         searchOptions.itemSocket.min = getSocketNumber(text, newLine);
@@ -289,9 +306,10 @@ function analyze(text: string, basics: any, config: any, uxSearchOptions_initial
 
         uxSearchOptions.base.rarity = 'nonunique';
 
-        let mapPos: any = text.indexOf('換界石階級:') > -1 ? text.substring(text.indexOf('換界石階級:') + 6) : 0;
+        let mapPos: any = text.indexOf('換界石（') > -1 ? text.substring(text.indexOf('換界石（') + 6) : 0;
         if (mapPos) {
             let mapTier = parseInt(mapPos.substring(0, mapPos.indexOf(newLine)).trim(), 10);
+            console.log("mapTier: " + mapTier);
             uxSearchOptions.maps.map_tier.min = mapTier;
             uxSearchOptions.maps.map_tier.max = mapTier;
         }

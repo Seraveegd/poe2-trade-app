@@ -3,18 +3,44 @@
 let cachedBasics: any = null;
 let cachedStats: any = null;
 let cachedWeaponTypes: any = null;
+let processedStats: any = {};
+
+function cleanKey(text: string): string {
+    return text.replace(/[+\-%#\d\[\]\.]/g, '');
+}
 
 addEventListener('message', ({ data }) => {
     if (data.type === 'INIT') {
         cachedBasics = data.basics;
         cachedStats = data.stats;
         cachedWeaponTypes = data.weaponTypes;
+
+        // 預先處理詞綴，建立乾淨的 key 與原始詞綴的對照表
+        processedStats = {};
+        if (cachedStats) {
+            Object.keys(cachedStats).forEach(category => {
+                processedStats[category] = {};
+                const entries = cachedStats[category];
+                if (entries) {
+                    Object.keys(entries).forEach(originalKey => {
+                        const cleaned = cleanKey(originalKey);
+                        if (!processedStats[category][cleaned]) {
+                            processedStats[category][cleaned] = [];
+                        }
+                        processedStats[category][cleaned].push({
+                            originalKey: originalKey,
+                            ids: entries[originalKey]
+                        });
+                    });
+                }
+            });
+        }
         return;
     }
 
     if (data.type === 'ANALYZE') {
         const { text, config, uxSearchOptions } = data;
-        const result = analyze(text, cachedBasics, cachedStats, config, uxSearchOptions);
+        const result = analyze(text, cachedBasics, config, uxSearchOptions);
         postMessage(result);
     }
 });
@@ -88,48 +114,11 @@ const pseudoElementalResistance: any = [
     'sanctum.stat_3128852541' //全部(聖所)
 ];
 
-const statNoSplit: string[] = [
-    '獻祭',
-    '稀有度詞綴無效',
-    '每隔5秒替換',
-    '變形時',
-    '法術的投射物以環狀射出',
-    '雙靈波動',
-    '魔力回復率增減',
-    '其他移動速度詞綴將失效',
-    '無法使用生命藥劑',
-    '對你前方3公尺內',
-    '冰緩地面強化',
-    '雙手欄位為空',
-    '已汙染魔法珠寶',
-    '炸裂節奏並獲得炸裂狂熱',
-    '異常狀態中每有一種元素異常狀態',
-    '承受傷害損失的生命改為保留',
-    '格擋時對目標造成持續',
-    '當你變形成動物型態時',
-    '法術擊中時獲得1層符文束縛',
-    '血脈',
-    '玩家受到死亡印記',
-    '玷污的靈魂',
-    '層腐化之血減益',
-    '已汙染稀有珠寶',
-    '裂痕擴展半徑至少為',
-    '近戰擊中視為暴怒擊殺',
-    '地圖',
-    '擊中時施加缺血',
-    '命定: 若你的符文保護近期被傷害',
-    '每15精魂增加',
-    '若你近期沒有偏斜擊中',
-    '移動速度的增減同時套用',
-    '消耗2000魔力後開始充能能量護盾',
-    '你擊殺受深淵耗損'
-];
-
 function magicPositionGet(text: string) {
     return text.lastIndexOf('之') > -1 ? text.lastIndexOf('之') : text.lastIndexOf('的');
 }
 
-function analyze(text: string, basics: any, stats: any, config: any, uxSearchOptions_initial: any) {
+function analyze(text: string, basics: any, config: any, uxSearchOptions_initial: any) {
     const { newLine, filters_def, item_initial, searchOptions_initial, ui_initial } = config;
     const weaponTypes = cachedWeaponTypes;
 
@@ -206,7 +195,7 @@ function analyze(text: string, basics: any, stats: any, config: any, uxSearchOpt
         searchOptions.itemBasic.isSearch = true;
         if (text.indexOf('未鑑定') === -1) { // 已鑑定傳奇  
             searchOptions.itemBasic.text = searchName + ' ' + itemBasic;
-            itemStatsAnalysis(itemArray, 1, item, ui, stats, config);
+            itemStatsAnalysis(itemArray, 1, item, ui);
         } else { // 未鑑定傳奇(但會搜到相同基底)
             searchOptions.itemBasic.text = (searchName.indexOf('精良的') > -1) ? searchName.substring(4) : searchName;
         }
@@ -279,7 +268,7 @@ function analyze(text: string, basics: any, stats: any, config: any, uxSearchOpt
         searchOptions.itemSocket.max = getSocketNumber(text, newLine);
         // uxSearchOptions.equipment.rune_sockets.min = getSocketNumber(text, newLine);
         // uxSearchOptions.equipment.rune_sockets.max = getSocketNumber(text, newLine);
-        itemStatsAnalysis(itemArray, 0, item, ui, stats, config);
+        itemStatsAnalysis(itemArray, 0, item, ui);
         if (item.type.indexOf('armour') > -1) itemDefencesAnalysis(itemArray, item);
 
         //探險日誌地區等級
@@ -306,7 +295,7 @@ function analyze(text: string, basics: any, stats: any, config: any, uxSearchOpt
             uxSearchOptions.maps.map_tier.min = mapTier;
             uxSearchOptions.maps.map_tier.max = mapTier;
         }
-        if (Rarity !== '中') itemStatsAnalysis(itemArray, 0, item, ui, stats, config);
+        if (Rarity !== '中') itemStatsAnalysis(itemArray, 0, item, ui);
     }
 
     // 僅回傳 basics 中需要同步的狀態欄位
@@ -320,7 +309,7 @@ function analyze(text: string, basics: any, stats: any, config: any, uxSearchOpt
     return { item, filters, searchOptions, uxSearchOptions, ui, basicsUpdate };
 }
 
-function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, statsData: any, config: any) {
+function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any) {
     ui.collapse.stats = rarityFlag ? true : false;
 
     //刪除地圖描述
@@ -365,19 +354,28 @@ function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, 
             console.log(cleansedText, lv);
 
             //複合詞
-            if (cleansedText.indexOf("\n") > -1 && !statNoSplit.some((element: any) => cleansedText.indexOf(element) > -1)) {
-                let stats = cleansedText.split("\n");
-                for (let i = 0; i < stats.length; i++) {
-                    itemDisplayStats.push(stats[i]);
-                    itemDisplayLevel.push(lv);
+            if (cleansedText.indexOf("\n") > -1) {
+                tempStat = indentifyStatType(cleansedText, lv, rarityFlag, tempStat, item);
 
-                    tempStat = indentifyStatType(stats[i], lv, rarityFlag, tempStat, item, statsData, config);
+                if (tempStat[tempStat.length - 1].text.stat.indexOf('未找到詞綴') > -1) {
+                    tempStat.pop();
+
+                    let stats = cleansedText.split("\n");
+                    for (let i = 0; i < stats.length; i++) {
+                        itemDisplayStats.push(stats[i]);
+                        itemDisplayLevel.push(lv);
+
+                        tempStat = indentifyStatType(stats[i], lv, rarityFlag, tempStat, item);
+                    }
+                } else {
+                    itemDisplayStats.push(cleansedText);
+                    itemDisplayLevel.push(lv);
                 }
             } else {
                 itemDisplayStats.push(cleansedText);
                 itemDisplayLevel.push(lv);
 
-                tempStat = indentifyStatType(cleansedText, lv, rarityFlag, tempStat, item, statsData, config);
+                tempStat = indentifyStatType(cleansedText, lv, rarityFlag, tempStat, item);
             }
         }
     }
@@ -586,55 +584,55 @@ function itemStatsAnalysis(itemArray: any, rarityFlag: any, item: any, ui: any, 
     }
 }
 
-function indentifyStatType(stat: string, lv: any = -1, rarityFlag: any, tempStat: any[], item: any, statsData: any, config: any) {
+function indentifyStatType(stat: string, lv: any = -1, rarityFlag: any, tempStat: any[], item: any) {
     if (stat.indexOf('賦予技能') > -1) { // 技能屬性
         console.log("技能");
         let tempA = stat.split(' ');
         stat = "賦予技能: 等級 # " + tempA[tempA.length - 1];
-        tempStat.push({ text: getStat(statsData, item, stat, 'skill'), type: "技能", category: "skill" });
+        tempStat.push({ text: getStat(item, stat, 'skill'), type: "技能", category: "skill" });
     } else if (stat.indexOf('(crafted)') > -1) { // 工藝屬性
         console.log("工藝");
         stat = stat.replaceAll('(crafted)', '').trim(); // 刪除(crafted)字串
-        tempStat.push({ text: getStat(statsData, item, stat, 'crafted'), type: "工藝", category: "crafted" });
+        tempStat.push({ text: getStat(item, stat, 'crafted'), type: "工藝", category: "crafted" });
     } else if (stat.indexOf('(implicit)') > -1 || stat.indexOf('固定詞綴') > -1) { // 固定屬性
         console.log("固定");
         stat = stat.replaceAll(' (implicit)', '').trim(); // 碑牌多空格
         stat = stat.replaceAll('(implicit)', '').trim(); // 刪除(implicit)字串
         stat = stat.replace('Slots', 'Slot'); //插槽英文複數
-        tempStat.push({ text: getStat(statsData, item, stat, 'implicit'), type: "固定", category: "implicit" });
+        tempStat.push({ text: getStat(item, stat, 'implicit'), type: "固定", category: "implicit" });
     } else if (stat.indexOf('(rune)') > -1) { //增幅屬性
         console.log("增幅");
         stat = stat.replaceAll(' (rune)', '').trim(); // 刪除(rune)字串
         stat = stat.replaceAll('(rune)', '').trim(); // 刪除(rune)字串
         stat = replacePart(item, stat);
-        tempStat.push({ text: getStat(statsData, item, stat, 'rune'), type: "增幅", category: "rune" });
+        tempStat.push({ text: getStat(item, stat, 'rune'), type: "增幅", category: "rune" });
     } else if (stat.indexOf('(enchant)') > -1) { // 附魔
         console.log("附魔");
         stat = stat.replaceAll('(enchant)', '').trim(); // 刪除(enchant)字串
         stat = replacePart(item, stat);
-        tempStat.push({ text: getStat(statsData, item, stat, 'enchant'), type: "附魔", category: "enchant" });
+        tempStat.push({ text: getStat(item, stat, 'enchant'), type: "附魔", category: "enchant" });
     } else if (stat.indexOf('(desecrated)') > -1) { //褻瀆
         console.log("褻瀆");
         stat = stat.replaceAll('(desecrated)', '').trim(); // 刪除(desecrated)字串
         stat = replacePart(item, stat);
-        tempStat.push({ text: getStat(statsData, item, stat, 'desecrated'), type: "褻瀆", category: "desecrated", level: lv });
+        tempStat.push({ text: getStat(item, stat, 'desecrated'), type: "褻瀆", category: "desecrated", level: lv });
     } else if (stat.indexOf('(fractured)') > -1) { //破裂
         console.log("破裂");
         stat = stat.replaceAll('(fractured)', '').trim(); // 刪除(fractured)字串
         stat = replacePart(item, stat);
-        tempStat.push({ text: getStat(statsData, item, stat, 'fractured'), type: "破裂", category: "fractured", level: lv });
+        tempStat.push({ text: getStat(item, stat, 'fractured'), type: "破裂", category: "fractured", level: lv });
     } else if (item.type.indexOf('sanctum') > -1) { //聖所詞綴
         console.log("聖所");
-        tempStat.push({ text: getStat(statsData, item, stat, 'sanctum'), type: "聖所", category: "sanctum", level: lv });
+        tempStat.push({ text: getStat(item, stat, 'sanctum'), type: "聖所", category: "sanctum", level: lv });
     } else if (rarityFlag) { //傳奇裝詞綴
         console.log("傳奇");
         stat = replacePart(item, stat);;
-        tempStat.push({ text: getStat(statsData, item, stat, 'explicit'), type: "傳奇", category: "explicit", level: lv });
+        tempStat.push({ text: getStat(item, stat, 'explicit'), type: "傳奇", category: "explicit", level: lv });
     } else { // 隨機屬性
         console.log("隨機");
         stat = stat.replace('Slots', 'Slot'); //插槽英文複數
         stat = replacePart(item, stat);
-        tempStat.push({ text: getStat(statsData, item, stat, 'explicit'), type: "隨機", category: "explicit", level: lv });
+        tempStat.push({ text: getStat(item, stat, 'explicit'), type: "隨機", category: "explicit", level: lv });
     }
 
     return tempStat;
@@ -754,36 +752,8 @@ function replacePart(item: any, text: any) {
 }
 
 //取得詞綴
-function getStat(data: any, item: any, stat: string, type: any): any {
-    let mdStat = '';
-    //計算有幾位數字
-    let count = (stat.match(/\d+/g) || []).length;
-    let countI = [...stat.matchAll(/\d+/g)];
-    let countP = [...stat.matchAll(/\%/g)];
-    let perPos = stat.indexOf('%');
-    let periodPos = stat.indexOf('.');
-
-    if (stat.indexOf('你造成的點燃') > -1 || stat.indexOf('混沌抗性為') > -1 || stat.startsWith('裝填額外') || stat.startsWith('技能保留') || stat.indexOf('技能槽') > -1 || stat.indexOf('擴散傷害') > -1 || stat.indexOf('增益技能的精魂保留效率') > -1) { //固定數字
-        mdStat = stat;
-    } else if (stat.indexOf('每有一個鑲嵌') > -1 || stat.startsWith('技能上限') || stat.indexOf('怪物的元素抗性') > -1) { //詞綴有+號
-        mdStat = (stat.indexOf('元素抗性') > -1 || stat.indexOf('精魂') > -1 || stat.startsWith('技能上限')) ? stat.replace(/\d+/g, "#") : stat.replace("+", "").replace(/\d+/g, "#");
-    } else if (stat.indexOf('試煉地圖') > -1 || stat.startsWith('裝填額外') || stat.startsWith('商人有')) { //原型顯示1，但會有更多
-        mdStat = stat.replace(/\d+/g, "1");
-    } else if (countI.length == 2 && periodPos === -1 && countP.length == 0 && stat.substring(countI[0].index, countI[1].index).indexOf('至') === -1 && (stat.indexOf('當你擁有至少') > -1 || stat.indexOf('每有') > -1)) { //解決雙數字，前固定
-        mdStat = stat.replace("+", "").replace(countI[1].toString(), '#');
-    } else if (countI.length == 2 && periodPos === -1 && countP.length == 0 && stat.substring(countI[0].index, countI[1].index).indexOf('至') === -1) { //解決雙數字，後固定
-        mdStat = stat.replace(countI[0].toString(), '#');
-    } else if (countI.length == 2 && periodPos === -1 && countP.length == 1 && countP[0].index < countI[1].index) { //解決雙數字前#%，後固定
-        mdStat = stat.replace(countI[0].toString(), '#');
-    } else if (countP.length == 2) { //解決雙數字雙%，前#%
-        mdStat = stat.replace(stat.substring(countI[0].index, perPos), '#');
-    } else if (count > 1 && perPos > -1 && periodPos === -1 && countP.length == 1) { //解決雙數字有%
-        mdStat = stat.replace((perPos - countI[0].index) > (perPos - countI[1].index) ? countI[1].toString() : countI[0].toString(), '#');
-    } else {
-        mdStat = stat.replace("+", "").replace("-", "").replace("[", "").replace("]", "").replace(/\d+/g, "#").replace("#.#", "#");
-    }
-
-    console.log(mdStat);
+function getStat(item: any, stat: string, type: any): any {
+    let mdStat = cleanKey(stat);
 
     // 1. 正規化：處理增加/減少、更多/更少等字串
     if (!(mdStat.includes('增加') && mdStat.includes('減少'))) {
@@ -804,19 +774,29 @@ function getStat(data: any, item: any, stat: string, type: any): any {
 
     if (mdStat.startsWith('擊殺時')) mdStat = mdStat.replace('失去', '恢復');
 
-    // 2. 從 Map 進行 O(1) 查詢
-    const categoryObj = data[type];
-    const possibleIds = categoryObj ? categoryObj[mdStat] : null;
+    // 2. 從預先處理好的 processedStats 進行 O(1) 查詢
+    const categoryObj = processedStats[type];
+    const candidates = categoryObj ? categoryObj[mdStat] : null;
 
-    if (!possibleIds || possibleIds.length === 0) {
+    if (!candidates || candidates.length === 0) {
         return { id: '', stat: mdStat + "(未找到詞綴)" };
     }
+
+    // 收集所有可能的 ID 列表
+    let possibleIds: string[] = [];
+    candidates.forEach((cand: any) => {
+        cand.ids.forEach((id: string) => {
+            if (!possibleIds.includes(id)) {
+                possibleIds.push(id);
+            }
+        });
+    });
 
     // 3. 衝突處理：如果一個文字對應多個 ID，套用過濾規則
     let finalId = possibleIds[0];
     if (possibleIds.length > 1) {
         const filteredId = possibleIds.find((id: any) => {
-            // 傳奇護符/擊殺恢復魔力修正
+            // 傳局護符/擊殺恢復魔力修正
             if (item.category === 'unique' && (id === 'explicit.stat_1416292992' || id === 'explicit.stat_1604736568')) return false;
             // 擊中流血修正
             if (item.category === 'unique' && item.basic === '鎖鍊鎖甲' && id === 'explicit.stat_1519615863') return false;
@@ -837,7 +817,11 @@ function getStat(data: any, item: any, stat: string, type: any): any {
         if (filteredId) finalId = filteredId;
     }
 
-    return { id: finalId, stat: mdStat };
+    // 找到對應的原始 API 詞綴字串
+    const matchedCandidate = candidates.find((c: any) => c.ids.includes(finalId)) || candidates[0];
+    const finalStatText = matchedCandidate.originalKey;
+
+    return { id: finalId, stat: finalStatText };
 }
 
 //取代說明字樣

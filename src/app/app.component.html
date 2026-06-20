@@ -7,12 +7,24 @@
     <a routerLink="/about">關於我</a>
     <!-- <div class="form-check form-switch"> -->
     <input type="checkbox" (click)="changeTheme()" id="toggle_checkbox" [checked]="colorScheme === 'light'">
-    <label for="toggle_checkbox">
-      <div id="star">
-        <div class="star" id="star-1">★</div>
-        <div class="star" id="star-2">★</div>
+    <label for="toggle_checkbox" class="theme-toggle-btn">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb">
+        <svg class="bulb-svg" viewBox="0 0 24 24">
+          <path class="bulb-glass" d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" />
+          <path class="bulb-base" d="M9 19c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1z" />
+          <path class="bulb-contact" d="M10 21c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-1h-4v1z" />
+          <path class="bulb-filament" d="M12 8v4M10.5 10.5h3" />
+        </svg>
+        <div class="rays">
+          <span class="ray r-1"></span>
+          <span class="ray r-2"></span>
+          <span class="ray r-3"></span>
+          <span class="ray r-4"></span>
+          <span class="ray r-5"></span>
+          <span class="ray r-6"></span>
+        </div>
       </div>
-      <div id="moon"></div>
     </label>
   </div>
 </div>

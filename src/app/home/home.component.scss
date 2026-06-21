@@ -16,6 +16,23 @@
     div {
         align-content: center;
     }
+
+    .mode,
+    .method {
+        color: #828080;
+        box-shadow: inset .1em .1em 1em -.6em #fff54c;
+        line-height: 16px;
+        padding: 4px;
+        width: 100%;
+    }
+
+    .mode {
+        margin: 4px 0 -2px 0;
+    }
+
+    .method {
+        margin: 0px 0 -4px 0;
+    }
 }
 
 #search {
@@ -43,7 +60,11 @@ select {
     cursor: pointer;
 }
 
-.cursor-pointer, .card-header, .section-header, .bi, .btn-close {
+.cursor-pointer,
+.card-header,
+.section-header,
+.bi,
+.btn-close {
     cursor: pointer !important;
 }
 
@@ -64,11 +85,17 @@ input[type=range]::-webkit-slider-thumb {
     }
 
     .filter-section {
-        &:first-child { margin-top: 0 !important; }
-        &:last-child { margin-bottom: 0 !important; }
+        &:first-child {
+            margin-top: 0 !important;
+        }
+
+        &:last-child {
+            margin-bottom: 0 !important;
+        }
     }
 
-    .form-control-sm, .form-select-sm {
+    .form-control-sm,
+    .form-select-sm {
         padding: 0.15rem 0.4rem;
         font-size: 0.75rem;
     }
@@ -82,7 +109,8 @@ input[type=range]::-webkit-slider-thumb {
         filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));
     }
 
-    select.filter-active, input.filter-active {
+    select.filter-active,
+    input.filter-active {
         transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
     }
 }
@@ -112,10 +140,13 @@ input[type=range]::-webkit-slider-thumb {
 
         // UX 面板中的輸入框覆寫 (針對 Dark Mode)
         .poe-filter-panel {
-            select, input.form-control {
+
+            select,
+            input.form-control {
                 background: #292828;
                 color: #959595;
                 border: 1px solid #626262 !important;
+
                 &:focus {
                     background-color: #292828 !important;
                     color: #fff;
@@ -124,18 +155,24 @@ input[type=range]::-webkit-slider-thumb {
         }
 
         // 調整啟動狀態顏色：深色模式使用柔和的天空藍
-        .text-info { color: #58a6ff !important; }
-        .bg-info { background-color: #58a6ff !important; }
-        
+        .text-info {
+            color: #58a6ff !important;
+        }
+
+        .bg-info {
+            background-color: #58a6ff !important;
+        }
+
         .filter-active-icon {
             color: #58a6ff;
         }
 
-        select.filter-active, input.filter-active {
+        select.filter-active,
+        input.filter-active {
             border-color: #58a6ff !important;
             color: #58a6ff !important;
             box-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
-            
+
             &:focus {
                 border-color: #58a6ff !important;
                 box-shadow: 0 0 12px rgba(88, 166, 255, 0.5) !important;
@@ -201,14 +238,25 @@ input[type=range]::-webkit-slider-thumb {
         .section-header {
             color: #e9ecef;
             border-bottom: 1px solid rgba(108, 117, 125, 0.2);
+
             &:hover {
                 background-color: rgba(108, 117, 125, 0.5) !important;
                 color: #fff;
             }
         }
-        .text-muted { color: #adb5bd !important; }
-        input::placeholder { color: #adb5bd !important; }
-        input:focus::placeholder { color: #fff !important; opacity: 1 !important; }
+
+        .text-muted {
+            color: #adb5bd !important;
+        }
+
+        input::placeholder {
+            color: #adb5bd !important;
+        }
+
+        input:focus::placeholder {
+            color: #fff !important;
+            opacity: 1 !important;
+        }
     }
 }
 
@@ -228,10 +276,13 @@ input[type=range]::-webkit-slider-thumb {
 
         // UX 面板中的輸入框覆寫 (針對 Light Mode)
         .poe-filter-panel {
-            select, input.form-control {
+
+            select,
+            input.form-control {
                 background: #ffffff;
                 color: #212529;
                 border: 1px solid #ced4da !important;
+
                 &:focus {
                     background-color: #fff !important;
                     border-color: #86b7fe !important;
@@ -240,14 +291,20 @@ input[type=range]::-webkit-slider-thumb {
         }
 
         // 調整啟動狀態顏色：淺色模式使用深沉的寶石藍
-        .text-info { color: #0056b3 !important; }
-        .bg-info { background-color: #0056b3 !important; }
+        .text-info {
+            color: #0056b3 !important;
+        }
+
+        .bg-info {
+            background-color: #0056b3 !important;
+        }
 
         .filter-active-icon {
             color: #0056b3;
         }
 
-        select.filter-active, input.filter-active {
+        select.filter-active,
+        input.filter-active {
             border-color: #0056b3 !important;
             color: #0056b3 !important;
             box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
@@ -299,13 +356,24 @@ input[type=range]::-webkit-slider-thumb {
             background-color: #f8f9fa;
             color: #212529;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
             &:hover {
                 background-color: rgba(0, 0, 0, 0.05) !important;
                 color: #212529;
             }
         }
-        .text-muted { color: #6c757d !important; }
-        input::placeholder { color: #6c757d !important; }
-        input:focus::placeholder { color: #000 !important; opacity: 1 !important; }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        input::placeholder {
+            color: #6c757d !important;
+        }
+
+        input:focus::placeholder {
+            color: #000 !important;
+            opacity: 1 !important;
+        }
     }
 }

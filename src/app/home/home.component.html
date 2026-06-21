@@ -34,7 +34,7 @@
                                     <label for="floatingSelect_price">價格篩選</label>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="form-floating">
                                     <select class="form-select" id="floatingSelect_range"
                                         [(ngModel)]="searchOptions.ranges.chosenObj" aria-label="搜尋範圍">
@@ -46,83 +46,20 @@
                                     <label for="floatingSelect_range">搜尋範圍</label>
                                 </div>
                             </div>
+                            <div class="col-2">
+                                <div class="d-grid">
+                                    <i class="bi bi-shop me-2" (click)="showCustomArea()" [ngbTooltip]="'交易市集'"
+                                        style="font-size: 40px;color: rgb(198, 198, 198); cursor: pointer;"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--自定義詞綴搜尋-->
-            <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="mt-2">
-                <div class="card border-secondary shadow-sm">
-                    <div class="py-2 px-2">
-                        <div class="row">
-                            <div class="col-6">
-                                <!-- <div class="form-floating">
-                                    <div ngbDropdown class="d-block">
-                                        <button type="button"
-                                            class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
-                                            id="dropdownSavedSearch" ngbDropdownToggle
-                                            style="height: 58px; padding-top: 1.625rem;">
-                                            {{ currentLoadedName || '已儲存搜尋' }}
-                                        </button>
-                                    </div>
-                                </div> -->
-                                <div ngbDropdown container="body" class="d-block">
-                                    <div class="form-floating">
-                                        <button type="button"
-                                            class="form-control btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
-                                            id="dropdownSavedSearch" ngbDropdownToggle>
-                                            <span>{{ currentLoadedName || '已儲存搜尋' }}</span>
-                                        </button>
-                                        <label for="dropdownSavedSearch">已儲存搜尋</label>
-                                    </div>
-                                    <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
-                                        @if (savedSearches.length === 0) {
-                                        <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
-                                        }
-                                        @for (item of savedSearches; track $index) {
-                                        <div class="d-flex align-items-center dropdown-item" style="cursor: pointer;">
-                                            <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
-                                                }}</span>
-                                            <button class="btn btn-sm btn-link text-primary p-0 me-2"
-                                                (click)="clickToRename(renameModal, $index, $event)"
-                                                ngbTooltip="重新命名">✏️</button>
-                                            <button class="btn btn-sm btn-link text-danger p-0"
-                                                (click)="clickToDelete(deleteModal, $index, $event)"
-                                                ngbTooltip="刪除">🗑️</button>
-                                        </div>
-                                        }
-                                    </div>
-                                    <!-- <label for="dropdownSavedSearch">已儲存搜尋</label> -->
-                                </div>
-                                <!-- 為了 form-floating 樣式而保留的 label -->
-                                <!-- <label for="dropdownSavedSearch">已儲存搜尋</label>
-                                    <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
-                                        @if (savedSearches.length === 0) {
-                                        <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
-                                        }
-                                        @for (item of savedSearches; track $index) {
-                                        <div class="d-flex align-items-center dropdown-item" style="cursor: pointer;">
-                                            <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
-                                                }}</span>
-                                            <button class="btn btn-sm btn-link text-primary p-0 me-2"
-                                                (click)="clickToRename(renameModal, $index, $event)"
-                                                ngbTooltip="重新命名">✏️</button>
-                                            <button class="btn btn-sm btn-link text-danger p-0"
-                                                (click)="clickToDelete(deleteModal, $index, $event)"
-                                                ngbTooltip="刪除">🗑️</button>
-                                        </div>
-                                        }
-                                    </div> -->
-                            </div>
-                            <div class="col-6">
-                                <div class="d-grid">
-                                    <button type="button" class="btn btn-outline-primary" style="height: 50px;"
-                                        (click)="showCustomArea()">交易市集搜尋</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row">
+                <div class="mode">模式：{{ ui.collapse.custom ? '查價' :
+                    '交易市集'
+                    }}</div>
             </div>
             <!--自定義詞綴區塊-->
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.custom" class="mt-2">
@@ -155,6 +92,36 @@
                                         (click)="isPoeSessionVisible = !isPoeSessionVisible" style="z-index: 10;">
                                         {{ isPoeSessionVisible ? '👁️' : '👁️‍🗨️' }}
                                     </button>
+                                </div>
+                            </div>
+                            <div class="col-12" style="margin-bottom: 6px;">
+                                <div ngbDropdown container="body" class="d-block">
+                                    <div class="form-floating">
+                                        <button type="button"
+                                            class="form-control btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                                            id="dropdownSavedSearch" ngbDropdownToggle>
+                                            <span>{{ currentLoadedName || '已儲存搜尋' }}</span>
+                                        </button>
+                                        <label for="dropdownSavedSearch">已儲存搜尋</label>
+                                    </div>
+                                    <div ngbDropdownMenu aria-labelledby="dropdownSavedSearch" class="w-100 shadow">
+                                        @if (savedSearches.length === 0) {
+                                        <button ngbDropdownItem disabled>尚無儲存的搜尋</button>
+                                        }
+                                        @for (item of savedSearches; track $index) {
+                                        <div class="d-flex align-items-center dropdown-item" style="cursor: pointer;">
+                                            <span class="flex-grow-1" (click)="loadSavedSearch($index)">{{ item.name
+                                                }}</span>
+                                            <button class="btn btn-sm btn-link text-primary p-0 me-2"
+                                                (click)="clickToRename(renameModal, $index, $event)"
+                                                ngbTooltip="重新命名">✏️</button>
+                                            <button class="btn btn-sm btn-link text-danger p-0"
+                                                (click)="clickToDelete(deleteModal, $index, $event)"
+                                                ngbTooltip="刪除">🗑️</button>
+                                        </div>
+                                        }
+                                    </div>
+                                    <!-- <label for="dropdownSavedSearch">已儲存搜尋</label> -->
                                 </div>
                             </div>
                             <div class="col-10">
@@ -1380,7 +1347,9 @@
             }
             <!-- 方法And -->
             @if ((item.searchStats.length > 0 || item.searchDefences.length) && !this.ui.collapse.stats) {
-            <div style="text-align: left;margin: 6px 0 -4px 0; color:rgb(114, 114, 114)">篩選方法：和</div>
+            <div class="row">
+                <div class='method'>篩選方法：和</div>
+            </div>
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats" style="margin-top:10px;">
                 <div class="card" style="padding-bottom: 4px;">
                     <div class="card-body" style="padding: 2px;">
@@ -1580,7 +1549,9 @@
             }
             <!-- 方法Count -->
             @if (item.searchStatsCount.length > 0 && !this.ui.collapse.stats) {
-            <div style="text-align: left;margin: 6px 0 -4px 0; color:rgb(114, 114, 114)">篩選方法：總計</div>
+            <div class="row">
+                <div class="method">篩選方法：總計</div>
+            </div>
             <div #collapse="ngbCollapse" [(ngbCollapse)]="ui.collapse.stats" style="margin-top:10px;">
                 <div class="card" style="padding-bottom: 4px;">
                     <div class="card-body" style="padding: 2px;">

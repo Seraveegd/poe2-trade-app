@@ -21,6 +21,8 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentSortType: string = 'price'; // 改為 Input 接收父組件狀態
   @Input() currentSortDir: 'asc' | 'desc' = 'asc'; // 改為 Input
   @Input() pseudos: any = [];
+  @Input() stats: Record<string, Map<string, string[]>> = { default: new Map() };
+  @Input() language: string = 'tw';
 
   public enToTW: any = new Map([
     ['Energy Shield', '能量護盾'],
@@ -546,6 +548,9 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
+    //For en
+    text = text.replaceAll('[', '').replaceAll(']', '');
+
     return text;
   }
 
@@ -638,5 +643,23 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
 
   shouldShowProperty(p: any) {
     return this.notShowMaxQuality.every((n: string) => !p.includes(n));
+  }
+
+  getTW(id: any, text: any) {
+    const strs = id.split('.');
+    const digs = text.match(/\+?\d+/g);
+    return id.startsWith('stat') ? this.replaceDynamic(this.stats[strs[1]].get(strs[1] + '.' + strs[2]), digs) : this.replaceDynamic(this.stats[strs[0]].get(strs[0] + '.' + strs[1]), digs);
+  }
+
+  replaceDynamic(inputText: any, replacementArray: any) {
+    let index = 0; // 用來追蹤現在走到陣列的第幾個位置
+
+    return inputText.replace(/\+?#/g, () => {
+      // 如果陣列裡還有對應的數字，就取出來用並把 index + 1；用完了就保持原樣 '#'
+      if (index < replacementArray.length) {
+        return replacementArray[index++];
+      }
+      return "#";
+    });
   }
 }

@@ -1692,8 +1692,8 @@
 <div style="text-align: center;"><button (click)="openOfficalTradeSite()" type="button"
         class="btn btn-outline-primary">台服官方交易市集</button></div>
 @if (searchResult.searchTotal > 0) {
-<app-analyze [searchResult]="searchResult" [isAnalyze]="ui.collapse.custom"
-    [isSessionValid]="poeSessionStatus === 'valid'" [currentSortType]="currentSortType"
+<app-analyze [searchResult]="searchResult" [isAnalyze]="ui.collapse.custom" [stats]="data.statsById"
+    [language]="language" [isSessionValid]="poeSessionStatus === 'valid'" [currentSortType]="currentSortType"
     [currentSortDir]="currentSortDir" [pseudos]="pseudos" (isCounting)="countingStatus($event)"
     (statsFilter)="statsFilter($event)" (changeSort)="changeSort($event)"></app-analyze>
 } @else if (!app.isCounting) {

@@ -202,8 +202,18 @@
                                 @if (result.item.implicitMods && result.item.implicitMods.length > 0) {
                                 <div class="implicit">
                                     @for (implicitMod of result.item.implicitMods; track $index) {
-                                    <div attr.data-field="{{ implicitMod.hash }}">{{
-                                        replaceIllustrate(implicitMod) }}</div>
+                                    <div attr.data-field="{{ implicitMod.hash }}">
+                                        @if (language==='en') {
+                                        {{
+                                        getTW(result.item.extended.hashes.implicit[$index][0],
+                                        replaceIllustrate(implicitMod))
+                                        }}
+                                        }@else {
+                                        {{
+                                        replaceIllustrate(implicitMod)
+                                        }}
+                                        }
+                                    </div>
                                     }
                                 </div>
                                 }
@@ -211,8 +221,17 @@
                                 @if (result.item.runeMods && result.item.runeMods.length > 0) {
                                 <div class="rune">
                                     @for (runeMod of result.item.runeMods; track $index) {
-                                    <div>{{
-                                        replaceIllustrate(runeMod) }}</div>
+                                    <div>
+                                        @if (language==='en') {
+                                        {{
+                                        getTW(result.item.extended.hashes.rune[$index][0], replaceIllustrate(runeMod))
+                                        }}
+                                        }@else {
+                                        {{
+                                        replaceIllustrate(runeMod)
+                                        }}
+                                        }
+                                    </div>
                                     }
                                 </div>
                                 }
@@ -244,9 +263,17 @@
                                     <div [ngClass]="{ 'desecrated': explicitMod?.flags?.desecrated, 'fractured': explicitMod?.flags?.fractured, 'crafted':  explicitMod?.flags?.crafted}"
                                         attr.data-field="{{ explicitMod.hash }}" (click)="clickToSort(explicitMod.hash)"
                                         [style.backgroundColor]="currentSortType === explicitMod.hash ? 'rgba(255, 255, 255, 0.1)' : null">
+                                        @if (language==='en') {
                                         {{
-                                        replaceIllustrate(explicitMod.description ?? explicitMod) }}<span
-                                            class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit ?? result.item.extended?.hashes?.desecrated ?? result.item.extended?.hashes?.fractured ?? result.item.extended?.hashes?.crafted,
+                                        getTW(explicitMod.hash, replaceIllustrate(explicitMod.description ??
+                                        explicitMod))
+                                        }}
+                                        }@else {
+                                        {{
+                                        replaceIllustrate(explicitMod.description ?? explicitMod)
+                                        }}
+                                        }
+                                        <span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit ?? result.item.extended?.hashes?.desecrated ?? result.item.extended?.hashes?.fractured ?? result.item.extended?.hashes?.crafted,
                                             explicitMod?.mods, explicitMod.hash)"></span><span class="tier"
                                             [innerHTML]="getTierLevel(
                                             explicitMod?.mods)"></span>
@@ -297,8 +324,17 @@
                                     <div attr.data-field="{{ 'stat.sanctum.stat_' + explicitMod.hash }}"
                                         (click)="clickToSort('stat.sanctum.stat_' + explicitMod.hash)"
                                         [style.backgroundColor]="currentSortType === ('stat.sanctum.stat_' + explicitMod.hash) ? 'rgba(255, 255, 255, 0.1)' : null">
-                                        {{ replaceIllustrate(explicitMod.description) }}<span class="tier_detail"
-                                            [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit,
+                                        @if (language==='en') {
+                                        {{
+                                        getTW(result.item.extended.hashes.sanctum[$index][0],
+                                        replaceIllustrate(explicitMod.description))
+                                        }}
+                                        }@else {
+                                        {{
+                                        replaceIllustrate(explicitMod.description)
+                                        }}
+                                        }
+                                        <span class="tier_detail" [innerHTML]="getTierLevelDetail(result.item.extended?.hashes?.explicit,
                                             explicitMod?.mods,explicitMod.hash)"></span><span class="tier" [innerHTML]="getTierLevel(
                                             explicitMod?.mods)"></span>
                                         {{ getSortArrow('stat.sanctum.stat_' + explicitMod.hash) }}
@@ -313,7 +349,16 @@
                                     <div attr.data-field="{{ 'stat.' +  result.item.extended?.hashes?.pseudo[$index][0] }}"
                                         (click)="clickToSort('stat.' + result.item.extended?.hashes?.pseudo[$index][0])"
                                         [style.backgroundColor]="currentSortType === ('stat.' + result.item.extended?.hashes?.pseudo[$index][0]) ? 'rgba(255, 255, 255, 0.1)' : null">
-                                        {{ replaceIllustrate(pseudoMod) }}
+                                        @if (language==='en') {
+                                        {{
+                                        getTW(result.item.extended.hashes.pseudo[$index][0],
+                                        replaceIllustrate(pseudoMod))
+                                        }}
+                                        }@else {
+                                        {{
+                                        replaceIllustrate(pseudoMod)
+                                        }}
+                                        }
                                         {{ getSortArrow('stat.' + result.item.extended?.hashes?.pseudo[$index][0]) }}
                                     </div>
                                     }

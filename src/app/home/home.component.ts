@@ -706,7 +706,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ]
   }
 
-  private data: any;
+  public data: any;
 
   //查詢物品資料
   public item: any = {
@@ -725,6 +725,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     min: '',
     max: ''
   }
+
+  public language = 'tw';
 
   //搜尋相關設定
   public searchOptions: any = {
@@ -970,8 +972,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onServerChange($e: any) {
     if ($e.target.selectedIndex === 0) {
+      this.language = 'tw';
       this.poe_service.setUrl("https://pathofexile.tw");
     } else {
+      this.language = 'en';
       this.poe_service.setUrl("https://www.pathofexile.com");
     }
     this.getLeagues();

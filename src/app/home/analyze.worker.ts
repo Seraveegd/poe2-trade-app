@@ -813,7 +813,7 @@ function getStat(item: any, stat: string, type: any): any {
     let finalId = possibleIds[0];
     if (possibleIds.length > 1) {
         const filteredId = possibleIds.find((id: any) => {
-            // 傳局護符/擊殺恢復魔力修正
+            // 傳奇護符/擊殺恢復魔力修正
             if (item.category === 'unique' && (id === 'explicit.stat_1416292992' || id === 'explicit.stat_1604736568')) return false;
             // 擊中流血修正
             if (item.category === 'unique' && item.basic === '鎖鍊鎖甲' && id === 'explicit.stat_1519615863') return false;

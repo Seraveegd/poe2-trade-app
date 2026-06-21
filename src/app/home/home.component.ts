@@ -172,16 +172,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   //過濾面板勾選狀態
-  // public filterPanel = {
-  //   checked: {
-  //     all: false,
-  //     c1: false,
-  //     c2: false,
-  //     c3: false,
-  //     c4: false,
-  //     c5: false
-  //   }
-  // }
+  public filterPanel = {
+    checked: {
+      all: false,
+      c1: false,
+      c2: false,
+      c3: false,
+      c4: false,
+      c5: false
+    }
+  }
 
   // UX 架構展示區塊專用的資料模型
   public uxSearchOptions: any = {
@@ -360,11 +360,11 @@ export class HomeComponent implements OnInit, OnDestroy {
    * 計算 uxSearchOptions 全部的啟用過濾器總數
    */
   public get totalUxFilterCount(): number {
-    return this.getActiveFilterCount(this.uxSearchOptions.base) +
-      this.getActiveFilterCount(this.uxSearchOptions.equipment) +
-      this.getActiveFilterCount(this.uxSearchOptions.requirements) +
-      this.getActiveFilterCount(this.uxSearchOptions.maps) +
-      this.getActiveFilterCount(this.uxSearchOptions.misc);
+    return (this.filterPanel.checked.c1 ? this.getActiveFilterCount(this.uxSearchOptions.base) : 0) +
+      (this.filterPanel.checked.c2 ? this.getActiveFilterCount(this.uxSearchOptions.equipment) : 0) +
+      (this.filterPanel.checked.c3 ? this.getActiveFilterCount(this.uxSearchOptions.requirements) : 0) +
+      (this.filterPanel.checked.c4 ? this.getActiveFilterCount(this.uxSearchOptions.maps) : 0) +
+      (this.filterPanel.checked.c5 ? this.getActiveFilterCount(this.uxSearchOptions.misc) : 0);
   }
 
   /**
@@ -1181,6 +1181,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.item.searchDefences = [];
 
     this.resetUxSearchOptions();
+    this.resetFilterPanel();
 
     this.currentSortType = 'price'; // 重置時恢復預設排序
     this.currentSortDir = 'asc';
@@ -1196,7 +1197,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     // 稀有物品停止搜尋，選擇詞綴才搜尋
     if (this.ui.collapse.custom && !this.ui.collapse.stats) {
       this.app.isCounting = false;
+      this.filterPanel.checked.all = true;
+      this.filterPanel.checked.c1 = true;
+      this.filterPanel.checked.c2 = true;
+      this.filterPanel.checked.c3 = true;
+      this.filterPanel.checked.c4 = true;
+      this.filterPanel.checked.c5 = true;
       return;
+    }
+
+    if (this.ui.collapse.custom) {
+      this.filterPanel.checked.all = true;
+      this.filterPanel.checked.c1 = true;
+      this.filterPanel.checked.c2 = true;
+      this.filterPanel.checked.c3 = true;
+      this.filterPanel.checked.c4 = true;
+      this.filterPanel.checked.c5 = true;
     }
 
     if (this.searchSubscription) {
@@ -1317,77 +1333,77 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
 
     // 1. 類別過濾 (base -> type_filters)
-    // if (this.filterPanel.checked.c1) {
-    addOption(f.type_filters.filters, 'category', this.uxSearchOptions.base.category);
-    addOption(f.type_filters.filters, 'rarity', this.uxSearchOptions.base.rarity);
-    addRange(f.type_filters.filters, 'ilvl', this.uxSearchOptions.base.ilvl);
-    addRange(f.type_filters.filters, 'quality', this.uxSearchOptions.base.quality);
-    // }
+    if (this.filterPanel.checked.c1) {
+      addOption(f.type_filters.filters, 'category', this.uxSearchOptions.base.category);
+      addOption(f.type_filters.filters, 'rarity', this.uxSearchOptions.base.rarity);
+      addRange(f.type_filters.filters, 'ilvl', this.uxSearchOptions.base.ilvl);
+      addRange(f.type_filters.filters, 'quality', this.uxSearchOptions.base.quality);
+    }
 
     // 2. 裝備篩選器 (equipment -> equipment_filters)
-    // if (this.filterPanel.checked.c2) {
-    const eq = this.uxSearchOptions.equipment;
-    addRange(f.equipment_filters.filters, 'damage', eq.damage);
-    addRange(f.equipment_filters.filters, 'aps', eq.aps);
-    addRange(f.equipment_filters.filters, 'crit', eq.crit);
-    addRange(f.equipment_filters.filters, 'dps', eq.dps);
-    addRange(f.equipment_filters.filters, 'pdps', eq.pdps);
-    addRange(f.equipment_filters.filters, 'edps', eq.edps);
-    addRange(f.equipment_filters.filters, 'reload', eq.reload_time);
-    addRange(f.equipment_filters.filters, 'ar', eq.ar);
-    addRange(f.equipment_filters.filters, 'ev', eq.ev);
-    addRange(f.equipment_filters.filters, 'es', eq.es);
-    addRange(f.equipment_filters.filters, 'ward', eq.ward);
-    addRange(f.equipment_filters.filters, 'block', eq.block);
-    addRange(f.equipment_filters.filters, 'spirit', eq.spirit);
-    addRange(f.equipment_filters.filters, 'rune_sockets', eq.rune_sockets);
-    // }
+    if (this.filterPanel.checked.c2) {
+      const eq = this.uxSearchOptions.equipment;
+      addRange(f.equipment_filters.filters, 'damage', eq.damage);
+      addRange(f.equipment_filters.filters, 'aps', eq.aps);
+      addRange(f.equipment_filters.filters, 'crit', eq.crit);
+      addRange(f.equipment_filters.filters, 'dps', eq.dps);
+      addRange(f.equipment_filters.filters, 'pdps', eq.pdps);
+      addRange(f.equipment_filters.filters, 'edps', eq.edps);
+      addRange(f.equipment_filters.filters, 'reload', eq.reload_time);
+      addRange(f.equipment_filters.filters, 'ar', eq.ar);
+      addRange(f.equipment_filters.filters, 'ev', eq.ev);
+      addRange(f.equipment_filters.filters, 'es', eq.es);
+      addRange(f.equipment_filters.filters, 'ward', eq.ward);
+      addRange(f.equipment_filters.filters, 'block', eq.block);
+      addRange(f.equipment_filters.filters, 'spirit', eq.spirit);
+      addRange(f.equipment_filters.filters, 'rune_sockets', eq.rune_sockets);
+    }
 
     // 3. 物品需求 (requirements -> req_filters)
-    // if (this.filterPanel.checked.c3) {
-    const req = this.uxSearchOptions.requirements;
-    addRange(f.req_filters.filters, 'lvl', req.lvl);
-    addRange(f.req_filters.filters, 'str', req.str);
-    addRange(f.req_filters.filters, 'dex', req.dex);
-    addRange(f.req_filters.filters, 'int', req.int);
-    // }
+    if (this.filterPanel.checked.c3) {
+      const req = this.uxSearchOptions.requirements;
+      addRange(f.req_filters.filters, 'lvl', req.lvl);
+      addRange(f.req_filters.filters, 'str', req.str);
+      addRange(f.req_filters.filters, 'dex', req.dex);
+      addRange(f.req_filters.filters, 'int', req.int);
+    }
 
     // 4. 終局篩選器 (maps -> map_filters)
-    // if (this.filterPanel.checked.c4) {
-    const maps = this.uxSearchOptions.maps;
-    addRange(f.map_filters.filters, 'map_tier', maps.map_tier);
-    addRange(f.map_filters.filters, 'map_packsize', maps.map_packsize);
-    addRange(f.map_filters.filters, 'map_magic_monsters', maps.map_magic_monsters);
-    addRange(f.map_filters.filters, 'map_rare_monsters', maps.map_rare_monsters);
-    addRange(f.map_filters.filters, 'map_iir', maps.map_iir);
-    addRange(f.map_filters.filters, 'map_revives', maps.map_revives);
-    addRange(f.map_filters.filters, 'map_bonus', maps.map_bonus);
-    addRange(f.map_filters.filters, 'map_gold', maps.map_gold);
-    addRange(f.map_filters.filters, 'map_experience', maps.map_experience);
-    addOption(f.map_filters.filters, 'ultimatum_hint', maps.ultimatum_hint);
-    // }
+    if (this.filterPanel.checked.c4) {
+      const maps = this.uxSearchOptions.maps;
+      addRange(f.map_filters.filters, 'map_tier', maps.map_tier);
+      addRange(f.map_filters.filters, 'map_packsize', maps.map_packsize);
+      addRange(f.map_filters.filters, 'map_magic_monsters', maps.map_magic_monsters);
+      addRange(f.map_filters.filters, 'map_rare_monsters', maps.map_rare_monsters);
+      addRange(f.map_filters.filters, 'map_iir', maps.map_iir);
+      addRange(f.map_filters.filters, 'map_revives', maps.map_revives);
+      addRange(f.map_filters.filters, 'map_bonus', maps.map_bonus);
+      addRange(f.map_filters.filters, 'map_gold', maps.map_gold);
+      addRange(f.map_filters.filters, 'map_experience', maps.map_experience);
+      addOption(f.map_filters.filters, 'ultimatum_hint', maps.ultimatum_hint);
+    }
 
     // 5. 其它 (misc -> misc_filters)
-    // if (this.filterPanel.checked.c5) {
-    const misc = this.uxSearchOptions.misc;
-    addRange(f.misc_filters.filters, 'gem_level', misc.gem_level);
-    addRange(f.misc_filters.filters, 'gem_sockets', misc.gem_sockets);
-    addRange(f.misc_filters.filters, 'area_level', misc.area_level);
-    addRange(f.misc_filters.filters, 'stack_size', misc.stack_size);
-    addOption(f.misc_filters.filters, 'identified', misc.identified);
-    addOption(f.misc_filters.filters, 'fractured_item', misc.fractured_item);
-    addOption(f.misc_filters.filters, 'corrupted', misc.corrupted);
-    addOption(f.misc_filters.filters, 'sanctified_item', misc.sanctified);
-    addOption(f.misc_filters.filters, 'twice_corrupted', misc.twice_corrupted);
-    addOption(f.misc_filters.filters, 'mutated_item', misc.mutated);
-    addOption(f.misc_filters.filters, 'veiled', misc.veiled);
-    addOption(f.misc_filters.filters, 'desecrated_item', misc.desecrated);
-    addOption(f.misc_filters.filters, 'crafted_item', misc.crafted);
-    addOption(f.misc_filters.filters, 'foreseen_item', misc.foreseeing);
-    addOption(f.misc_filters.filters, 'mirrored', misc.mirrored);
-    addRange(f.misc_filters.filters, 'sanctum_gold', misc.sanctum_gold);
-    addRange(f.misc_filters.filters, 'unidentified_tier', misc.unidentified_tier);
-    // }
+    if (this.filterPanel.checked.c5) {
+      const misc = this.uxSearchOptions.misc;
+      addRange(f.misc_filters.filters, 'gem_level', misc.gem_level);
+      addRange(f.misc_filters.filters, 'gem_sockets', misc.gem_sockets);
+      addRange(f.misc_filters.filters, 'area_level', misc.area_level);
+      addRange(f.misc_filters.filters, 'stack_size', misc.stack_size);
+      addOption(f.misc_filters.filters, 'identified', misc.identified);
+      addOption(f.misc_filters.filters, 'fractured_item', misc.fractured_item);
+      addOption(f.misc_filters.filters, 'corrupted', misc.corrupted);
+      addOption(f.misc_filters.filters, 'sanctified_item', misc.sanctified);
+      addOption(f.misc_filters.filters, 'twice_corrupted', misc.twice_corrupted);
+      addOption(f.misc_filters.filters, 'mutated_item', misc.mutated);
+      addOption(f.misc_filters.filters, 'veiled', misc.veiled);
+      addOption(f.misc_filters.filters, 'desecrated_item', misc.desecrated);
+      addOption(f.misc_filters.filters, 'crafted_item', misc.crafted);
+      addOption(f.misc_filters.filters, 'foreseen_item', misc.foreseeing);
+      addOption(f.misc_filters.filters, 'mirrored', misc.mirrored);
+      addRange(f.misc_filters.filters, 'sanctum_gold', misc.sanctum_gold);
+      addRange(f.misc_filters.filters, 'unidentified_tier', misc.unidentified_tier);
+    }
 
     let searchCount = 0;
 
@@ -1933,12 +1949,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  // onCheckedChangeAll() {
-  //   this.filterPanel.checked.c1 = this.filterPanel.checked.all;
-  //   this.filterPanel.checked.c2 = this.filterPanel.checked.all;
-  //   this.filterPanel.checked.c3 = this.filterPanel.checked.all;
-  //   this.filterPanel.checked.c4 = this.filterPanel.checked.all;
-  //   this.filterPanel.checked.c5 = this.filterPanel.checked.all;
-  //   this.cdr.markForCheck();
-  // }
+  onCheckedChangeAll() {
+    const isChecked = this.filterPanel.checked.all;
+    this.filterPanel.checked.c1 = isChecked;
+    this.filterPanel.checked.c2 = isChecked;
+    this.filterPanel.checked.c3 = isChecked;
+    this.filterPanel.checked.c4 = isChecked;
+    this.filterPanel.checked.c5 = isChecked;
+    this.cdr.markForCheck();
+  }
+
+  resetFilterPanel() {
+    this.filterPanel.checked = {
+      all: false,
+      c1: false,
+      c2: false,
+      c3: false,
+      c4: false,
+      c5: false
+    }
+  }
 }

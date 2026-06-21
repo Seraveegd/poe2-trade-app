@@ -108,18 +108,14 @@
                                     }
                                     @else{
                                     {{
-                                    replaceIllustrate(property.name)
+                                    enToTW.get(replaceIllustrate(property.name)) ?? replaceIllustrate(property.name)
                                     }}
                                     }
                                     @if (property.values.length > 0 && !property.name.includes('巢裔')) {
                                     : <span
                                         [style]="{'color': eDemageColors.get(replaceIllustrate(property.name)) ? eDemageColors.get(replaceIllustrate(property.name)) : '#8888ff'}">{{
                                         replaceIllustrate(property.values[0][0]) }}</span>
-                                    @if (!property.name.includes('品質') && !property.name.includes('精魂') &&
-                                    !property.name.includes('傷害') && !property.name.includes('暴擊') &&
-                                    !property.name.includes('每秒') && !property.name.includes('重新') &&
-                                    !property.name.includes('等級') && !property.name.includes('保留') &&
-                                    !property.name.includes('巢裔')){
+                                    @if (shouldShowProperty(property.name)){
                                     (最高品質: <span style="color: #8888ff">{{
                                         result.item.extended[defenceTypes.get(replaceIllustrate(property.name))]
                                         }}</span>)
@@ -162,10 +158,10 @@
                                 <div>
                                     需求:
                                     @for ( require of result.item.requirements; track $index){
-                                    @if (require.name === '等級'){
+                                    @if (require.name === '等級' || require.name === 'Level'){
                                     <span (click)="clickToSort('lvl')" style="cursor: pointer;"
                                         [style.backgroundColor]="currentSortType === 'lvl' ? 'rgba(255, 255, 255, 0.1)' : null">
-                                        {{require.name}}
+                                        {{ enToTW.get(require.name) ?? require.name }}
                                         {{ getSortArrow('lvl') }}
                                         <span style="color: #fff">{{ require.type }}</span></span>
                                     } @else {
@@ -173,6 +169,7 @@
                                         (click)="clickToSort(defenceTypes.get(replaceIllustrate(require.name)))"
                                         [style.backgroundColor]="currentSortType === defenceTypes.get(replaceIllustrate(require.name)) ? 'rgba(255, 255, 255, 0.1)' : null"><span
                                             style="color: #fff;">{{ require.type }} </span><span>{{
+                                            enToTW.get(replaceIllustrate(require.name)) ??
                                             replaceIllustrate(require.name)
                                             }}</span>{{ getSortArrow(defenceTypes.get(replaceIllustrate(require.name)))
                                         }}</span>

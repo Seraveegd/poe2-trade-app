@@ -22,6 +22,25 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentSortDir: 'asc' | 'desc' = 'asc'; // 改為 Input
   @Input() pseudos: any = [];
 
+  public enToTW: any = new Map([
+    ['Energy Shield', '能量護盾'],
+    ['Armour', '護甲值'],
+    ['Evasion Rating', '閃避值'],
+    ['Ward', '保護'],
+    ['Block Chance', '格擋機率'],
+    ['Elemental Damage', '元素傷害'],
+    ['Attacks per Second', '每秒攻擊次數'],
+    ['Critical Hit Chance', '暴擊率'],
+    ['Physical Damage', '物理傷害'],
+    ['Quality', '品質'],
+    ['Spirit', '精魂'],
+    ['Dex', '敏捷'],
+    ['Str', '力量'],
+    ['Int', '智慧'],
+    ['Reload Time', '重新裝填時間'],
+    ['Level', '等級'],
+  ]);
+
   public defenceTypes: any = new Map([
     ['能量護盾', 'es'],
     ['護甲值', 'ar'],
@@ -40,7 +59,25 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['力量', 'str'],
     ['智慧', 'int'],
     ['重新裝填時間', 'reload_time'],
-    ['等級', 'gem_level']
+    ['等級', 'gem_level'],
+    ['Energy Shield', 'es'],
+    ['Armour', 'ar'],
+    ['Evasion Rating', 'ev'],
+    ['Ward', 'ward'],
+    ['Block Chance', 'block'],
+    ['Attack Damage', 'pdps'],
+    ['Spell Damage', 'edps'],
+    ['Attack Speed', 'aps'],
+    ['Critical Hit Chance', 'crit'],
+    ['Physical Damage', 'pdamage'],
+    ['Quality', 'quality'],
+    ['Damage', 'edamage'],
+    ['Spirit', 'spirit'],
+    ['Dexterity', 'dex'],
+    ['Strength', 'str'],
+    ['Intelligence', 'int'],
+    ['Reload Time', 'reload_time'],
+    ['Level', 'gem_level']
   ]);
 
   private rarityColors: any = new Map([
@@ -54,8 +91,23 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   public eDemageColors: any = new Map([
     ['火焰傷害', '#960000'],
     ['閃電傷害', '#ffd700'],
-    ['冰冷傷害', '#366492']
+    ['冰冷傷害', '#366492'],
+    ['Fire damage', '#960000'],
+    ['Lightning damage', '#ffd700'],
+    ['Cold damage', '#366492']
   ]);
+
+  public notShowMaxQuality = [
+    '品質', 'quality',
+    '精魂', 'spirit',
+    '傷害', 'Damage',
+    '暴擊', 'Critical',
+    '每秒', 'per Second',
+    '重新', 'Reload',
+    '等級', 'Level',
+    '保留', '',
+    '巢裔', ''
+  ];
 
   public fetchResult: any = []; //回傳結果
   public maxRead = 100; // 最大讀取量改為 100
@@ -582,5 +634,9 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       // 發送物件給父組件，父組件更新後會透過 @Input 傳回新的 currentSortDir
       this.changeSort.emit({ [sortType]: nextDir });
     }
+  }
+
+  shouldShowProperty(p: any) {
+    return this.notShowMaxQuality.every((n: string) => !p.includes(n));
   }
 }

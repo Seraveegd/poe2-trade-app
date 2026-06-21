@@ -1,7 +1,7 @@
 import { Injectable, Optional } from '@angular/core';
 
 export class Config {
-  api_base_url = 'https://pathofexile.tw';
+  api_base_url: string = 'https://pathofexile.tw';
 }
 
 @Injectable({
@@ -9,15 +9,19 @@ export class Config {
 })
 export class ConfigService {
 
-  private _api_base_url = 'https://pathofexile.tw';
+  private config: Config = new Config();
 
   constructor(@Optional() config: Config) {
     if (config) {
-      this._api_base_url = config.api_base_url;
+      this.config = config;
     }
   }
 
-  get api_base_url() {
-    return this._api_base_url;
+  get api_base_url(): string | undefined {
+    return this.config.api_base_url;
+  }
+
+  set api_base_url(config: Config) {
+    this.config = config;
   }
 }

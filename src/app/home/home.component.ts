@@ -728,7 +728,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //搜尋相關設定
   public searchOptions: any = {
-    serverOptions: ['台服'],
+    serverOptions: ['台服', '國際服'],
     raritySet: { // 稀有度設定
       option: [{
         label: "任何",
@@ -901,13 +901,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else {
       console.warn('App not running inside Electron!');
     }
-    //取得聯盟資料
-    this.subscriptions.add(this.poe_service.get_leagues().subscribe((res: any) => {
-      if (res) {
-        this.searchOptions.leagues.options = res.result.filter((data: any) => data.realm == 'poe2');
-        this.searchOptions.leagues.chosenL = this.searchOptions.leagues.options[0].text;
-      }
-    }));
+
+    this.getLeagues();
 
     //初始化資料
     this.data = new Data();
@@ -971,6 +966,30 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  onServerChange($e: any) {
+    if ($e.target.selectedIndex === 0) {
+      this.poe_service.setUrl("https://pathofexile.tw");
+    } else {
+      this.poe_service.setUrl("https://www.pathofexile.com");
+    }
+    this.getLeagues();
+  }
+
+  getLeagues() {
+    //取得聯盟資料
+    this.subscriptions.add(this.poe_service.get_leagues().subscribe((res: any) => {
+      this.searchOptions.leagues.options = [];
+      this.searchOptions.leagues.chosenL = null;
+
+      if (res) {
+        this.searchOptions.leagues.options = res.result.filter((data: any) => data.realm == 'poe2');
+        this.searchOptions.leagues.chosenL = this.searchOptions.leagues.options[0].text;
+      }
+
+      this.cdr.markForCheck();
+    }));
   }
 
   //填充詞綴供選取

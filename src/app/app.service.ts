@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ConfigService } from './core/config.service';
+import { Config, ConfigService } from './core/config.service';
 import { timer, throwError, retry, BehaviorSubject, finalize } from 'rxjs';
 
 @Injectable({
@@ -12,6 +12,12 @@ export class AppService {
   public retryStatus$ = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient, private config: ConfigService) { }
+
+  setUrl(url: string): void {
+    let config = new Config();
+    config.api_base_url = url;
+    this.config.api_base_url = config;
+  }
 
   /**
    * 指數退避重試策略 (Exponential Backoff)

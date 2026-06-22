@@ -654,7 +654,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   replaceDynamic(inputText: any, replacementArray: any) {
     let index = 0; // 用來追蹤現在走到陣列的第幾個位置
 
-    return inputText.replace(/\+?#/g, () => {
+    return inputText.replace(/[+-]?\d+|\+?#/g, () => {
       // 如果陣列裡還有對應的數字，就取出來用並把 index + 1；用完了就保持原樣 '#'
       if (index < replacementArray.length) {
         return replacementArray[index++];

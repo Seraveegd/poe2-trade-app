@@ -102,17 +102,22 @@
                                 <div (click)="clickToSort(defenceTypes.get(replaceIllustrate(property.name)))"
                                     style="cursor: pointer;"
                                     [style.backgroundColor]="currentSortType === defenceTypes.get(replaceIllustrate(property.name)) ? 'rgba(255, 255, 255, 0.1)' : null">
-                                    @if (property.name.includes('巢裔')){
+                                    @if (property.name.indexOf('{0}') > -1 && property.name.indexOf('{1}') > -1){
+                                    <span
+                                        [innerHTML]="replaceIllustrate(property.name.replace('{0}', `<span class='ttf'>` + property.values[0][0] + `</span>`).replace('{1}', `<span class='ttf'>` + property.values[1][0] + `</span>`))"></span>
+                                    } @else if (property.name.indexOf('{0}') > -1){
                                     <span
                                         [innerHTML]="replaceIllustrate(property.name.replace('{0}', `<span class='ttf'>` + property.values[0][0] + `</span>`))"></span>
-                                    }
-                                    @else{
+                                    } @else{
                                     {{
                                     enToTW.get(replaceIllustrate(property.name)) ?? replaceIllustrate(property.name)
                                     }}
                                     }
-                                    @if (property.values.length > 0 && !property.name.includes('巢裔')) {
-                                    : <span
+                                    @if (property.values.length > 0 && !(property.name.indexOf('{0}') > -1)) {
+                                    @if (property.name !== ''){
+                                    :
+                                    }
+                                    <span
                                         [style]="{'color': eDemageColors.get(replaceIllustrate(property.name)) ? eDemageColors.get(replaceIllustrate(property.name)) : '#8888ff'}">{{
                                         replaceIllustrate(property.values[0][0]) }}</span>
                                     @if (shouldShowProperty(property.name)){
@@ -143,6 +148,11 @@
                                     元素傷害: <span style="color: #8888ff">{{ result.item.extended.edps }}</span>
                                     {{ getSortArrow('edps') }}
                                 </div>
+                                }
+                                }
+                                @if (result.item.utilityMods){
+                                @for(utility of result.item.utilityMods; track $index){
+                                <div style="color: #8888ff">{{ replaceIllustrate(utility) }}</div>
                                 }
                                 }
                                 <hr>

@@ -446,6 +446,13 @@ let lastText = ''; // 移至外部作用域以利重置
         event.sender.send('reply-local-stats', JSON.parse(stats));
     });
 
+    // //取得本地物品資料(英文)
+    // ipcMain.on('get-local-en-items', (event, msg) => {
+    //     const items = fs.readFileSync(getResourcePath('items-en.json'), 'utf-8');
+
+    //     event.sender.send('reply-local-enitems', JSON.parse(items));
+    // });
+
     //更新本地物品資料
     ipcMain.on('update-local-items', (event, msg) => {
         fs.writeFileSync(getResourcePath('items.json'), JSON.stringify(msg));

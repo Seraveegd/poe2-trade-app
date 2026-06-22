@@ -29,7 +29,10 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Armour', '護甲值'],
     ['Evasion Rating', '閃避值'],
     ['Ward', '保護'],
-    ['Block Chance', '格擋機率'],
+    ['Block chance', '格擋機率'],
+    ['Lightning Damage', '閃電傷害'],
+    ['Fire Damage', '火焰傷害'],
+    ['Cold Damage', '冰冷傷害'],
     ['Elemental Damage', '元素傷害'],
     ['Attacks per Second', '每秒攻擊次數'],
     ['Critical Hit Chance', '暴擊率'],
@@ -41,6 +44,83 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Int', '智慧'],
     ['Reload Time', '重新裝填時間'],
     ['Level', '等級'],
+    ['Limited to', '僅限'],
+    ['Revives Available', '可用的復活數'],
+    ['Item Rarity', '物品稀有度'],
+    ['Pack Size', '怪群大小'],
+    ['Monster Rarity', '怪物稀有度'],
+    ['Monster Effectiveness', '怪物效能'],
+    ['Waystone Drop Chance', '換界石掉落機率'],
+    ['Item', '物品'],
+    ['Unique', '傳奇'],
+    ['Cultivated', 'Cultivated'],
+    ['Gem', '寶石'],
+    ['Skill Gem', '技能寶石'],
+    ['Support Gem', '輔助寶石'],
+    ['Meta Skill Gem', 'Meta Skill Gem'],
+    ['Spirit Gem', '精神寶石'],
+    ['Lineage Support', '族裔輔助'],
+    ['One Handed Weapon', '單手武器'],
+    ['Claw', '爪'],
+    ['Dagger', '匕首'],
+    ['Wand', '法杖'],
+    ['One Hand Sword', '單手劍'],
+    ['One Hand Axe', '單手斧'],
+    ['One Hand Mace', '單手錘'],
+    ['Sceptre', '權杖'],
+    ['Spear', '長矛'],
+    ['Flail', '鏈錘'],
+    ['Two Handed Weapon', '雙手武器'],
+    ['Bow', '弓'],
+    ['Stave', '長杖'],
+    ['Two Hand Sword', '雙手劍'],
+    ['Two Hand Axe', '雙手斧'],
+    ['Two Hand Mace', '雙手錘'],
+    ['Quarterstaves', '細杖'],
+    ['Crossbow', '十字弓'],
+    ['Trap', '陷阱'],
+    ['Talisman', '魔符'],
+    ['Off-hand', '副手'],
+    ['Quiver', '箭袋'],
+    ['Shield', '盾'],
+    ['Buckler', '輕盾'],
+    ['Foci', '法器'],
+    ['Armour', '護甲'],
+    ['Glove', '手套'],
+    ['Boots', '鞋子'],
+    ['Body Armour', '胸甲'],
+    ['Helmet', '頭部'],
+    ['Jewellery', '飾品'],
+    ['Amulet', '項鍊'],
+    ['Ring', '戒指'],
+    ['Belt', '腰帶'],
+    ['Flask', '藥劑'],
+    ['Life Flask', '生命藥劑'],
+    ['Mana Flask', '魔力藥劑'],
+    ['Charm', '護符'],
+    ['Currency', '通貨'],
+    ['Stackable Currency', '可堆疊通貨'],
+    ['Augment', '增幅'],
+    ['Omen', '預兆'],
+    ['Incubator', '培育器'],
+    ['Liquid Emotion', '液態情感'],
+    ['Essence', '精髓'],
+    ['Splinter', '裂片'],
+    ['Catalyst', '催化劑'],
+    ['Waystone', '換界石'],
+    ['Map Fragment', '地圖碎片'],
+    ['Misc Map Item', '其它'],
+    ['Inscribed Ultimatum', '最後通牒雕刻'],
+    ['Tablet', '碑牌'],
+    ['Trial Coin', '試煉代幣'],
+    ['Pinnacle Key', '巔峰鑰匙'],
+    ['Jewel', '珠寶'],
+    ['Other', '其他'],
+    ['Vault Key', '遺鑰'],
+    ['Relic', '聖物'],
+    ['Hideout', '藏身處'],
+    ['Hideout Doodad', '藏身處裝飾'],
+    ['Strongbox', '保險箱']
   ]);
 
   public defenceTypes: any = new Map([
@@ -94,9 +174,9 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['火焰傷害', '#960000'],
     ['閃電傷害', '#ffd700'],
     ['冰冷傷害', '#366492'],
-    ['Fire damage', '#960000'],
-    ['Lightning damage', '#ffd700'],
-    ['Cold damage', '#366492']
+    ['Fire Damage', '#960000'],
+    ['Lightning Damage', '#ffd700'],
+    ['Cold Damage', '#366492']
   ]);
 
   public notShowMaxQuality = [
@@ -646,15 +726,17 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getTW(id: any, text: any) {
-    const strs = id.split('.');
-    const digs = text.match(/\+?\d+/g);
-    return id.startsWith('stat') ? this.replaceDynamic(this.stats[strs[1]].get(strs[1] + '.' + strs[2]), digs) : this.replaceDynamic(this.stats[strs[0]].get(strs[0] + '.' + strs[1]), digs);
+    if (id) {
+      const strs = id.split('.');
+      const digs = text.match(/\+?\d+/g);
+      return id.startsWith('stat') ? this.replaceDynamic(this.stats[strs[1]].get(strs[1] + '.' + strs[2]), digs) : this.replaceDynamic(this.stats[strs[0]].get(strs[0] + '.' + strs[1]), digs);
+    } else return text;
   }
 
   replaceDynamic(inputText: any, replacementArray: any) {
     let index = 0; // 用來追蹤現在走到陣列的第幾個位置
 
-    return inputText.replace(/[+-]?\d+|\+?#/g, () => {
+    return inputText.replace(/\+?#/g, () => {
       // 如果陣列裡還有對應的數字，就取出來用並把 index + 1；用完了就保持原樣 '#'
       if (index < replacementArray.length) {
         return replacementArray[index++];

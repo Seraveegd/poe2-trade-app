@@ -84,9 +84,13 @@ export class AppService {
     return this.http.get<any[]>('poe2/stats.json');
   }
 
-  getStatsRangesData(): any {
-    return this.http.get<any[]>('poe2/ranges.json');
+  getOfficialEnItemData(): any {
+    return this.http.get<any[]>('poe2/items-en.json');
   }
+
+  // getStatsRangesData(): any {
+  //   return this.http.get<any[]>('poe2/ranges.json');
+  // }
 
   // 驗證目前的 Session 是否有效
   validateSession(): any {

@@ -275,7 +275,7 @@
                                         [style.backgroundColor]="currentSortType === explicitMod.hash ? 'rgba(255, 255, 255, 0.1)' : null">
                                         @if (language==='en') {
                                         {{
-                                        getTW(explicitMod.hash, replaceIllustrate(explicitMod.description ??
+                                        getTW(explicitMod?.hash, replaceIllustrate(explicitMod.description ??
                                         explicitMod))
                                         }}
                                         }@else {

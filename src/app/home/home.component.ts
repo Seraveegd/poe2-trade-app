@@ -1537,32 +1537,63 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //是否針對物品基底搜尋
   isItemBasicSearch() {
-    if (this.searchOptions.itemBasic.isSearch && this.searchOptions.itemBasic.text) {
-      let itemBasicStrs = this.searchOptions.itemBasic.text.split(' ');
-      switch (itemBasicStrs.length) {
-        case 1:
-          this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
-          break;
-        case 2:
-          this.filters.searchJson.query.name = itemBasicStrs[0];
-          this.filters.searchJson.query.type = itemBasicStrs[1];
-          break;
-        case 3:
-          this.filters.searchJson.query.name = {
-            discriminator: "legacy",
-            option: itemBasicStrs[0]
-          };
-          this.filters.searchJson.query.type = {
-            discriminator: "legacy",
-            option: itemBasicStrs[1]
-          };
-          break;
-        default:
-          this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+    delete this.filters.searchJson.query.type;
+    delete this.filters.searchJson.query.name;
+
+    let itemBasicStrs = this.searchOptions.itemBasic.text.split(' ');
+
+    if (this.language == 'en') {
+      const enItem = this.data.enItemsByTw[this.searchOptions.itemBasic.text];
+      if (this.searchOptions.itemBasic.isSearch && this.searchOptions.itemBasic.text) {
+        if (enItem.flags) {
+          this.filters.searchJson.query.name = enItem.name;
+          this.filters.searchJson.query.type = enItem.type;
+
+          if (itemBasicStrs.length === 3) {
+            this.filters.searchJson.query.name = {
+              discriminator: "legacy",
+              option: enItem.name
+            };
+            this.filters.searchJson.query.type = {
+              discriminator: "legacy",
+              option: enItem.type
+            };
+          }
+        } else {
+          this.filters.searchJson.query.type = enItem.type;
+        }
+      } else {
+        delete this.filters.searchJson.query.name;
+        delete this.filters.searchJson.query.type;
       }
-    } else {
-      delete this.filters.searchJson.query.name;
-      delete this.filters.searchJson.query.type;
+    }
+    else {
+      if (this.searchOptions.itemBasic.isSearch && this.searchOptions.itemBasic.text) {
+        switch (itemBasicStrs.length) {
+          case 1:
+            this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+            break;
+          case 2:
+            this.filters.searchJson.query.name = itemBasicStrs[0];
+            this.filters.searchJson.query.type = itemBasicStrs[1];
+            break;
+          case 3:
+            this.filters.searchJson.query.name = {
+              discriminator: "legacy",
+              option: itemBasicStrs[0]
+            };
+            this.filters.searchJson.query.type = {
+              discriminator: "legacy",
+              option: itemBasicStrs[1]
+            };
+            break;
+          default:
+            this.filters.searchJson.query.type = this.searchOptions.itemBasic.text;
+        }
+      } else {
+        delete this.filters.searchJson.query.name;
+        delete this.filters.searchJson.query.type;
+      }
     }
   }
 

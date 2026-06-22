@@ -9,7 +9,8 @@ export class Data {
     public datas: any = {
         items: [], // 交易網物品 API 資料
         stats: [],  // 交易網詞綴 API 資料
-        // ranges: [] //詞綴範圍資料
+        // ranges: [] //詞綴範圍資料,
+        enItems: [] //英文物品資料
     };
     //物品資料
     public basics: any = {
@@ -24,11 +25,13 @@ export class Data {
             chosenG: '無',
             isSearch: false,
         },
-        currency:{ // 通貨
+        currency: { // 通貨
             option: []
         },
-        uniques:[] //傳奇裝備
+        uniques: [] //傳奇裝備
     };
+    //中文對應英文物品名稱
+    public enItemsByTw: Record<string, Array<any>> = {}
     //詞綴資料
     public stats: Record<string, Map<string, string[]>> = {
         pseudo: new Map(), // 偽屬性
@@ -74,9 +77,13 @@ export class Data {
         (<any>window).ipcRenderer.on('reply-local-stats', (event: any, arg: any) => {
             this.datas.stats = arg;
         });
+        // (<any>window).ipcRenderer.on('reply-local-enitems', (event: any, arg: any) => {
+        //     this.datas.enItems = arg;
+        // });
 
         const allItems = this.poe_service.getOfficialItemData();
         const allStats = this.poe_service.getOfficialStatesData();
+        const allEnItems = this.poe_service.getOfficialEnItemData();
         // const allStatsRanges = this.poe_service.getStatsRangesData();
 
         this.datas.items = await lastValueFrom(allItems).catch((error: HttpErrorResponse) => {
@@ -90,6 +97,9 @@ export class Data {
             (<any>window).ipcRenderer.send('get-local-stats');
         });
         // this.datas.ranges = await lastValueFrom(allStatsRanges).then((ranges: any) => ranges.ranges);
+        this.datas.enItems = await lastValueFrom(allEnItems).catch((error: HttpErrorResponse) => {
+            console.log("error: ", error);
+        });
 
         //更新本地資料
         if (!loadlocal) {
@@ -99,6 +109,7 @@ export class Data {
 
         this.dealWithitemsData();
         this.dealWithstatsData();
+        this.dealWithEnItemsData();
         this.isReady = true;
     }
 
@@ -127,7 +138,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 accessoryIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -157,7 +168,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 armourIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -212,7 +223,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 flasksIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -237,7 +248,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 jewelIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -257,7 +268,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 weaponIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -364,7 +375,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 mapIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -427,7 +438,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 sanctumIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -453,7 +464,7 @@ export class Data {
 
             if (basetype.includes(element.type) && !('flags' in element)) {
                 wombgiftIndex += 1;
-            }else{
+            } else {
                 this.basics.uniques.push(element);
             }
 
@@ -499,6 +510,19 @@ export class Data {
 
         //清除資料
         this.datas.stats = [];
+    }
+
+    dealWithEnItemsData() {
+        let result = this.datas.enItems.result;
+
+        result.forEach((element: any) => {
+            element.entries.forEach((entry: any) => {
+                this.enItemsByTw[entry.tw] = entry;
+            });
+        });
+
+        //清除資料
+        this.datas.enItems = [];
     }
 
     //取代說明字樣

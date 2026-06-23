@@ -69,15 +69,18 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Ezomyte One Hand Sword', '艾茲麥單手劍'],
     ['One Hand Axe', '單手斧'],
     ['One Hand Mace', '單手錘'],
+    ['Ezomyte One Hand Mace', '艾茲麥單手錘'],
     ['Sceptre', '權杖'],
     ['Spear', '長矛'],
     ['Flail', '鏈錘'],
     ['Two Handed Weapon', '雙手武器'],
     ['Bow', '弓'],
+    ['Ezomyte Bow', '艾茲麥弓'],
     ['Staff', '長杖'],
     ['Two Hand Sword', '雙手劍'],
     ['Two Hand Axe', '雙手斧'],
     ['Two Hand Mace', '雙手錘'],
+    ['Ezomyte Two Hand Mace', '艾茲麥雙手錘'],
     ['Quarterstaff', '細杖'],
     ['Crossbow', '十字弓'],
     ['Trap', '陷阱'],
@@ -85,13 +88,16 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Off-hand', '副手'],
     ['Quiver', '箭袋'],
     ['Shield', '盾'],
+    ['Ezomyte Shield', '艾茲麥盾'],
     ['Buckler', '輕盾'],
     ['Focus', '法器'],
     ['Armour', '護甲'],
     ['Gloves', '手套'],
     ['Boots', '鞋子'],
     ['Body Armour', '胸甲'],
+    ['Ezomyte Body Armour', '艾茲麥胸甲'],
     ['Helmet', '頭部'],
+    ['Ezomyte Helmet', '艾茲麥頭部'],
     ['Jewellery', '飾品'],
     ['Amulet', '項鍊'],
     ['Ring', '戒指'],
@@ -176,6 +182,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   private rarityColors: any = new Map([
     ['Rare', '#ffff77'],
     ['Unique', '#af6025'],
+    ['RunicUnique', '#af6025'],
     ['Magic', '#8888ff'],
     ['Relic', '#82ad6a'],
     ['Normal', '#c8c8c8'],
@@ -746,7 +753,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
       const digs = text.match(/\+?\d+(?:\.\d+)?/g);
       const sStat = id.startsWith('stat');
       const stat = sStat ? this.stats[strs[1]].get(strs[1] + '.' + strs[2]) : this.stats[strs[0]].get(strs[0] + '.' + strs[1]);
-      return stat ? this.replaceDynamic(stat, digs) : text;
+      return stat && digs ? this.replaceDynamic(stat, digs) : text;
     } else return text;
   }
 

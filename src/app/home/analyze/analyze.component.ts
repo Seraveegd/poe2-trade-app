@@ -23,6 +23,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   @Input() pseudos: any = [];
   @Input() stats: Record<string, Map<string, string[]>> = { default: new Map() };
   @Input() language: string = 'tw';
+  @Input() enItemsToTw: Record<string, any> = {};
 
   public enToTW: any = new Map([
     ['Energy Shield', '能量護盾'],
@@ -65,6 +66,7 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Dagger', '匕首'],
     ['Wand', '法杖'],
     ['One Hand Sword', '單手劍'],
+    ['Ezomyte One Hand Sword', '艾茲麥單手劍'],
     ['One Hand Axe', '單手斧'],
     ['One Hand Mace', '單手錘'],
     ['Sceptre', '權杖'],
@@ -72,11 +74,11 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Flail', '鏈錘'],
     ['Two Handed Weapon', '雙手武器'],
     ['Bow', '弓'],
-    ['Stave', '長杖'],
+    ['Staff', '長杖'],
     ['Two Hand Sword', '雙手劍'],
     ['Two Hand Axe', '雙手斧'],
     ['Two Hand Mace', '雙手錘'],
-    ['Quarterstaves', '細杖'],
+    ['Quarterstaff', '細杖'],
     ['Crossbow', '十字弓'],
     ['Trap', '陷阱'],
     ['Talisman', '魔符'],
@@ -84,9 +86,9 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Quiver', '箭袋'],
     ['Shield', '盾'],
     ['Buckler', '輕盾'],
-    ['Foci', '法器'],
+    ['Focus', '法器'],
     ['Armour', '護甲'],
-    ['Glove', '手套'],
+    ['Gloves', '手套'],
     ['Boots', '鞋子'],
     ['Body Armour', '胸甲'],
     ['Helmet', '頭部'],
@@ -120,7 +122,16 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Relic', '聖物'],
     ['Hideout', '藏身處'],
     ['Hideout Doodad', '藏身處裝飾'],
-    ['Strongbox', '保險箱']
+    ['Strongbox', '保險箱'],
+    ['Rune', '符文'],
+    ['Area Level', '區域等級'],
+    ['Number of Trials', '試煉數量'],
+    ['Cost', '消耗'],
+    ['Attack Damage', '攻擊傷害'],
+    ['Cast Time', '施放時間'],
+    ['Attack Speed', '攻擊速度'],
+    ['Cooldown Time', '冷卻時間'],
+    ['Reservation', '保留']
   ]);
 
   public defenceTypes: any = new Map([
@@ -167,7 +178,8 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Unique', '#af6025'],
     ['Magic', '#8888ff'],
     ['Relic', '#82ad6a'],
-    ['Normal', '#c8c8c8']
+    ['Normal', '#c8c8c8'],
+    ['Gem', '#1ba29b']
   ]);
 
   public eDemageColors: any = new Map([
@@ -179,16 +191,19 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
     ['Cold Damage', '#366492']
   ]);
 
-  public notShowMaxQuality = [
-    '品質', 'quality',
-    '精魂', 'spirit',
-    '傷害', 'Damage',
-    '暴擊', 'Critical',
-    '每秒', 'per Second',
-    '重新', 'Reload',
-    '等級', 'Level',
-    '保留', '',
-    '巢裔', ''
+  public showMaxQuality = [
+    '護甲', 'Armour',
+    '閃避', 'Evasion',
+    '能量', 'Energy',
+    // '品質', 'quality',
+    // '精魂', 'spirit',
+    // '傷害', 'Damage',
+    // '暴擊', 'Critical',
+    // '每秒', 'per Second',
+    // '重新', 'Reload',
+    // '等級', 'Level',
+    // '保留', 'Reservation',
+    // '巢裔', ''
   ];
 
   public fetchResult: any = []; //回傳結果
@@ -722,21 +737,23 @@ export class AnalyzeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   shouldShowProperty(p: any) {
-    return this.notShowMaxQuality.every((n: string) => !p.includes(n));
+    return this.showMaxQuality.some((n: string) => p.includes(n));
   }
 
   getTW(id: any, text: any) {
     if (id) {
       const strs = id.split('.');
-      const digs = text.match(/\+?\d+/g);
-      return id.startsWith('stat') ? this.replaceDynamic(this.stats[strs[1]].get(strs[1] + '.' + strs[2]), digs) : this.replaceDynamic(this.stats[strs[0]].get(strs[0] + '.' + strs[1]), digs);
+      const digs = text.match(/\+?\d+(?:\.\d+)?/g);
+      const sStat = id.startsWith('stat');
+      const stat = sStat ? this.stats[strs[1]].get(strs[1] + '.' + strs[2]) : this.stats[strs[0]].get(strs[0] + '.' + strs[1]);
+      return stat ? this.replaceDynamic(stat, digs) : text;
     } else return text;
   }
 
   replaceDynamic(inputText: any, replacementArray: any) {
     let index = 0; // 用來追蹤現在走到陣列的第幾個位置
 
-    return inputText.replace(/\+?#/g, () => {
+    return inputText.replace(/\+?#|\d+/g, () => {
       // 如果陣列裡還有對應的數字，就取出來用並把 index + 1；用完了就保持原樣 '#'
       if (index < replacementArray.length) {
         return replacementArray[index++];

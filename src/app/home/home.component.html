@@ -1694,8 +1694,9 @@
 @if (searchResult.searchTotal > 0) {
 <app-analyze [searchResult]="searchResult" [isAnalyze]="ui.collapse.custom" [stats]="data.statsById"
     [language]="language" [isSessionValid]="poeSessionStatus === 'valid'" [currentSortType]="currentSortType"
-    [currentSortDir]="currentSortDir" [pseudos]="pseudos" (isCounting)="countingStatus($event)"
-    (statsFilter)="statsFilter($event)" (changeSort)="changeSort($event)"></app-analyze>
+    [currentSortDir]="currentSortDir" [pseudos]="pseudos" [enItemsToTw]="data.enItemsToTw"
+    (isCounting)="countingStatus($event)" (statsFilter)="statsFilter($event)" (changeSort)="changeSort($event)">
+</app-analyze>
 } @else if (!app.isCounting) {
 <div style="margin: 15px; text-align: center; padding: 20px; border: 1px dashed #626262; border-radius: 4px;">
     <div style="color: #959595; font-weight: bold; margin-bottom: 5px;">🔍 查無符合條件的物品</div>

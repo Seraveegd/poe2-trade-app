@@ -32,6 +32,8 @@ export class Data {
     };
     //中文對應英文物品名稱
     public enItemsByTw: Record<string, Array<any>> = {}
+    //英文對應中文物品名稱
+    public enItemsToTw: Record<string, Array<any>> = {}
     //詞綴資料
     public stats: Record<string, Map<string, string[]>> = {
         pseudo: new Map(), // 偽屬性
@@ -518,6 +520,7 @@ export class Data {
         result.forEach((element: any) => {
             element.entries.forEach((entry: any) => {
                 this.enItemsByTw[entry.tw] = entry;
+                this.enItemsToTw[entry.text ?? entry.type] = entry.tw;
             });
         });
 

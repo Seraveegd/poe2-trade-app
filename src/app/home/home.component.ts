@@ -1545,7 +1545,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.language == 'en') {
       const enItem = this.data.enItemsByTw[this.searchOptions.itemBasic.text];
       if (this.searchOptions.itemBasic.isSearch && this.searchOptions.itemBasic.text) {
-        if (enItem.flags) {
+        if (enItem && enItem.flags) {
           this.filters.searchJson.query.name = enItem.name;
           this.filters.searchJson.query.type = enItem.type;
 

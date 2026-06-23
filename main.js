@@ -378,7 +378,7 @@ let lastText = ''; // 移至外部作用域以利重置
             }
         ])
 
-        tray.setToolTip('POE2 查價工具 v0.9.7');
+        tray.setToolTip('POE2 查價工具 v0.9.8');
         tray.setContextMenu(contextMenu);
 
         setTimeout(
